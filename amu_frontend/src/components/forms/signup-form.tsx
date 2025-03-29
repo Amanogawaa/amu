@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserRound, Mail, Lock } from "lucide-react";
 import { Link } from "react-router";
+import { Label } from "../ui/label";
 
 export function SignupForm({
   className,
@@ -12,7 +13,7 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <header className=" mx-auto flex w-full max-w-7xl items-center justify-between px-14 py-5"></header>
       <div className="mx-auto w-[350px] gap-6">
-        <h1 className="mb-3 text-center text-4xl font-inter font-semibold text-Midnight_Pine">
+        <h1 className="mb-3 text-center text-4xl font-inter font-semibold text-custom_foreground">
           sign up
         </h1>
         <p className="mb-3 text-nowrap text-base text-center font-montserrat text-Evergreen_Dusk font-medium">
@@ -20,7 +21,10 @@ export function SignupForm({
         </p>
         <form className="grid gap-4  text-cforeground">
           <div className="relative grid gap-2">
-            <UserRound className="pointer-events-none  text-Midnight_Pine absolute inset-y-3.5 left-0 flex w-7 items-center pl-3 " />
+            <UserRound className="pointer-events-none  text-custom_foreground absolute inset-y-3.5 left-0 flex w-7 items-center pl-3 " />
+            <Label className="sr-only" aria-hidden="true">
+              Username
+            </Label>
             <Input
               id="username"
               type="username"
@@ -31,7 +35,10 @@ export function SignupForm({
           </div>
 
           <div className="relative grid gap-2">
-            <Mail className="pointer-events-none  text-Midnight_Pine absolute inset-y-3.5 left-0 flex w-7 items-center pl-3 " />
+            <Mail className="pointer-events-none  text-custom_foreground absolute inset-y-3.5 left-0 flex w-7 items-center pl-3 " />
+            <Label className="sr-only" aria-hidden="true">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -43,6 +50,9 @@ export function SignupForm({
 
           <div className="relative grid gap-2">
             <Lock className="pointer-events-none absolute text-caccent inset-y-3.5 left-0 flex w-7 items-center pl-3 " />
+            <Label className="sr-only" aria-hidden="true">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
@@ -53,7 +63,7 @@ export function SignupForm({
           </div>
           <Button
             type="submit"
-            className="w-full bg-Evergreen_Dusk rounded-2xl cursor-pointer p-6 text-base font-inter font-semibold text-white hover:bg-Midnight_Pine/80 hover:ease-in"
+            className="w-full bg-Evergreen_Dusk rounded-2xl cursor-pointer p-6 text-base font-inter font-semibold text-white hover:bg-custom_foreground/80 hover:ease-in"
           >
             signup
           </Button>
@@ -65,6 +75,7 @@ export function SignupForm({
           <Link
             to={"/signin"}
             className="hover:underline cursor-pointer text-base"
+            aria-label="sign in for registered users"
           >
             signin
           </Link>

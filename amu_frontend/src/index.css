@@ -21,7 +21,7 @@
   --font-montserrat: "Montserrat", sans-serif;
 
   /* Foreground */
-  --color-Midnight_Pine: #283534;
+  --color-custom_foreground: #283534;
 
   /* Foreground Alternative */
   --color-Winter_Teal: #7c9f9c;
@@ -33,7 +33,7 @@
   --color-Icy_Mist: #b7cdc6;
 
   /* Background / Muted Alternative */
-  --color-Frosty_Whisper: #e4e7e1;
+  --color-Frosty_Whisper: #e5e5e5;
 }
 
 ::-webkit-scrollbar {
