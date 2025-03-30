@@ -91,7 +91,7 @@ const MessageList = (): ReactNode => {
   ]);
 
   return (
-    <div className="flex flex-1 p-4 flex-col flex-grow-1 max-h-[700px] h-full overflow-y-scroll">
+    <div className="flex flex-1 p-4 flex-col flex-grow-1 min-h-screen w-full pb-[144px]">
       <div className="space-y-4">
         {messages.map((message: any, index: any) => (
           <div
@@ -101,14 +101,9 @@ const MessageList = (): ReactNode => {
             } space-y-2`}
           >
             <div className="rounded-lg text-Evergreen_Dusk bg-Icy_Mist p-4">
-              <div className="text-sm">{message.text}</div>
-            </div>
-            <div
-              className={`text-xs ${
-                message.isSent ? "text-right" : ""
-              } text-gray-500 dark:text`}
-            >
-              {message.timestamp}
+              <div className="text-sm text-Evergreen_Dusk font-normal">
+                {message.text}
+              </div>
             </div>
           </div>
         ))}
