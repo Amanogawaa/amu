@@ -6,11 +6,11 @@ import UserProfile from "@/components/chat/UserProfile";
 
 const Chat = () => {
   return (
-    <main className=" w-full min-h-svh flex flex-col justify-start items-center overflow-y-auto">
+    <main className=" w-full min-h-svh flex flex-col justify-start items-center overflow-y-auto bg-white">
       <div className="flex justify-between gap-2 fixed top-0 left-0 right-0 z-50 sm:top-5 sm:right-5 sm:left-5 px-4 py-2 max-sm:bg-Frosty_Whisper/30 max-sm:backdrop-blur-xl sm:bg-transparent">
         <div className="flex justify-between items-center w-full max-w-[calc(100vw-2.5rem)] mx-auto">
           <h1>logo here</h1>
-          <div className="flex gap-0.5 items-center">
+          <div className="flex gap-2 items-center">
             <CreateChat />
             <ChatDialog />
             <UserProfile />

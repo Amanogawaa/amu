@@ -9,6 +9,7 @@ function App() {
     <Routes>
       <Route element={<SigninPage />} path="signin" />
       <Route element={<SignupPage />} path="signup" />
+
       <Route element={<Dashboard />} path="dashboard" />
       <Route element={<Chat />} path="chat" />
     </Routes>
