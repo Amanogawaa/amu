@@ -4,32 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# Backend
 fastapi = "*"
 uvicorn = "*"
 python-multipart = "*"
 python-dotenv = "*"
-
-# Core AI
 groq = "*"             
 transformers = "*"    
 sentence-transformers = "*" 
 torch = "*"           
 faiss-cpu = "*"        
-
-# File Processing
 PyPDF2 = "*"           
 pytesseract = "*"     
-
-# Database (optional)
-chromadb = "*"      
-
-# Authentication
 bcrypt = "*"
 python-jose = "*"
+chromadb = "*"
+supabase = "*"
 
 [dev-packages]
-# Add tools like pytest for testing later if needed
 
 [requires]
-python_version = "3.10"  
+python_version = "3.10"
