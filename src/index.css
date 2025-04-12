@@ -15,6 +15,14 @@
   --color-custom_foreground: #283534;
 }
 
+div {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+div::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
