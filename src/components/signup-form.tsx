@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserRound, Mail, Lock } from "lucide-react";
-import { Link } from "react-router";
+import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
+import { Lock, Mail, UserRound } from "lucide-react";
 import { Label } from "./ui/label";
 
 export function SignupForm({
@@ -73,7 +73,7 @@ export function SignupForm({
             already have an account?
           </p>
           <Link
-            to={"/signin"}
+            to="/auth/signin"
             className="hover:underline cursor-pointer text-sm"
             aria-label="sign in for registered users"
           >

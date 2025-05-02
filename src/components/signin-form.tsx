@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock } from "lucide-react";
-import { Link } from "react-router";
 import { Label } from "./ui/label";
+import { Link } from "@tanstack/react-router";
 
 export function SigninForm({
   className,
@@ -59,7 +59,7 @@ export function SigninForm({
             don't have an account?
           </p>
           <Link
-            to={"/signup"}
+            to="/auth/signup"
             className="hover:underline cursor-pointer text-sm"
             aria-label="sign up for new accounts"
           >

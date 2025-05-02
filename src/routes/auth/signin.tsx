@@ -1,8 +1,13 @@
 import { SigninForm } from "@/components/signin-form";
+import { createFileRoute } from "@tanstack/react-router";
 
-const SigninPage = () => {
+export const Route = createFileRoute("/auth/signin")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   return (
-    <main className="flex min-h-[calc(100vh-200px)] h-svh w-full items-center justify-center rounded-lg p-10">
+    <main className="flex min-h-[90vh] w-full items-center justify-center rounded-lg">
       <div className="flex max-w-4xl items-center">
         <div className="flex items-center justify-center py-12">
           <div className="mx-auto w-[350px] gap-6">
@@ -12,6 +17,4 @@ const SigninPage = () => {
       </div>
     </main>
   );
-};
-
-export default SigninPage;
+}
