@@ -14,8 +14,12 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as CourseRouteImport } from './routes/course/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as CourseIndexImport } from './routes/course/index'
+import { Route as CourseSuggestionImport } from './routes/course/suggestion'
+import { Route as CourseMyCourseImport } from './routes/course/my-course'
+import { Route as CourseCommunityImport } from './routes/course/community'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthSigninImport } from './routes/auth/signin'
+import { Route as CourseCourseidIndexImport } from './routes/course/$courseid/index'
 
 // Create/Update Routes
 
@@ -37,6 +41,24 @@ const CourseIndexRoute = CourseIndexImport.update({
   getParentRoute: () => CourseRouteRoute,
 } as any)
 
+const CourseSuggestionRoute = CourseSuggestionImport.update({
+  id: '/suggestion',
+  path: '/suggestion',
+  getParentRoute: () => CourseRouteRoute,
+} as any)
+
+const CourseMyCourseRoute = CourseMyCourseImport.update({
+  id: '/my-course',
+  path: '/my-course',
+  getParentRoute: () => CourseRouteRoute,
+} as any)
+
+const CourseCommunityRoute = CourseCommunityImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => CourseRouteRoute,
+} as any)
+
 const AuthSignupRoute = AuthSignupImport.update({
   id: '/auth/signup',
   path: '/auth/signup',
@@ -47,6 +69,12 @@ const AuthSigninRoute = AuthSigninImport.update({
   id: '/auth/signin',
   path: '/auth/signin',
   getParentRoute: () => rootRoute,
+} as any)
+
+const CourseCourseidIndexRoute = CourseCourseidIndexImport.update({
+  id: '/$courseid/',
+  path: '/$courseid/',
+  getParentRoute: () => CourseRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -81,11 +109,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof rootRoute
     }
+    '/course/community': {
+      id: '/course/community'
+      path: '/community'
+      fullPath: '/course/community'
+      preLoaderRoute: typeof CourseCommunityImport
+      parentRoute: typeof CourseRouteImport
+    }
+    '/course/my-course': {
+      id: '/course/my-course'
+      path: '/my-course'
+      fullPath: '/course/my-course'
+      preLoaderRoute: typeof CourseMyCourseImport
+      parentRoute: typeof CourseRouteImport
+    }
+    '/course/suggestion': {
+      id: '/course/suggestion'
+      path: '/suggestion'
+      fullPath: '/course/suggestion'
+      preLoaderRoute: typeof CourseSuggestionImport
+      parentRoute: typeof CourseRouteImport
+    }
     '/course/': {
       id: '/course/'
       path: '/'
       fullPath: '/course/'
       preLoaderRoute: typeof CourseIndexImport
+      parentRoute: typeof CourseRouteImport
+    }
+    '/course/$courseid/': {
+      id: '/course/$courseid/'
+      path: '/$courseid'
+      fullPath: '/course/$courseid'
+      preLoaderRoute: typeof CourseCourseidIndexImport
       parentRoute: typeof CourseRouteImport
     }
   }
@@ -94,11 +150,19 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface CourseRouteRouteChildren {
+  CourseCommunityRoute: typeof CourseCommunityRoute
+  CourseMyCourseRoute: typeof CourseMyCourseRoute
+  CourseSuggestionRoute: typeof CourseSuggestionRoute
   CourseIndexRoute: typeof CourseIndexRoute
+  CourseCourseidIndexRoute: typeof CourseCourseidIndexRoute
 }
 
 const CourseRouteRouteChildren: CourseRouteRouteChildren = {
+  CourseCommunityRoute: CourseCommunityRoute,
+  CourseMyCourseRoute: CourseMyCourseRoute,
+  CourseSuggestionRoute: CourseSuggestionRoute,
   CourseIndexRoute: CourseIndexRoute,
+  CourseCourseidIndexRoute: CourseCourseidIndexRoute,
 }
 
 const CourseRouteRouteWithChildren = CourseRouteRoute._addFileChildren(
@@ -110,14 +174,22 @@ export interface FileRoutesByFullPath {
   '/course': typeof CourseRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/course/community': typeof CourseCommunityRoute
+  '/course/my-course': typeof CourseMyCourseRoute
+  '/course/suggestion': typeof CourseSuggestionRoute
   '/course/': typeof CourseIndexRoute
+  '/course/$courseid': typeof CourseCourseidIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/course/community': typeof CourseCommunityRoute
+  '/course/my-course': typeof CourseMyCourseRoute
+  '/course/suggestion': typeof CourseSuggestionRoute
   '/course': typeof CourseIndexRoute
+  '/course/$courseid': typeof CourseCourseidIndexRoute
 }
 
 export interface FileRoutesById {
@@ -126,21 +198,46 @@ export interface FileRoutesById {
   '/course': typeof CourseRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/course/community': typeof CourseCommunityRoute
+  '/course/my-course': typeof CourseMyCourseRoute
+  '/course/suggestion': typeof CourseSuggestionRoute
   '/course/': typeof CourseIndexRoute
+  '/course/$courseid/': typeof CourseCourseidIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/course' | '/auth/signin' | '/auth/signup' | '/course/'
+  fullPaths:
+    | '/'
+    | '/course'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/course/community'
+    | '/course/my-course'
+    | '/course/suggestion'
+    | '/course/'
+    | '/course/$courseid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/signin' | '/auth/signup' | '/course'
+  to:
+    | '/'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/course/community'
+    | '/course/my-course'
+    | '/course/suggestion'
+    | '/course'
+    | '/course/$courseid'
   id:
     | '__root__'
     | '/'
     | '/course'
     | '/auth/signin'
     | '/auth/signup'
+    | '/course/community'
+    | '/course/my-course'
+    | '/course/suggestion'
     | '/course/'
+    | '/course/$courseid/'
   fileRoutesById: FileRoutesById
 }
 
@@ -180,7 +277,11 @@ export const routeTree = rootRoute
     "/course": {
       "filePath": "course/route.tsx",
       "children": [
-        "/course/"
+        "/course/community",
+        "/course/my-course",
+        "/course/suggestion",
+        "/course/",
+        "/course/$courseid/"
       ]
     },
     "/auth/signin": {
@@ -189,8 +290,24 @@ export const routeTree = rootRoute
     "/auth/signup": {
       "filePath": "auth/signup.tsx"
     },
+    "/course/community": {
+      "filePath": "course/community.tsx",
+      "parent": "/course"
+    },
+    "/course/my-course": {
+      "filePath": "course/my-course.tsx",
+      "parent": "/course"
+    },
+    "/course/suggestion": {
+      "filePath": "course/suggestion.tsx",
+      "parent": "/course"
+    },
     "/course/": {
       "filePath": "course/index.tsx",
+      "parent": "/course"
+    },
+    "/course/$courseid/": {
+      "filePath": "course/$courseid/index.tsx",
       "parent": "/course"
     }
   }

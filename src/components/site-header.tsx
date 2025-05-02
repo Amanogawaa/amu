@@ -10,10 +10,9 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium font-satoshi">
+        {/* <h1 className="text-base font-medium font-satoshi">
           Name of the course
         </h1>
-        {/* change this to status of the course */}
         <div className="ml-auto flex items-center gap-2">
           <span className="text-sm font-light font-inter">80%</span>
           <div className="w-14">
@@ -21,7 +20,7 @@ export function SiteHeader() {
               <div className="h-full rounded-full bg-orange-600 w-[75%]"></div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </header>
   );

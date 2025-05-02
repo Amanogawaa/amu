@@ -28,19 +28,19 @@ const data = {
   navMain: [
     {
       title: "my courses",
-      url: "#",
+      url: "/course/my-course",
       icon: Library,
     },
-    {
-      title: "suggestions",
-      url: "#",
-      icon: Star,
-    },
-    {
-      title: "community",
-      url: "#",
-      icon: Users2Icon,
-    },
+    // {
+    //   title: "suggestion",
+    //   url: "/course/suggestion",
+    //   icon: Star,
+    // },
+    // {
+    //   title: "community",
+    //   url: "/course/community",
+    //   icon: Users2Icon,
+    // },
   ],
   navSecondary: [
     {
@@ -62,14 +62,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
+            <SidebarMenuButton className="data-[slot=sidebar-menu-button]:!p-1.5 ">
+              <>
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">amu ai</span>
-              </a>
+              </>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

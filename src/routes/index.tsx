@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -16,9 +16,12 @@ function Index() {
           master your studies with personalized ai tools—summaries, quizzes, and
           more!{" "}
         </p>
-        <Button className=" bg-Evergreen_Dusk rounded-2xl cursor-pointer p-6 text-sm font-inter font-semibold text-white hover:bg-custom_foreground/80 hover:ease-in">
+        <Link
+          to="/course"
+          className=" bg-Evergreen_Dusk rounded-2xl cursor-pointer py-3 px-5 text-sm font-inter font-semibold text-white hover:bg-custom_foreground/80 hover:ease-in"
+        >
           get started
-        </Button>
+        </Link>
       </div>
     </section>
   );
