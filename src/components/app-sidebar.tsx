@@ -17,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Library, Star, Users2Icon } from "lucide-react";
+import { Library } from "lucide-react";
 
 const data = {
   user: {
@@ -28,19 +28,9 @@ const data = {
   navMain: [
     {
       title: "my courses",
-      url: "/course/my-course",
+      url: "/amu/my-course",
       icon: Library,
     },
-    // {
-    //   title: "suggestion",
-    //   url: "/course/suggestion",
-    //   icon: Star,
-    // },
-    // {
-    //   title: "community",
-    //   url: "/course/community",
-    //   icon: Users2Icon,
-    // },
   ],
   navSecondary: [
     {
@@ -73,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

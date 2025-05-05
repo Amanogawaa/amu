@@ -1,57 +1,90 @@
-import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Timeline,
+  TimelineContent,
+  TimelineDate,
+  TimelineHeader,
+  TimelineIndicator,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineTitle,
+} from "@/components/ui/timeline";
 import { createFileRoute } from "@tanstack/react-router";
-import { SendIcon } from "lucide-react";
-import { useId } from "react";
 
 export const Route = createFileRoute("/course/")({
   component: RouteComponent,
 });
 
+const items = [
+  {
+    id: 1,
+    date: "15 minutes ago",
+    title: "Hannah Kandell",
+    action: "opened a new issue",
+    description:
+      "I'm having trouble with the new component library. It's not rendering properly.",
+    image: "/avatar-40-01.jpg",
+  },
+  {
+    id: 2,
+    date: "10 minutes ago",
+    title: "Chris Tompson",
+    action: "commented on",
+    description:
+      "Hey Hannah, I'm having trouble with the new component library. It's not rendering properly.",
+    image: "/avatar-40-02.jpg",
+  },
+  {
+    id: 3,
+    date: "5 minutes ago",
+    title: "Emma Davis",
+    action: "assigned you to",
+    description:
+      "The new component library is not rendering properly. Can you take a look?",
+    image: "/avatar-40-03.jpg",
+  },
+  {
+    id: 4,
+    date: "2 minutes ago",
+    title: "Alex Morgan",
+    action: "closed the issue",
+    description: "The issue has been fixed. Please review the changes.",
+    image: "/avatar-40-05.jpg",
+  },
+];
+
 function RouteComponent() {
-  const id = useId();
   return (
-    <main className="flex flex-col items-center justify-center w-full h-full">
-      <div className="flex flex-col items-center justify-center w-full h-full gap-2 p-4 border border-muted">
-        <h1 className="text-3xl font-satoshi font-medium text-Evergreen_Dusk">
-          what can i help you to learn today?
-        </h1>
-        <p className="text-lg font-satoshi text-Winter_Teal">
-          enter a topic below to generate a personalized course for it
-        </p>
-        <div className="*:not-first:mt-2 max-w-xl w-full">
-          <div className="relative">
-            <Input
-              id={id}
-              className="pe-10 ps-5 py-8 px-4 rounded-full"
-              placeholder="e.g. intro to python"
-              type="text"
-            />
-            <button
-              className="text-muted-foreground/80 hover:text-Evergreen_Dusk focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-5 flex h-full w-9  items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="course generator"
-            >
-              <SendIcon size={16} aria-hidden="true" />
-            </button>
-          </div>
-          <Select>
-            <SelectTrigger className="rounded-full mx-auto focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
-              <SelectValue placeholder="difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="beginner">beginner</SelectItem>
-              <SelectItem value="intermidiate">intermidiate</SelectItem>
-              <SelectItem value="advanced">advanced</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </main>
+    <section className="p-5">
+      <Timeline>
+        {items.map((item) => (
+          <TimelineItem
+            key={item.id}
+            step={item.id}
+            className="group-data-[orientation=vertical]/timeline:ms-10 group-data-[orientation=vertical]/timeline:not-last:pb-8"
+          >
+            <TimelineHeader>
+              <TimelineSeparator className="group-data-[orientation=vertical]/timeline:-left-7 group-data-[orientation=vertical]/timeline:h-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=vertical]/timeline:translate-y-6.5" />
+              <TimelineTitle className="mt-0.5">
+                {item.title}{" "}
+                <span className="text-muted-foreground text-sm font-normal">
+                  {item.action}
+                </span>
+              </TimelineTitle>
+              <TimelineIndicator className="bg-primary/10 group-data-completed/timeline-item:bg-primary group-data-completed/timeline-item:text-primary-foreground flex size-6 items-center justify-center border-none group-data-[orientation=vertical]/timeline:-left-7">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="size-6 rounded-full"
+                />
+              </TimelineIndicator>
+            </TimelineHeader>
+            <TimelineContent className="text-foreground mt-2 rounded-lg border px-4 py-3">
+              {item.description}
+              <TimelineDate className="mt-1 mb-0">{item.date}</TimelineDate>
+            </TimelineContent>
+          </TimelineItem>
+        ))}
+      </Timeline>
+    </section>
   );
 }

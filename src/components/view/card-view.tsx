@@ -1,13 +1,12 @@
-import { BookOpen, EllipsisVertical } from "lucide-react";
-import { Badge } from "../ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BookOpen, EllipsisVertical } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { Link } from "@tanstack/react-router";
 
 const CourseCard = () => {
   return (
@@ -29,7 +28,9 @@ const CourseCard = () => {
                     <EllipsisVertical className="w-4 h-4" />{" "}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>start course</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {/* <Link to={"/amu/$courseid"}>start course</Link> */}
+                    </DropdownMenuItem>
                     <DropdownMenuItem>delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
