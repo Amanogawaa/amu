@@ -1,3 +1,4 @@
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,6 +7,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { BookOpen, EllipsisVertical } from 'lucide-react'
 import { Badge } from '../ui/badge'
+import DeleteCourse from './delete-course'
+import { Link } from '@tanstack/react-router'
 
 const CourseCard = () => {
   return (
@@ -26,11 +29,12 @@ const CourseCard = () => {
                   <DropdownMenuTrigger>
                     <EllipsisVertical className="w-4 h-4" />{' '}
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      {/* <Link to={"/amu/$courseid"}>start course</Link> */}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>delete</DropdownMenuItem>
+                  <DropdownMenuContent className="w-fit flex flex-col items-center">
+                    <Link to={'/amu'}>start course</Link>
+                    <Dialog>
+                      <DialogTrigger>delete course</DialogTrigger>
+                      <DeleteCourse />
+                    </Dialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -38,6 +42,7 @@ const CourseCard = () => {
                 intro to react: a beginner's guide
               </h1>
             </div>
+
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
