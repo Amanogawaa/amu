@@ -11,25 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as CourseRouteImport } from './routes/course/route'
 import { Route as AmuRouteImport } from './routes/amu/route'
 import { Route as IndexImport } from './routes/index'
-import { Route as CourseIndexImport } from './routes/course/index'
 import { Route as AmuIndexImport } from './routes/amu/index'
-import { Route as CourseCourseIdImport } from './routes/course/$course-id'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthSigninImport } from './routes/auth/signin'
-import { Route as AmuSuggestionImport } from './routes/amu/suggestion'
 import { Route as AmuMyCourseImport } from './routes/amu/my-course'
-import { Route as AmuCommunityImport } from './routes/amu/community'
 
 // Create/Update Routes
-
-const CourseRouteRoute = CourseRouteImport.update({
-  id: '/course',
-  path: '/course',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AmuRouteRoute = AmuRouteImport.update({
   id: '/amu',
@@ -43,22 +32,10 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const CourseIndexRoute = CourseIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => CourseRouteRoute,
-} as any)
-
 const AmuIndexRoute = AmuIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AmuRouteRoute,
-} as any)
-
-const CourseCourseIdRoute = CourseCourseIdImport.update({
-  id: '/$course-id',
-  path: '/$course-id',
-  getParentRoute: () => CourseRouteRoute,
 } as any)
 
 const AuthSignupRoute = AuthSignupImport.update({
@@ -73,21 +50,9 @@ const AuthSigninRoute = AuthSigninImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AmuSuggestionRoute = AmuSuggestionImport.update({
-  id: '/suggestion',
-  path: '/suggestion',
-  getParentRoute: () => AmuRouteRoute,
-} as any)
-
 const AmuMyCourseRoute = AmuMyCourseImport.update({
   id: '/my-course',
   path: '/my-course',
-  getParentRoute: () => AmuRouteRoute,
-} as any)
-
-const AmuCommunityRoute = AmuCommunityImport.update({
-  id: '/community',
-  path: '/community',
   getParentRoute: () => AmuRouteRoute,
 } as any)
 
@@ -109,32 +74,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AmuRouteImport
       parentRoute: typeof rootRoute
     }
-    '/course': {
-      id: '/course'
-      path: '/course'
-      fullPath: '/course'
-      preLoaderRoute: typeof CourseRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/amu/community': {
-      id: '/amu/community'
-      path: '/community'
-      fullPath: '/amu/community'
-      preLoaderRoute: typeof AmuCommunityImport
-      parentRoute: typeof AmuRouteImport
-    }
     '/amu/my-course': {
       id: '/amu/my-course'
       path: '/my-course'
       fullPath: '/amu/my-course'
       preLoaderRoute: typeof AmuMyCourseImport
-      parentRoute: typeof AmuRouteImport
-    }
-    '/amu/suggestion': {
-      id: '/amu/suggestion'
-      path: '/suggestion'
-      fullPath: '/amu/suggestion'
-      preLoaderRoute: typeof AmuSuggestionImport
       parentRoute: typeof AmuRouteImport
     }
     '/auth/signin': {
@@ -151,13 +95,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof rootRoute
     }
-    '/course/$course-id': {
-      id: '/course/$course-id'
-      path: '/$course-id'
-      fullPath: '/course/$course-id'
-      preLoaderRoute: typeof CourseCourseIdImport
-      parentRoute: typeof CourseRouteImport
-    }
     '/amu/': {
       id: '/amu/'
       path: '/'
@@ -165,29 +102,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AmuIndexImport
       parentRoute: typeof AmuRouteImport
     }
-    '/course/': {
-      id: '/course/'
-      path: '/'
-      fullPath: '/course/'
-      preLoaderRoute: typeof CourseIndexImport
-      parentRoute: typeof CourseRouteImport
-    }
   }
 }
 
 // Create and export the route tree
 
 interface AmuRouteRouteChildren {
-  AmuCommunityRoute: typeof AmuCommunityRoute
   AmuMyCourseRoute: typeof AmuMyCourseRoute
-  AmuSuggestionRoute: typeof AmuSuggestionRoute
   AmuIndexRoute: typeof AmuIndexRoute
 }
 
 const AmuRouteRouteChildren: AmuRouteRouteChildren = {
-  AmuCommunityRoute: AmuCommunityRoute,
   AmuMyCourseRoute: AmuMyCourseRoute,
-  AmuSuggestionRoute: AmuSuggestionRoute,
   AmuIndexRoute: AmuIndexRoute,
 }
 
@@ -195,59 +121,31 @@ const AmuRouteRouteWithChildren = AmuRouteRoute._addFileChildren(
   AmuRouteRouteChildren,
 )
 
-interface CourseRouteRouteChildren {
-  CourseCourseIdRoute: typeof CourseCourseIdRoute
-  CourseIndexRoute: typeof CourseIndexRoute
-}
-
-const CourseRouteRouteChildren: CourseRouteRouteChildren = {
-  CourseCourseIdRoute: CourseCourseIdRoute,
-  CourseIndexRoute: CourseIndexRoute,
-}
-
-const CourseRouteRouteWithChildren = CourseRouteRoute._addFileChildren(
-  CourseRouteRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/amu': typeof AmuRouteRouteWithChildren
-  '/course': typeof CourseRouteRouteWithChildren
-  '/amu/community': typeof AmuCommunityRoute
   '/amu/my-course': typeof AmuMyCourseRoute
-  '/amu/suggestion': typeof AmuSuggestionRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/course/$course-id': typeof CourseCourseIdRoute
   '/amu/': typeof AmuIndexRoute
-  '/course/': typeof CourseIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/amu/community': typeof AmuCommunityRoute
   '/amu/my-course': typeof AmuMyCourseRoute
-  '/amu/suggestion': typeof AmuSuggestionRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/course/$course-id': typeof CourseCourseIdRoute
   '/amu': typeof AmuIndexRoute
-  '/course': typeof CourseIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/amu': typeof AmuRouteRouteWithChildren
-  '/course': typeof CourseRouteRouteWithChildren
-  '/amu/community': typeof AmuCommunityRoute
   '/amu/my-course': typeof AmuMyCourseRoute
-  '/amu/suggestion': typeof AmuSuggestionRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/course/$course-id': typeof CourseCourseIdRoute
   '/amu/': typeof AmuIndexRoute
-  '/course/': typeof CourseIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -255,46 +153,26 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/amu'
-    | '/course'
-    | '/amu/community'
     | '/amu/my-course'
-    | '/amu/suggestion'
     | '/auth/signin'
     | '/auth/signup'
-    | '/course/$course-id'
     | '/amu/'
-    | '/course/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/amu/community'
-    | '/amu/my-course'
-    | '/amu/suggestion'
-    | '/auth/signin'
-    | '/auth/signup'
-    | '/course/$course-id'
-    | '/amu'
-    | '/course'
+  to: '/' | '/amu/my-course' | '/auth/signin' | '/auth/signup' | '/amu'
   id:
     | '__root__'
     | '/'
     | '/amu'
-    | '/course'
-    | '/amu/community'
     | '/amu/my-course'
-    | '/amu/suggestion'
     | '/auth/signin'
     | '/auth/signup'
-    | '/course/$course-id'
     | '/amu/'
-    | '/course/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AmuRouteRoute: typeof AmuRouteRouteWithChildren
-  CourseRouteRoute: typeof CourseRouteRouteWithChildren
   AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
 }
@@ -302,7 +180,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AmuRouteRoute: AmuRouteRouteWithChildren,
-  CourseRouteRoute: CourseRouteRouteWithChildren,
   AuthSigninRoute: AuthSigninRoute,
   AuthSignupRoute: AuthSignupRoute,
 }
@@ -319,7 +196,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/amu",
-        "/course",
         "/auth/signin",
         "/auth/signup"
       ]
@@ -330,29 +206,12 @@ export const routeTree = rootRoute
     "/amu": {
       "filePath": "amu/route.tsx",
       "children": [
-        "/amu/community",
         "/amu/my-course",
-        "/amu/suggestion",
         "/amu/"
       ]
     },
-    "/course": {
-      "filePath": "course/route.tsx",
-      "children": [
-        "/course/$course-id",
-        "/course/"
-      ]
-    },
-    "/amu/community": {
-      "filePath": "amu/community.tsx",
-      "parent": "/amu"
-    },
     "/amu/my-course": {
       "filePath": "amu/my-course.tsx",
-      "parent": "/amu"
-    },
-    "/amu/suggestion": {
-      "filePath": "amu/suggestion.tsx",
       "parent": "/amu"
     },
     "/auth/signin": {
@@ -361,17 +220,9 @@ export const routeTree = rootRoute
     "/auth/signup": {
       "filePath": "auth/signup.tsx"
     },
-    "/course/$course-id": {
-      "filePath": "course/$course-id.tsx",
-      "parent": "/course"
-    },
     "/amu/": {
       "filePath": "amu/index.tsx",
       "parent": "/amu"
-    },
-    "/course/": {
-      "filePath": "course/index.tsx",
-      "parent": "/course"
     }
   }
 }

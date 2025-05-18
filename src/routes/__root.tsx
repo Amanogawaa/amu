@@ -1,15 +1,21 @@
-import NotFoundPage from "@/components/not-found";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
-import React from "react";
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-export const Route = createRootRoute({
-  errorComponent: () => {
-    <NotFoundPage />;
-  },
+import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
+
+import type { QueryClient } from '@tanstack/react-query'
+
+interface MyRouterContext {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <React.Fragment>
+    <>
       <Outlet />
-      {/* <TanStackRouterDevtools /> */}
-    </React.Fragment>
+      <TanStackRouterDevtools />
+
+      <TanStackQueryLayout />
+    </>
   ),
-});
+})

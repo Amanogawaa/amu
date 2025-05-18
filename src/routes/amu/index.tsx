@@ -1,21 +1,21 @@
-import { Input } from "@/components/ui/input";
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { createFileRoute } from "@tanstack/react-router";
-import { SendIcon } from "lucide-react";
-import { useId } from "react";
+} from '@/components/ui/select'
+import { createFileRoute } from '@tanstack/react-router'
+import { SendIcon } from 'lucide-react'
+import { useId } from 'react'
 
-export const Route = createFileRoute("/amu/")({
+export const Route = createFileRoute('/amu/')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const id = useId();
+  const id = useId()
   return (
     <main className="flex flex-col items-center justify-center w-full h-full">
       <div className="flex flex-col items-center justify-center w-full h-full gap-2 p-4 border border-muted">
@@ -53,5 +53,5 @@ function RouteComponent() {
         </div>
       </div>
     </main>
-  );
+  )
 }

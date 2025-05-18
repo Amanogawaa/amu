@@ -9,6 +9,7 @@ import {
   TimelineTitle,
 } from "@/components/ui/timeline";
 import { createFileRoute } from "@tanstack/react-router";
+import { Clock } from "lucide-react";
 
 export const Route = createFileRoute("/course/")({
   component: RouteComponent,
@@ -17,37 +18,34 @@ export const Route = createFileRoute("/course/")({
 const items = [
   {
     id: 1,
-    date: "15 minutes ago",
-    title: "Hannah Kandell",
-    action: "opened a new issue",
-    description:
-      "I'm having trouble with the new component library. It's not rendering properly.",
+    duration: "20 minutes",
+    course: "Web Development",
+    chapterNumber: 1,
+    chapterTitle: "Introduction to HTML",
     image: "/avatar-40-01.jpg",
   },
   {
     id: 2,
-    date: "10 minutes ago",
-    title: "Chris Tompson",
-    action: "commented on",
-    description:
-      "Hey Hannah, I'm having trouble with the new component library. It's not rendering properly.",
+    duration: "30 minutes",
+    course: "Web Development",
+    chapterNumber: 2,
+    chapterTitle: "Styling with CSS",
     image: "/avatar-40-02.jpg",
   },
   {
     id: 3,
-    date: "5 minutes ago",
-    title: "Emma Davis",
-    action: "assigned you to",
-    description:
-      "The new component library is not rendering properly. Can you take a look?",
+    duration: "25 minutes",
+    course: "JavaScript Basics",
+    chapterNumber: 1,
+    chapterTitle: "Variables and Data Types",
     image: "/avatar-40-03.jpg",
   },
   {
     id: 4,
-    date: "2 minutes ago",
-    title: "Alex Morgan",
-    action: "closed the issue",
-    description: "The issue has been fixed. Please review the changes.",
+    duration: "35 minutes",
+    course: "JavaScript Basics",
+    chapterNumber: 2,
+    chapterTitle: "Functions and Scope",
     image: "/avatar-40-05.jpg",
   },
 ];
@@ -64,23 +62,25 @@ function RouteComponent() {
           >
             <TimelineHeader>
               <TimelineSeparator className="group-data-[orientation=vertical]/timeline:-left-7 group-data-[orientation=vertical]/timeline:h-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=vertical]/timeline:translate-y-6.5" />
-              <TimelineTitle className="mt-0.5">
-                {item.title}{" "}
-                <span className="text-muted-foreground text-sm font-normal">
-                  {item.action}
+              <TimelineTitle className="mt-0.5 inline-flex justify-between items-center w-full">
+                {item.chapterTitle}{" "}
+                <span className="text-muted-foreground text-sm font-normal inline-flex items-center gap-0.5">
+                  <Clock className="w-4 h-4" />
+                  {item.duration}
                 </span>
               </TimelineTitle>
               <TimelineIndicator className="bg-primary/10 group-data-completed/timeline-item:bg-primary group-data-completed/timeline-item:text-primary-foreground flex size-6 items-center justify-center border-none group-data-[orientation=vertical]/timeline:-left-7">
-                <img
+                {/* <img
                   src={item.image}
                   alt={item.title}
                   className="size-6 rounded-full"
-                />
+                /> */}
+                {item.id}
               </TimelineIndicator>
             </TimelineHeader>
             <TimelineContent className="text-foreground mt-2 rounded-lg border px-4 py-3">
-              {item.description}
-              <TimelineDate className="mt-1 mb-0">{item.date}</TimelineDate>
+              {item.chapterTitle}
+              <TimelineDate className="mt-1 mb-0">{item.duration}</TimelineDate>
             </TimelineContent>
           </TimelineItem>
         ))}
