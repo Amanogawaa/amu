@@ -13,9 +13,7 @@ import reportWebVitals from './reportWebVitals.ts'
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {
-    ...TanStackQueryProvider.getContext(),
-  },
+  context: TanStackQueryProvider.getContext(),
   defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
