@@ -8,69 +8,36 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as CourseRouteImport } from './routes/course/route'
-import { Route as AmuRouteImport } from './routes/amu/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as CourseIndexImport } from './routes/course/index'
-import { Route as AmuIndexImport } from './routes/amu/index'
-import { Route as AuthSignupImport } from './routes/auth/signup'
-import { Route as AuthSigninImport } from './routes/auth/signin'
-import { Route as AmuMyCourseImport } from './routes/amu/my-course'
-
-// Create/Update Routes
-
-const CourseRouteRoute = CourseRouteImport.update({
-  id: '/course',
-  path: '/course',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AmuRouteRoute = AmuRouteImport.update({
-  id: '/amu',
-  path: '/amu',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 
-const CourseIndexRoute = CourseIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => CourseRouteRoute,
-} as any)
-
-const AmuIndexRoute = AmuIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AmuRouteRoute,
-} as any)
-
-const AuthSignupRoute = AuthSignupImport.update({
-  id: '/auth/signup',
-  path: '/auth/signup',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthSigninRoute = AuthSigninImport.update({
-  id: '/auth/signin',
-  path: '/auth/signin',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AmuMyCourseRoute = AmuMyCourseImport.update({
-  id: '/my-course',
-  path: '/my-course',
-  getParentRoute: () => AmuRouteRoute,
-} as any)
-
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/'
+  id: '__root__' | '/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
@@ -78,220 +45,15 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/amu': {
-      id: '/amu'
-      path: '/amu'
-      fullPath: '/amu'
-      preLoaderRoute: typeof AmuRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/course': {
-      id: '/course'
-      path: '/course'
-      fullPath: '/course'
-      preLoaderRoute: typeof CourseRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/amu/my-course': {
-      id: '/amu/my-course'
-      path: '/my-course'
-      fullPath: '/amu/my-course'
-      preLoaderRoute: typeof AmuMyCourseImport
-      parentRoute: typeof AmuRouteImport
-    }
-    '/auth/signin': {
-      id: '/auth/signin'
-      path: '/auth/signin'
-      fullPath: '/auth/signin'
-      preLoaderRoute: typeof AuthSigninImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/signup': {
-      id: '/auth/signup'
-      path: '/auth/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupImport
-      parentRoute: typeof rootRoute
-    }
-    '/amu/': {
-      id: '/amu/'
-      path: '/'
-      fullPath: '/amu/'
-      preLoaderRoute: typeof AmuIndexImport
-      parentRoute: typeof AmuRouteImport
-    }
-    '/course/': {
-      id: '/course/'
-      path: '/'
-      fullPath: '/course/'
-      preLoaderRoute: typeof CourseIndexImport
-      parentRoute: typeof CourseRouteImport
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
-}
-
-// Create and export the route tree
-
-interface AmuRouteRouteChildren {
-  AmuMyCourseRoute: typeof AmuMyCourseRoute
-  AmuIndexRoute: typeof AmuIndexRoute
-}
-
-const AmuRouteRouteChildren: AmuRouteRouteChildren = {
-  AmuMyCourseRoute: AmuMyCourseRoute,
-  AmuIndexRoute: AmuIndexRoute,
-}
-
-const AmuRouteRouteWithChildren = AmuRouteRoute._addFileChildren(
-  AmuRouteRouteChildren,
-)
-
-interface CourseRouteRouteChildren {
-  CourseIndexRoute: typeof CourseIndexRoute
-}
-
-const CourseRouteRouteChildren: CourseRouteRouteChildren = {
-  CourseIndexRoute: CourseIndexRoute,
-}
-
-const CourseRouteRouteWithChildren = CourseRouteRoute._addFileChildren(
-  CourseRouteRouteChildren,
-)
-
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/amu': typeof AmuRouteRouteWithChildren
-  '/course': typeof CourseRouteRouteWithChildren
-  '/amu/my-course': typeof AmuMyCourseRoute
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
-  '/amu/': typeof AmuIndexRoute
-  '/course/': typeof CourseIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/amu/my-course': typeof AmuMyCourseRoute
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
-  '/amu': typeof AmuIndexRoute
-  '/course': typeof CourseIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/amu': typeof AmuRouteRouteWithChildren
-  '/course': typeof CourseRouteRouteWithChildren
-  '/amu/my-course': typeof AmuMyCourseRoute
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
-  '/amu/': typeof AmuIndexRoute
-  '/course/': typeof CourseIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/amu'
-    | '/course'
-    | '/amu/my-course'
-    | '/auth/signin'
-    | '/auth/signup'
-    | '/amu/'
-    | '/course/'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/amu/my-course'
-    | '/auth/signin'
-    | '/auth/signup'
-    | '/amu'
-    | '/course'
-  id:
-    | '__root__'
-    | '/'
-    | '/amu'
-    | '/course'
-    | '/amu/my-course'
-    | '/auth/signin'
-    | '/auth/signup'
-    | '/amu/'
-    | '/course/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AmuRouteRoute: typeof AmuRouteRouteWithChildren
-  CourseRouteRoute: typeof CourseRouteRouteWithChildren
-  AuthSigninRoute: typeof AuthSigninRoute
-  AuthSignupRoute: typeof AuthSignupRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AmuRouteRoute: AmuRouteRouteWithChildren,
-  CourseRouteRoute: CourseRouteRouteWithChildren,
-  AuthSigninRoute: AuthSigninRoute,
-  AuthSignupRoute: AuthSignupRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/amu",
-        "/course",
-        "/auth/signin",
-        "/auth/signup"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/amu": {
-      "filePath": "amu/route.tsx",
-      "children": [
-        "/amu/my-course",
-        "/amu/"
-      ]
-    },
-    "/course": {
-      "filePath": "course/route.tsx",
-      "children": [
-        "/course/"
-      ]
-    },
-    "/amu/my-course": {
-      "filePath": "amu/my-course.tsx",
-      "parent": "/amu"
-    },
-    "/auth/signin": {
-      "filePath": "auth/signin.tsx"
-    },
-    "/auth/signup": {
-      "filePath": "auth/signup.tsx"
-    },
-    "/amu/": {
-      "filePath": "amu/index.tsx",
-      "parent": "/amu"
-    },
-    "/course/": {
-      "filePath": "course/index.tsx",
-      "parent": "/course"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
