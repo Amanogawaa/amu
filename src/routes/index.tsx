@@ -34,7 +34,7 @@ function Home() {
           more!{" "}
         </p>
         <Link
-          to="/"
+          to="/amu/home"
           className=" bg-Evergreen_Dusk rounded-2xl cursor-pointer py-3 px-5 text-sm font-inter font-semibold text-white hover:bg-custom_foreground/80 hover:ease-in"
         >
           get started

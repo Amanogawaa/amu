@@ -10,6 +10,7 @@ import {
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./../global.css";
+import { DefaultCatchBoundary } from "@/components/default-catch-boundary";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,13 @@ export const Route = createRootRoute({
       </div>
     </div>
   ),
+  errorComponent: (props) => {
+    return (
+      <RootDocument>
+        <DefaultCatchBoundary {...props} />
+      </RootDocument>
+    );
+  },
 });
 
 function RootComponent() {
@@ -63,7 +71,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="w-full h-screen">
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
