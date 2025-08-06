@@ -1,16 +1,16 @@
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Mail, Lock } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
-import { Label } from '../ui/label'
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Mail, Lock } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Label } from "../ui/label";
 
 export function SigninForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <header className=" mx-auto flex w-full max-w-7xl items-center justify-between px-14 py-5"></header>
       <div className="mx-auto w-[350px] gap-6">
         <h1 className="mb-3 text-center text-4xl font-satoshi font-semibold text-custom_foreground">
@@ -59,7 +59,7 @@ export function SigninForm({
             don't have an account?
           </p>
           <Link
-            to="/auth/signup"
+            to="/signup"
             className="hover:underline cursor-pointer text-sm"
             aria-label="sign up for new accounts"
           >
@@ -68,5 +68,5 @@ export function SigninForm({
         </div>
       </div>
     </div>
-  )
+  );
 }

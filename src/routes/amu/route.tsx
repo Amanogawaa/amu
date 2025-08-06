@@ -1,11 +1,11 @@
-import { AppSidebar } from '@/components/layout.tsx/app-sidebar'
-import { SiteHeader } from '@/components/layout.tsx/site-header'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { SiteHeader } from "@/components/layout/app-header";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/amu')({
+export const Route = createFileRoute("/amu")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -17,5 +17,5 @@ function RouteComponent() {
       </SidebarInset>
       {/* <TanStackRouterDevtools /> */}
     </SidebarProvider>
-  )
+  );
 }
