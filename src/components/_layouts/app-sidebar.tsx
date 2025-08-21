@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Cog, Library, MessageCircleQuestionIcon } from "lucide-react";
 import { NavMain } from "./app-main";
+import SignOutButton from "./app-user";
 
 const data = {
   user: {
@@ -39,7 +40,10 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  user,
+  ...props
+}: { user: object } & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -58,7 +62,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
-      <SidebarFooter>{/* <SignOutButton /> */}</SidebarFooter>
+      <SidebarFooter>
+        <SignOutButton user={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

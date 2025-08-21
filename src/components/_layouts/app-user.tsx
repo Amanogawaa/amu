@@ -1,23 +1,16 @@
-// "use client";
+import { signout } from "./action";
 
-// import { useRouter } from "next/navigation";
+export default async function SignOutButton({ user }: { user: object }) {
+  console.log(user);
 
-// export default function SignOutButton() {
-//   const router = useRouter();
-//   return (
-//     <>
-//       {isAuthenticated && (
-//         <button
-//           className="bg-slate-200 dark:bg-slate-800 text-foreground rounded-md px-2 py-1"
-//           onClick={() =>
-//             void signOut().then(() => {
-//               router.push("/signin");
-//             })
-//           }
-//         >
-//           Sign out hee
-//         </button>
-//       )}
-//     </>
-//   );
-// }
+  return (
+    <>
+      <button
+        onClick={signout}
+        className="bg-slate-200 dark:bg-slate-800 text-foreground rounded-md px-2 py-1"
+      >
+        Sign out hee
+      </button>
+    </>
+  );
+}
