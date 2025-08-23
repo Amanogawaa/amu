@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
       .where(eq(lessons.chapterId, chapterId))
       .orderBy(lessons.order);
 
-    // Fetch resources for each lesson
     const lessonsWithResources = [];
     for (const lesson of chapterLessons) {
       const resources = await db

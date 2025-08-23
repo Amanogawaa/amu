@@ -1,83 +1,117 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import {
+  generateChaptersPrompt,
+  generateCoursePrompt,
+} from "@/config/ai-templates";
 import { db } from "@/db";
-import { courses } from "@/db/schema";
+import { chapters, courses } from "@/db/schema";
+import { SimpleQueue } from "@/utils/simple-queue";
+import { CHAPTERSCHEMA, COURSESCHEMA } from "@/utils/types";
+import { NextRequest, NextResponse } from "next/server";
 
-const courseSchema = z.object({
-  course: z.object({
-    name: z.string(),
-    subtitle: z.string().optional(),
-    description: z.string(),
-    category: z.string(),
-    topic: z.string(),
-    level: z.string(),
-    language: z.string().default("en"),
-    prerequisites: z.string().optional(),
-    learningOutcomes: z.array(z.string()),
-    duration: z.string(),
-    noOfChapters: z.number(),
-    publish: z.boolean(),
-    includeCertificate: z.boolean(),
-    courseBanner: z.string(),
-  }),
-});
+// export async function POST(request: NextRequest) {
+//   try {
+//     const body = await request.json();
+//     const { category, topic, level, duration, noOfChapters, language } = body;
 
-const generateCoursePrompt = (args: {
-  category: string;
-  topic: string;
-  level: string;
-  duration: string;
-  noOfChapters: number;
-  language: string;
-}) => `You are a course design expert. Generate course metadata (overview information only) based on the specifications below. Do NOT generate chapter content - only the course overview.
+//     if (!process.env.GROQ_API_KEY) {
+//       return NextResponse.json(
+//         { error: "Missing GROQ_API_KEY environment variable" },
+//         { status: 500 }
+//       );
+//     }
 
-**Input Specifications**:
-- Category: ${args.category}
-- Topic: ${args.topic}
-- Level: ${args.level} (use exactly: "beginner", "intermediate", or "advanced")
-- Total Duration: ${args.duration}
-- Number of Chapters: ${args.noOfChapters}
-- Language: ${args.language}
+//     const coursePrompt = generateCoursePrompt({
+//       category,
+//       topic,
+//       level,
+//       duration,
+//       noOfChapters,
+//       language,
+//     });
 
-**Required JSON Structure**:
-Return a JSON object with this exact structure:
-{
-  "course": {
-    "name": "Course Name Here",
-    "subtitle": "Optional subtitle",
-    "description": "Course description",
-    "category": "${args.category}",
-    "topic": "${args.topic}",
-    "level": "${args.level}",
-    "language": "${args.language}",
-    "prerequisites": "Prerequisites text",
-    "learningOutcomes": ["outcome1", "outcome2", "..."],
-    "duration": "${args.duration}",
-    "noOfChapters": ${args.noOfChapters},
-    "publish": false,
-    "includeCertificate": false,
-    "courseBanner": "/images/banners/${args.topic
-      .toLowerCase()
-      .replace(/\s+/g, "-")}-banner.jpg"
-  }
-}
+//     const response = await fetch(
+//       "https://api.groq.com/openai/v1/chat/completions",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+//         },
+//         body: JSON.stringify({
+//           messages: [
+//             {
+//               role: "user",
+//               content: coursePrompt,
+//             },
+//           ],
+//           model: "llama-3.1-8b-instant",
+//           response_format: { type: "json_object" },
+//           temperature: 0.7,
+//         }),
+//       }
+//     );
 
-**Instructions**:
-- Generate a compelling course name (concise, professional)
-- Create an optional subtitle (brief, catchy tagline)
-- Write a comprehensive description (200-300 words) covering what students will learn
-- List 5-8 specific learning outcomes (what students will be able to do after completion)
-- Include prerequisites as a string (e.g., "Basic understanding of programming concepts" or "None" for beginners)
-- Set publish to true for intermediate/advanced courses, false for beginner courses
-- Set includeCertificate to true for courses longer than 4 hours
-- Ensure all content is appropriate for the specified level and topic
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       throw new Error(
+//         `Groq API error: ${errorData.error?.message || response.statusText}`
+//       );
+//     }
 
-**Level Guidelines**:
-- beginner: Assumes no prior knowledge, focuses on fundamentals
-- intermediate: Assumes basic knowledge, builds practical skills
-- advanced: Assumes solid foundation, covers complex topics and best practices
+//     const data = await response.json();
+//     const generatedContent = data.choices[0].message.content;
+//     const parsed = JSON.parse(generatedContent);
 
-Return only the course metadata as a JSON object wrapped in {"course": {...}}.`;
+//     const result = COURSESCHEMA.parse(parsed);
+
+//     result.course.category = category;
+//     result.course.topic = topic;
+//     result.course.level = level;
+//     result.course.duration = duration;
+//     result.course.noOfChapters = noOfChapters;
+//     result.course.language = language;
+
+//     const [insertedCourse] = await db
+//       .insert(courses)
+//       .values({
+//         name: result.course.name,
+//         subtitle: result.course.subtitle,
+//         description: result.course.description,
+//         category: result.course.category,
+//         topic: result.course.topic,
+//         level: result.course.level,
+//         language: result.course.language,
+//         prerequisites: result.course.prerequisites,
+//         learningOutcomes: JSON.stringify(result.course.learningOutcomes),
+//         duration: result.course.duration,
+//         noOfChapters: result.course.noOfChapters,
+//         publish: result.course.publish,
+//         includeCertificate: result.course.includeCertificate,
+//         bannerUrl: result.course.courseBanner,
+//       })
+//       .returning();
+
+//     console.log("Course stored with ID:", insertedCourse.id);
+
+//     return NextResponse.json({
+//       success: true,
+//       course: {
+//         ...insertedCourse,
+//         learningOutcomes: result.course.learningOutcomes,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Course generation error:", error);
+//     return NextResponse.json(
+//       {
+//         error: `Failed to generate course: ${
+//           error instanceof Error ? error.message : "Unknown error"
+//         }`,
+//       },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,94 +125,97 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Starting course generation with args:", body);
+    const coureData = await SimpleQueue.add("", async () => {
+      const coursePrompt = generateCoursePrompt({
+        category,
+        topic,
+        level,
+        duration,
+        noOfChapters,
+        language,
+      });
 
-    const coursePrompt = generateCoursePrompt({
-      category,
-      topic,
-      level,
-      duration,
-      noOfChapters,
-      language,
+      const response = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: coursePrompt }],
+            model: "meta-llama/llama-4-maverick-17b-128e-instruct",
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        throw new Error(
+          `Groq API error: ${errorData.error?.message || response.statusText}`
+        );
+      }
+
+      return response.json();
     });
 
-    console.log("Calling Groq API...");
+    console.log(coureData.choice);
+    // const generateContent = coureData.choice[0].message.content;
+    // const parsed = JSON.parse(generateContent);
+    // const result = COURSESCHEMA.parse(parsed);
 
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "user",
-              content: coursePrompt,
-            },
-          ],
-          model: "llama-3.1-8b-instant",
-          response_format: { type: "json_object" },
-          temperature: 0.7,
-        }),
-      }
-    );
+    // result.course.category = category;
+    // result.course.topic = topic;
+    // result.course.level = level;
+    // result.course.duration = duration;
+    // result.course.noOfChapters = noOfChapters;
+    // result.course.language = language;
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `Groq API error: ${errorData.error?.message || response.statusText}`
-      );
-    }
+    // const [insertedCourse] = await db
+    //   .insert(courses)
+    //   .values({
+    //     name: result.course.name,
+    //     subtitle: result.course.subtitle,
+    //     description: result.course.description,
+    //     category: result.course.category,
+    //     topic: result.course.topic,
+    //     level: result.course.level,
+    //     language: result.course.language,
+    //     prerequisites: result.course.prerequisites,
+    //     learningOutcomes: JSON.stringify(result.course.learningOutcomes),
+    //     duration: result.course.duration,
+    //     noOfChapters: result.course.noOfChapters,
+    //     publish: result.course.publish,
+    //     includeCertificate: result.course.includeCertificate,
+    //     bannerUrl: result.course.courseBanner,
+    //   })
+    //   .returning();
 
-    const data = await response.json();
-    const generatedContent = data.choices[0].message.content;
-    const parsed = JSON.parse(generatedContent);
-
-    console.log("Groq API response received:", JSON.stringify(parsed, null, 2));
-
-    // Validate with Zod
-    const result = courseSchema.parse(parsed);
-
-    // Ensure consistency with input parameters
-    result.course.category = category;
-    result.course.topic = topic;
-    result.course.level = level;
-    result.course.duration = duration;
-    result.course.noOfChapters = noOfChapters;
-    result.course.language = language;
-
-    // Store in database using Drizzle
-    const [insertedCourse] = await db
-      .insert(courses)
-      .values({
-        name: result.course.name,
-        subtitle: result.course.subtitle,
-        description: result.course.description,
-        category: result.course.category,
-        topic: result.course.topic,
-        level: result.course.level,
-        language: result.course.language,
-        prerequisites: result.course.prerequisites,
-        learningOutcomes: JSON.stringify(result.course.learningOutcomes),
-        duration: result.course.duration,
-        noOfChapters: result.course.noOfChapters,
-        publish: result.course.publish,
-        includeCertificate: result.course.includeCertificate,
-        bannerUrl: result.course.courseBanner,
-      })
-      .returning();
-
-    console.log("Course stored with ID:", insertedCourse.id);
+    // generateChaptersInBackground(insertedCourse.id, {
+    //   courseId: insertedCourse.id,
+    //   title: result.course.name,
+    //   description: result.course.description,
+    //   learningOutcomes: result.course.learningOutcomes,
+    //   duration: result.course.duration,
+    //   noOfChapters: result.course.noOfChapters,
+    //   level: result.course.level,
+    //   language: result.course.language,
+    // }).catch((error) => {
+    //   console.error("Background chapter generation failed:", error);
+    //   // Could store error in database for user to see
+    // });
 
     return NextResponse.json({
-      success: true,
-      course: {
-        ...insertedCourse,
-        learningOutcomes: result.course.learningOutcomes, // Return as array
-      },
+      succes: true,
+      // course: {
+      //   ...insertedCourse,
+      //   learningOutcomes: result.course.learningOutcomes,
+      // },
+      chaptersGenerating: true,
     });
   } catch (error) {
     console.error("Course generation error:", error);
@@ -190,5 +227,59 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
+  }
+}
+
+async function generateChaptersInBackground(courseId: string, courseData: any) {
+  try {
+    // Use queue to prevent multiple simultaneous generations for same course
+    await SimpleQueue.add(`chapters_${courseId}`, async () => {
+      const chapterPrompt = generateChaptersPrompt(courseData);
+
+      const response = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: chapterPrompt }],
+            model: "meta-llama/llama-4-maverick-17b-128e-instruct",
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Groq API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const generatedContent = data.choices[0].message.content;
+      const parsed = JSON.parse(generatedContent);
+      const result = CHAPTERSCHEMA.parse(parsed);
+
+      // Store chapters
+      for (const chapter of result.chapters) {
+        await db.insert(chapters).values({
+          courseId: courseId,
+          title: chapter.title,
+          description: chapter.description,
+          estimatedDuration: chapter.estimatedDuration,
+          order: chapter.chapterId,
+        });
+      }
+
+      console.log(
+        `Generated ${result.chapters.length} chapters for course ${courseId}`
+      );
+      return result.chapters;
+    });
+  } catch (error) {
+    console.error(`Failed to generate chapters for course ${courseId}:`, error);
+    // You could store this error in database to show user later
   }
 }

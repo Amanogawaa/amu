@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/_layouts/app-header";
 import { AppSidebar } from "@/components/_layouts/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { createClient } from "@/utils/supabase/server";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Amu",

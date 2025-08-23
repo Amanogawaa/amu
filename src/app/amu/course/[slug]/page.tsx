@@ -1,58 +1,17 @@
-// Updated Page Component with Lesson Generation
 "use client";
 
+import { Chapter, Course } from "@/utils/types";
 import {
   Award,
   BookOpen,
   CheckCircle,
   Clock,
+  Loader2,
   Play,
   Plus,
-  Loader2,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface Lesson {
-  id: string;
-  chapterId: string;
-  title: string;
-  type: string;
-  description: string;
-  duration: string;
-  videoUrl?: string;
-  content?: string;
-  order: number;
-}
-
-interface Chapter {
-  id: string;
-  courseId: string;
-  title: string;
-  description: string;
-  estimatedDuration: string;
-  order: number;
-  lessons: Lesson[];
-}
-
-interface Course {
-  id: string;
-  name: string;
-  subtitle?: string;
-  description: string;
-  category: string;
-  topic: string;
-  level: string;
-  language: string;
-  prerequisites?: string;
-  learningOutcomes: string;
-  duration: string;
-  noOfChapters: number;
-  publish: boolean;
-  includeCertificate: boolean;
-  bannerUrl?: string;
-  lastUpdated: string;
-}
 
 export default function Page() {
   const [courseData, setCourseData] = useState<Course | null>(null);
@@ -61,7 +20,7 @@ export default function Page() {
   const [generatingChapters, setGeneratingChapters] = useState(false);
   const [generatingLessons, setGeneratingLessons] = useState<string | null>(
     null
-  ); // Track which chapter is generating lessons
+  );
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
   const courseId = params.slug as string;
@@ -72,7 +31,6 @@ export default function Page() {
       try {
         setLoading(true);
 
-        // Fetch course data
         const courseResponse = await fetch(`/api/course?id=${courseId}`);
         if (!courseResponse.ok) {
           throw new Error("Failed to fetch course");
@@ -80,7 +38,6 @@ export default function Page() {
         const courseData = await courseResponse.json();
         setCourseData(courseData.course);
 
-        // Fetch chapters data
         const chaptersResponse = await fetch(
           `/api/chapter?courseId=${courseId}`
         );
@@ -127,7 +84,6 @@ export default function Page() {
       const data = await response.json();
       console.log("Generated chapters:", data.chapters);
 
-      // Refresh chapters data
       const chaptersResponse = await fetch(`/api/chapter?courseId=${courseId}`);
       if (chaptersResponse.ok) {
         const chaptersData = await chaptersResponse.json();
@@ -141,7 +97,6 @@ export default function Page() {
     }
   };
 
-  // New function to handle lesson generation
   const handleGenerateLessons = async (chapter: Chapter) => {
     if (!courseData) return;
 
@@ -170,7 +125,6 @@ export default function Page() {
       const data = await response.json();
       console.log("Generated lessons:", data.lessons);
 
-      // Refresh lessons for this specific chapter
       await fetchLessonsForChapter(chapter.id);
     } catch (error) {
       console.error("Error generating lessons:", error);
@@ -180,7 +134,6 @@ export default function Page() {
     }
   };
 
-  // Function to fetch lessons for a specific chapter
   const fetchLessonsForChapter = async (chapterId: string) => {
     try {
       const response = await fetch(`/api/lessons?chapterId=${chapterId}`);

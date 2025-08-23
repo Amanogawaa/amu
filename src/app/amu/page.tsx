@@ -19,38 +19,59 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const courseData = {
+    category: "Programming",
+    topic: "javascript classes",
+    level: "beginner",
+    duration: "4 hours",
+    noOfChapters: 5,
+    language: "en",
+  };
+
+  // const handleSubmit = async () => {
+  //   if (!topic.trim() || !level) return;
+
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch("/api/course/generate", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         category: "Programming",
+  //         topic: topic.trim(),
+  //         level,
+  //         duration: "4 hours",
+  //         noOfChapters: 5,
+  //         language: "en",
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to generate course");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("Generated course:", data.course);
+  //     router.push(`/amu/course/${data.course.id}`);
+  //   } catch (error) {
+  //     console.error("Error generating course:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async () => {
-    if (!topic.trim() || !level) return;
+    const response = await fetch("/api/course/generate", {
+      method: "POST",
+      body: JSON.stringify(courseData),
+    });
 
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/course/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category: "Programming", // You might want to make this dynamic
-          topic: topic.trim(),
-          level,
-          duration: "4 hours", // Default - you could make this configurable
-          noOfChapters: 5, // Default - you could make this configurable
-          language: "en",
-        }),
-      });
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Failed to generate course");
-      }
+    console.log(data);
 
-      const data = await response.json();
-      console.log("Generated course:", data.course);
-      // Handle success - redirect to course page or show success message
-      router.push(`/amu/course/${data.course.id}`);
-    } catch (error) {
-      console.error("Error generating course:", error);
-      // Handle error - show error message
-    } finally {
-      setIsLoading(false);
-    }
+    // Navigate immediately - chapters will load automatically
+    // router.push(`/amu/course/${data.course.id}`);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

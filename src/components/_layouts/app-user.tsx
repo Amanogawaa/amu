@@ -1,8 +1,6 @@
 import { signout } from "./action";
 
 export default async function SignOutButton({ user }: { user: object }) {
-  console.log(user);
-
   return (
     <>
       <button

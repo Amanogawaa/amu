@@ -372,54 +372,51 @@ export default function LessonPage() {
 
   // You might need to get the course ID from the parent route
   // Let's get it from the current path
-  const pathSegments = window.location.pathname.split("/");
-  const actualCourseId = pathSegments[2]; // /course/[courseId]/lesson/[lessonId]
+  //   const pathSegments = window.location.pathname.split("/");
+  //   const actualCourseId = pathSegments[2]; // /course/[courseId]/lesson/[lessonId]
 
-  useEffect(() => {
-    async function fetchLessonData() {
-      try {
-        setLoading(true);
+  //   useEffect(() => {
+  //     async function fetchLessonData() {
+  //       try {
+  //         // setLoading(true);
+  //         // // Fetch lesson details
+  //         // const lessonResponse = await fetch(`/api/lesson?id=${lessonId}`);
+  //         // if (!lessonResponse.ok) {
+  //         //   throw new Error("Failed to fetch lesson");
+  //         // }
+  //         // const lessonData = await lessonResponse.json();
+  //         // setLesson(lessonData.lesson);
+  //         // // Fetch chapter details using the lesson's chapterId
+  //         // if (lessonData.lesson.chapterId) {
+  //         //   const chapterResponse = await fetch(
+  //         //     `/api/chapter?id=${lessonData.lesson.chapterId}`
+  //         //   );
+  //         //   if (chapterResponse.ok) {
+  //         //     const chapterData = await chapterResponse.json();
+  //         //     setChapter(chapterData.chapter);
+  //         //   }
+  //         // }
+  //         // // Fetch course details
+  //         // const courseResponse = await fetch(`/api/course?id=${actualCourseId}`);
+  //         // if (courseResponse.ok) {
+  //         //   const courseData = await courseResponse.json();
+  //         //   setCourse(courseData.course);
+  //         // }
+  //       } catch (err) {
+  //         setError(err instanceof Error ? err.message : "Failed to load lesson");
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
 
-        // Fetch lesson details
-        const lessonResponse = await fetch(`/api/lesson?id=${lessonId}`);
-        if (!lessonResponse.ok) {
-          throw new Error("Failed to fetch lesson");
-        }
-        const lessonData = await lessonResponse.json();
-        setLesson(lessonData.lesson);
+  //     if (lessonId && actualCourseId) {
+  //       fetchLessonData();
+  //     }
+  //   }, [lessonId, actualCourseId]);
 
-        // Fetch chapter details using the lesson's chapterId
-        if (lessonData.lesson.chapterId) {
-          const chapterResponse = await fetch(
-            `/api/chapter?id=${lessonData.lesson.chapterId}`
-          );
-          if (chapterResponse.ok) {
-            const chapterData = await chapterResponse.json();
-            setChapter(chapterData.chapter);
-          }
-        }
-
-        // Fetch course details
-        const courseResponse = await fetch(`/api/course?id=${actualCourseId}`);
-        if (courseResponse.ok) {
-          const courseData = await courseResponse.json();
-          setCourse(courseData.course);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load lesson");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (lessonId && actualCourseId) {
-      fetchLessonData();
-    }
-  }, [lessonId, actualCourseId]);
-
-  const handleBackToCourse = () => {
-    router.push(`/course/${actualCourseId}`);
-  };
+  //   const handleBackToCourse = () => {
+  //     router.push(`/course/${actualCourseId}`);
+  //   };
 
   const getLessonIcon = (type: string) => {
     switch (type) {
@@ -449,12 +446,12 @@ export default function LessonPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="text-foreground text-xl mb-4">Lesson not found</div>
-          <button
+          {/* <button
             onClick={handleBackToCourse}
             className="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
           >
             Back to Course
-          </button>
+          </button> */}
         </div>
       </div>
     );
@@ -462,17 +459,16 @@ export default function LessonPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            <button
+            {/* <button
               onClick={handleBackToCourse}
               className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Course</span>
-            </button>
+            </button> */}
 
             <div className="text-sm text-muted-foreground">
               {course?.name}
@@ -489,7 +485,6 @@ export default function LessonPage() {
         </div>
       </div>
 
-      {/* Lesson Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Lesson Header */}
         <div className="mb-8">
@@ -607,13 +602,13 @@ export default function LessonPage() {
 
         {/* Navigation */}
         <div className="mt-12 flex justify-between items-center">
-          <button
+          {/* <button
             onClick={handleBackToCourse}
             className="flex items-center space-x-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Course</span>
-          </button>
+          </button> */}
 
           <div className="flex space-x-3">
             <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">

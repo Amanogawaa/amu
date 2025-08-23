@@ -22,7 +22,7 @@ const data = {
   navMain: [
     {
       title: "courses",
-      url: "/amu/course",
+      url: "/amu/courses",
       icon: Library,
     },
   ],
