@@ -9,7 +9,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Cog, Library, MessageCircleQuestionIcon } from "lucide-react";
+import {
+  Cog,
+  Handshake,
+  Library,
+  MessageCircleQuestionIcon,
+} from "lucide-react";
 import { NavMain } from "./app-main";
 import SignOutButton from "./app-user";
 
@@ -25,6 +30,11 @@ const data = {
       url: "/amu/courses",
       icon: Library,
     },
+    {
+      title: "community",
+      url: "/amu/community",
+      icon: Handshake,
+    },
   ],
   navSecondary: [
     {
@@ -32,6 +42,7 @@ const data = {
       url: "#",
       icon: Cog,
     },
+
     {
       title: "Get Help",
       url: "#",

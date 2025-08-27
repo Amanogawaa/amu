@@ -16,6 +16,10 @@ export default function Home() {
   const id = useId();
   const [topic, setTopic] = useState("");
   const [level, setLevel] = useState("");
+  const [category, setCategory] = useState("Programming");
+  const [duration, setDuration] = useState("4 hours");
+  const [noOfChapters, setNoOfChapters] = useState(5);
+  const [language, setLanguage] = useState("en");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -28,11 +32,11 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          category: "Programming", // You might want to make this dynamic
+          category,
           topic: topic.trim(),
           level,
-          duration: "4 hours", // Default - you could make this configurable
-          noOfChapters: 5, // Default - you could make this configurable
+          duration,
+          noOfChapters,
           language: "en",
         }),
       });
@@ -68,7 +72,7 @@ export default function Home() {
         <p className="text-lg font-satoshi text-Winter_Teal">
           enter a topic below to generate a personalized course for it
         </p>
-        <div className="*:not-first:mt-2 max-w-xl w-full">
+        <div className="*:not-first:mt-2 max-w-xl w-full space-y-4">
           <div className="relative">
             <Input
               id={id}
@@ -89,16 +93,66 @@ export default function Home() {
               <SendIcon size={16} aria-hidden="true" />
             </button>
           </div>
-          <Select value={level} onValueChange={setLevel}>
-            <SelectTrigger className="rounded-full mx-auto focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
-              <SelectValue placeholder="difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="beginner">beginner</SelectItem>
-              <SelectItem value="intermidiate">intermidiate</SelectItem>
-              <SelectItem value="advanced">advanced</SelectItem>
-            </SelectContent>
-          </Select>
+
+          <div className="flex  justify-center items-center gap-2">
+            <Select value={level} onValueChange={setLevel}>
+              <SelectTrigger className="rounded-full focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
+                <SelectValue placeholder="difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">Beginner</SelectItem>
+                <SelectItem value="intermidiate">Intermidiate</SelectItem>
+                <SelectItem value="advanced">Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="rounded-full focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
+                <SelectValue placeholder="category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Programming">Programming</SelectItem>
+                <SelectItem value="Mathematics">Mathematics</SelectItem>
+                <SelectItem value="Science">Science</SelectItem>
+                <SelectItem value="Language">Language</SelectItem>
+                <SelectItem value="Business">Business</SelectItem>
+                <SelectItem value="Arts">Arts</SelectItem>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={duration} onValueChange={setDuration}>
+              <SelectTrigger className="rounded-full focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
+                <SelectValue placeholder="duration" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1 hour">1 hour</SelectItem>
+                <SelectItem value="2 hours">2 hours</SelectItem>
+                <SelectItem value="4 hours">4 hours</SelectItem>
+                <SelectItem value="8 hours">8 hours</SelectItem>
+                <SelectItem value="1 day">1 day</SelectItem>
+                <SelectItem value="1 week">1 week</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={noOfChapters.toString()}
+              onValueChange={(value) => setNoOfChapters(parseInt(value))}
+            >
+              <SelectTrigger className="rounded-full focus-visible:ring-2 focus-visible:ring-Evergreen_Dusk/50">
+                <SelectValue placeholder="chapters" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="3">3 chapters</SelectItem>
+                <SelectItem value="5">5 chapters</SelectItem>
+                <SelectItem value="8">8 chapters</SelectItem>
+                <SelectItem value="10">10 chapters</SelectItem>
+                <SelectItem value="12">12 chapters</SelectItem>
+                <SelectItem value="15">15 chapters</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {isLoading && (
             <div className="text-center mt-4">

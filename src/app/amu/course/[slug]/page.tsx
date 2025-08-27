@@ -155,7 +155,7 @@ export default function Page() {
   };
 
   const handleLessonClick = (lessonId: string) => {
-    router.push(`/course/${courseId}/lesson/${lessonId}`);
+    router.push(`/amu/course/${courseId}/lesson/${lessonId}`);
   };
 
   // Check if chapter has lessons
