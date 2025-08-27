@@ -1,27 +1,14 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import CourseCard from "@/components/course-card";
+import CourseCard from "@/components/course/course-card";
+import axiosInstance from "@/api/axios-client";
+import Loader from "../global/loader";
 
 async function getCourses() {
   try {
-    const url = `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/course`;
-
-    const response = await fetch(url, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch courses: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return data.courses || [];
+    const response = await axiosInstance.get("/courses");
+    console.log(response);
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -37,14 +24,8 @@ export default function CoursePage() {
     queryFn: getCourses,
   });
 
-  console.log("📋 Query state:", {
-    coursesLength: courses?.length,
-    isLoading,
-    hasError: !!error,
-  });
-
   if (isLoading) {
-    return <div>Loading courses...</div>;
+    return <Loader />;
   }
 
   if (error) {
@@ -53,7 +34,7 @@ export default function CoursePage() {
 
   return (
     <main className="flex h-full w-full flex-col">
-      <CourseCard courses={courses} />
+      <CourseCard data={courses.data} />
     </main>
   );
 }

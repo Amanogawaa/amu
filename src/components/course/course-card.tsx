@@ -8,7 +8,7 @@ import {
 import { BookOpen, EllipsisVertical } from "lucide-react";
 // import DeleteCourse from "./delete-course";
 import Link from "next/link";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 
 interface Course {
   id: string;
@@ -21,17 +21,15 @@ interface Course {
 }
 
 interface CourseCardProps {
-  courses: Course[];
+  data: { courses: Course[] };
 }
 
-const CourseCard = ({ courses }: CourseCardProps) => {
-  if (!courses || courses.length === 0) {
+const CourseCard = ({ data }: CourseCardProps) => {
+  console.log("List", data);
+  if (!data || data.courses.length === 0) {
     return (
       <section className="flex h-full w-full py-5 px-3">
         <div className="container">
-          <p className="mb-4 text-lg text-muted-foreground font-satoshi">
-            your courses
-          </p>
           <p className="text-muted-foreground">No courses found.</p>
         </div>
       </section>
@@ -45,7 +43,7 @@ const CourseCard = ({ courses }: CourseCardProps) => {
           your courses
         </p>
         <div className="grid gap-3 lg:grid-cols-3">
-          {courses.map((course) => (
+          {data.courses.map((course) => (
             <Link
               key={course.id}
               href={`/amu/course/${course.id}`}

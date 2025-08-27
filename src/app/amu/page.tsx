@@ -1,5 +1,6 @@
 "use client";
 
+import axiosInstance from "@/api/axios-client";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, SendIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 export default function Home() {
   const id = useId();

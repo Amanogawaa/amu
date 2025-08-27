@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = never> {
   success: boolean;
   data: T;
   message?: string;
