@@ -112,11 +112,11 @@ export default function ProblemSolution() {
 
           {/* Solution Section */}
           <div className="relative">
-            <div className="absolute -top-8 -right-8 w-32 h-32 bg-winter-teal/20 rounded-full blur-3xl" />
-            <div className="relative bg-gradient-to-br from-winter-teal/10 to-evergreen-dusk/10 p-8 rounded-3xl shadow-xl border border-winter-teal/30">
+            <div className="absolute -top-8 -right-8 w-32 h-32 bg-secondary/20 rounded-full blur-3xl" />
+            <div className="relative bg-gradient-to-br from-secondary/10 to-primary/10 p-8 rounded-3xl shadow-xl border border-secondary/30">
               <div className="inline-block p-3 bg-white rounded-xl mb-6 shadow-md">
                 <svg
-                  className="w-8 h-8 text-winter-teal"
+                  className="w-8 h-8 text-secondary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -131,12 +131,12 @@ export default function ProblemSolution() {
               </div>
 
               <h3 className="text-3xl font-bold text-custom-foreground mb-4">
-                Amu <span className="text-winter-teal">Fixes That</span>
+                Amu <span className="text-secondary">Fixes That</span>
               </h3>
 
               <p className="text-lg text-gray-700 mb-6 leading-relaxed">
                 Type:{' '}
-                <strong className="text-evergreen-dusk">
+                <strong className="text-primary">
                   "Python for absolute beginners"
                 </strong>
                 <br />→ Get a full course with simple lessons, exercises, and a
@@ -153,9 +153,9 @@ export default function ProblemSolution() {
 
                 <div className="font-mono text-sm space-y-3">
                   <div className="flex items-start gap-2">
-                    <span className="text-winter-teal">→</span>
+                    <span className="text-secondary">→</span>
                     <div>
-                      <div className="text-evergreen-dusk font-semibold">
+                      <div className="text-primary font-semibold">
                         Lesson 1: What is a variable?
                       </div>
                       <div className="text-gray-500 text-xs mt-1">
@@ -165,9 +165,9 @@ export default function ProblemSolution() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <span className="text-winter-teal">→</span>
+                    <span className="text-secondary">→</span>
                     <div>
-                      <div className="text-evergreen-dusk font-semibold">
+                      <div className="text-primary font-semibold">
                         Exercise: Print your name
                       </div>
                       <div className="text-gray-500 text-xs mt-1">
@@ -177,9 +177,9 @@ export default function ProblemSolution() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <span className="text-winter-teal">→</span>
+                    <span className="text-secondary">→</span>
                     <div>
-                      <div className="text-evergreen-dusk font-semibold">
+                      <div className="text-primary font-semibold">
                         Chat: "What does print() do?"
                       </div>
                       <div className="text-gray-500 text-xs mt-1">
@@ -204,7 +204,7 @@ export default function ProblemSolution() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="font-medium text-evergreen-dusk">
+                  <span className="font-medium text-primary">
                     Beginner-friendly
                   </span>
                 </div>
@@ -220,9 +220,7 @@ export default function ProblemSolution() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="font-medium text-evergreen-dusk">
-                    Personalized
-                  </span>
+                  <span className="font-medium text-primary">Personalized</span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full text-sm">
                   <svg
@@ -236,9 +234,7 @@ export default function ProblemSolution() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="font-medium text-evergreen-dusk">
-                    Interactive
-                  </span>
+                  <span className="font-medium text-primary">Interactive</span>
                 </div>
               </div>
             </div>

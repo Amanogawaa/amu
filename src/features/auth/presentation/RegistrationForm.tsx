@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../application/AuthContext';
 import { cn } from '@/lib/utils';
-import GeneralLoadingPage from '@/components/loading/GeneralLoadingPage';
+import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
 import {
   Form,
   FormItem,

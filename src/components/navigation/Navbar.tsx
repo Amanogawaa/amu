@@ -1,5 +1,6 @@
-import { Menu } from 'lucide-react';
+'use client';
 
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -16,6 +17,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useAuth } from '@/features/auth/application/AuthContext';
+import { NavigationBarUser } from './NavbarUser';
 
 interface MenuItem {
   title: string;
@@ -47,8 +50,8 @@ interface NavbarProps {
 
 const Navbar = ({
   logo = {
-    url: 'https://www.shadcnblocks.com',
-    src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg',
+    url: '/',
+    src: 'amu.png',
     alt: 'logo',
     title: 'CourseCraft',
   },
@@ -59,13 +62,14 @@ const Navbar = ({
     { title: 'About', url: '/about' },
   ],
   auth = {
-    login: { title: 'Login', url: '#' },
-    signup: { title: 'Sign up', url: '#' },
+    login: { title: 'Login', url: '/signin' },
+    signup: { title: 'Sign up', url: '/signup' },
   },
 }: NavbarProps) => {
+  const { user, signOut } = useAuth();
   return (
     <section className="py-4 sticky top-0 backdrop-blur-lg bg-background/30 border-b border-border/40 z-50 shadow-sm">
-      <div className="container mx-auto">
+      <div className="container max-w-6xl mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
@@ -89,12 +93,27 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
+            {user ? (
+              <div className="hidden md:flex items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a href="/create">Create</a>
+                </Button>
+                <NavigationBarUser
+                  name={user.displayName ?? user.uid}
+                  email={user.email}
+                  logout={signOut}
+                />
+              </div>
+            ) : (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <a href={auth.login.url}>{auth.login.title}</a>
+                </Button>
+                <Button asChild size="sm">
+                  <a href={auth.signup.url}>{auth.signup.title}</a>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
@@ -133,12 +152,25 @@ const Navbar = ({
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
+                    {user ? (
+                      <>
+                        <Button asChild variant="outline">
+                          <a href="/create">Create</a>
+                        </Button>
+                        <Button asChild>
+                          <a href="/profile">Profile</a>
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline">
+                          <a href={auth.login.url}>{auth.login.title}</a>
+                        </Button>
+                        <Button asChild>
+                          <a href={auth.signup.url}>{auth.signup.title}</a>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
@@ -155,7 +187,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="bg-transparent hover:bg-transparent hover:text-accent inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:underline"
+        className="bg-transparent hover:bg-transparent hover:text-accent data-[active=true]:focus:bg-transparent active:bg-transparent focus:bg-none focus:text-accent active:text-accent inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:underline"
       >
         {item.title}
       </NavigationMenuLink>

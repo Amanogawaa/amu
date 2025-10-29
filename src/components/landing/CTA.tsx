@@ -17,7 +17,7 @@ export default function CTA() {
   return (
     <section
       id="cta"
-      className="relative py-24 px-4 bg-gradient-to-br from-winter-teal via-winter-teal to-evergreen-dusk text-white overflow-hidden"
+      className="relative py-24 px-4 bg-gradient-to-br from-secondary via-secondary to-primary text-white overflow-hidden"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -83,7 +83,7 @@ export default function CTA() {
           </div>
           <button
             type="submit"
-            className="group bg-evergreen-dusk hover:bg-white hover:text-evergreen-dusk text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl whitespace-nowrap"
+            className="group bg-primary hover:bg-white hover:text-primary text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl whitespace-nowrap"
           >
             {isSubmitted ? (
               <span className="flex items-center justify-center gap-2">
