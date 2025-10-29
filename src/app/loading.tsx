@@ -1,4 +1,4 @@
-import GeneralLoadingPage from '@/components/loading/GeneralLoadingPage';
+import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
 
 export default function Loading() {
   return <GeneralLoadingPage />;

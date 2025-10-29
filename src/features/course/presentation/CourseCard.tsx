@@ -26,15 +26,15 @@ interface CourseCardProps {
 const CourseCard = ({ course, href }: CourseCardProps) => {
   const levelColors = {
     beginner:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize',
     intermediate:
-      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize',
     advance:
-      'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+      'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize',
   };
 
   const cardContent = (
-    <Card className="group h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+    <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
@@ -111,9 +111,12 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
         <Button
           className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           variant="outline"
+          asChild
         >
-          View Course
-          <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+          <Link href={`/courses/${course.id}`}>
+            View Course
+            <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </Button>
       </CardFooter>
     </Card>

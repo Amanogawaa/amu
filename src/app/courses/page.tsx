@@ -1,21 +1,18 @@
 import CourseGrid from '@/features/course/presentation/CourseGrid';
-import CreateCourseForm from '@/features/course/presentation/CreateCourseForm';
-import { BookOpenIcon, PlusIcon } from 'lucide-react';
-import Link from 'next/link';
-import React from 'react';
+import { BookOpenIcon } from 'lucide-react';
 
 const CoursesPage = () => {
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-5xl ">
-        <div className="flex items-center text-sm text-muted-foreground mb-6 uppercase tracking-wider">
+        {/* <div className="flex items-center text-sm text-muted-foreground mb-6 uppercase tracking-wider">
           <Link
             href="/courses"
             className="hover:text-foreground transition-colors"
           >
             COURSE
           </Link>
-        </div>
+        </div> */}
 
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div className="space-y-3">

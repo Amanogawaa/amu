@@ -2,25 +2,47 @@
 
 // parent component
 import React from 'react';
-import CourseCard from './CourseCard';
 import { useInfiniteListCourses } from '../application/useGetCourses';
-import GeneralLoadingPage from '@/components/loading/GeneralLoadingPage';
+import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
+import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
+import CourseCard from './CourseCard';
 
 const CourseGrid = () => {
-  const { data, isLoading, hasNextPage, isFetchingNextPage, isError } =
+  const { data, isPending, hasNextPage, isFetchingNextPage, isError } =
     useInfiniteListCourses();
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
 
   console.log('Courses Data:', flatData);
 
+  if (isPending) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <CourseCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (flatData.length === 0) {
+    return (
+      <div className="mt-5">
+        <GeneralEmptyPage type="course" />
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-      <div className="col-span-3">{isLoading && <GeneralLoadingPage />}</div>
-
       {flatData.map((course) => (
         <CourseCard course={course} key={course.id} />
       ))}
+
+      {isFetchingNextPage &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <CourseCardSkeleton key={`loading-${index}`} />
+        ))}
     </div>
   );
 };

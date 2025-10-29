@@ -20,7 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Amu AI',
+  title: 'CourseCraft',
   description: 'Your personal AI assistant for all things Amu',
 };
 

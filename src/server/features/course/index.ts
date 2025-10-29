@@ -31,6 +31,10 @@ export async function listCourses(
   return apiRequest<null, ListCoursesResponse>(url, 'get');
 }
 
+export async function getCourseById(courseId: string): Promise<Course> {
+  return apiRequest<null, Course>(`/courses/${courseId}`, 'get');
+}
+
 export async function createCourse(
   payload: CreateCoursePayload
 ): Promise<Course> {

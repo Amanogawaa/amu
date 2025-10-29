@@ -1,4 +1,4 @@
-import { listCourses } from '@/server/features/course';
+import { getCourseById, listCourses } from '@/server/features/course';
 import { CourseFilters } from '@/server/features/course/types';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
@@ -12,6 +12,20 @@ export function useListCourses(options?: { page?: number; enabled?: boolean }) {
     enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
+  });
+}
+
+export function useGetCourse(courseId: string) {
+  return useQuery({
+    queryKey: ['course', courseId],
+    queryFn: () => getCourseById(courseId),
+    enabled: !!courseId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -21,6 +35,8 @@ export function useInfiniteListCourses(filters?: CourseFilters) {
     queryFn: async ({ pageParam = 1 }) => {
       return await listCourses(pageParam, filters);
     },
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
     getNextPageParam: (lastPage) => {
       if (lastPage.next) {
         try {
