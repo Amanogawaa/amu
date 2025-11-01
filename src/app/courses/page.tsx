@@ -1,4 +1,4 @@
-import CourseGrid from '@/features/course/presentation/CourseGrid';
+import CourseGrid from '@/features/course/presentation/grid/CourseGrid';
 import { BookOpenIcon } from 'lucide-react';
 
 const CoursesPage = () => {
@@ -8,7 +8,7 @@ const CoursesPage = () => {
         {/* <div className="flex items-center text-sm text-muted-foreground mb-6 uppercase tracking-wider">
           <Link
             href="/courses"
-            className="hover:text-foreground transition-colors"
+            className="hover:text-foreground transi1tion-colors"
           >
             COURSE
           </Link>

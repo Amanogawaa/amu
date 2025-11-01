@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpenIcon, LockIcon, PlayCircleIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { CheckCircle2Icon } from 'lucide-react';
+import { useGetChapters } from '../../application/useGetChapters';
+import { useMemo } from 'react';
 
 interface Chapter {
   id: string;
@@ -21,70 +24,34 @@ interface ChapterListProps {
 }
 
 export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
-  // Placeholder chapters if none are provided
-  const placeholderChapters: Chapter[] = [
-    {
-      id: '1',
-      title: 'Introduction to the Course',
-      description:
-        'Get started with the basics and overview of what you will learn',
-      duration: '15 min',
-      order: 1,
-      isCompleted: false,
-      isLocked: false,
-    },
-    {
-      id: '2',
-      title: 'Chapter 1: Fundamentals',
-      description: 'Learn the core concepts and fundamental principles',
-      duration: '30 min',
-      order: 2,
-      isCompleted: false,
-      isLocked: true,
-    },
-    {
-      id: '3',
-      title: 'Chapter 2: Advanced Topics',
-      description: 'Dive deeper into advanced concepts and techniques',
-      duration: '45 min',
-      order: 3,
-      isCompleted: false,
-      isLocked: true,
-    },
-  ];
-
-  const displayChapters = chapters || placeholderChapters;
+  const { data } = useGetChapters(courseId);
   const hasRealChapters = chapters && chapters.length > 0;
+
+  const initialValues = useMemo(() => {
+    if (!data) return undefined;
+
+    return {};
+  }, [chapters]);
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <BookOpenIcon className="h-5 w-5 text-primary" />
-          Course Content
-          {!hasRealChapters && (
-            <span className="text-sm font-normal text-muted-foreground ml-2">
-              (Preview)
-            </span>
-          )}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          {displayChapters.length}{' '}
-          {displayChapters.length === 1 ? 'chapter' : 'chapters'}
-        </p>
+      <CardHeader className="flex items-center justify-between">
+        <div>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <BookOpenIcon className="h-5 w-5 text-primary" />
+            Course Content
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {data?.length} {data?.length === 1 ? 'chapter' : 'chapters'}
+          </p>
+        </div>
+        <Button variant="outline">Generate Chapters</Button>
       </CardHeader>
       <CardContent>
-        {!hasRealChapters && (
-          <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <p className="text-sm text-yellow-700 dark:text-yellow-400">
-              Chapters are being generated. The content below is a preview of
-              the course structure.
-            </p>
-          </div>
-        )}
         <div className="space-y-3">
-          {displayChapters.map((chapter, index) => (
+          {data?.map((chapter, index) => (
             <div key={chapter.id}>
+              {/* TODO: Implement later */}
               <div
                 className={`flex items-start gap-4 p-4 rounded-lg transition-colors ${
                   chapter.isLocked
@@ -92,6 +59,7 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
                     : 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
                 }`}
               >
+                {/* TODO: Implement later */}
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-background border">
                   {chapter.isCompleted ? (
                     <CheckCircle2Icon className="h-5 w-5 text-green-500" />
@@ -112,9 +80,10 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
                       </p>
                     </div>
                     <div className="text-xs text-muted-foreground whitespace-nowrap">
-                      {chapter.duration}
+                      {chapter.estimatedDuration}
                     </div>
                   </div>
+                  {/* implement later on */}
                   {!chapter.isLocked && !hasRealChapters && (
                     <Button
                       size="sm"
@@ -127,9 +96,9 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
                   )}
                 </div>
               </div>
-              {index < displayChapters.length - 1 && (
+              {/* {index < displayChapters.length - 1 && (
                 <Separator className="my-3" />
-              )}
+              )} */}
             </div>
           ))}
         </div>
@@ -137,6 +106,3 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
     </Card>
   );
 };
-
-// Import CheckCircle2Icon at the top if not already imported
-import { CheckCircle2Icon } from 'lucide-react';

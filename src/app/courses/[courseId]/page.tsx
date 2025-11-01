@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetCourse } from '@/features/course/application/useGetCourses';
-import CourseDetailPage from '@/features/course/presentation/CourseDetailPage';
+import CourseDetailPage from '@/features/course/presentation/components/CourseDetailPage';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';

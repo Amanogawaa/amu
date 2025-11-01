@@ -2,10 +2,10 @@
 
 // parent component
 import React from 'react';
-import { useInfiniteListCourses } from '../application/useGetCourses';
+import { useInfiniteListCourses } from '../../application/useGetCourses';
 import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import CourseCard from './CourseCard';
+import CourseCard from '../card/CourseCard';
 
 const CourseGrid = () => {
   const { data, isPending, hasNextPage, isFetchingNextPage, isError } =

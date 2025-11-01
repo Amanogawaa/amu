@@ -17,6 +17,8 @@ export const CourseHeader = ({
   level,
 }: CourseHeaderProps) => {
   const getLevelColor = (level: string) => {
+    if (!level) return;
+
     switch (level.toLowerCase()) {
       case 'beginner':
         return 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20';

@@ -1,3 +1,6 @@
+'use client';
+
+import { useAuth } from '@/features/auth/application/AuthContext';
 import { User2Icon } from 'lucide-react';
 import React from 'react';
 
@@ -6,6 +9,10 @@ import React from 'react';
 // TODO: the image will be uploaded and displayed here, user can choose from a set of predefined images or upload their own
 
 const AccountPage = () => {
+  const { user } = useAuth();
+
+  console.log('Authenticated user:', user?.uid);
+
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-5xl ">

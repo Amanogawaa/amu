@@ -20,7 +20,7 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-12 animate-slide-up leading-relaxed">
-          CourseCraft generates{' '}
+          Amu AI generates{' '}
           <strong className="text-primary">
             personalized programming courses
           </strong>{' '}

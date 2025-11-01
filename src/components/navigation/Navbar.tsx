@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/sheet';
 import { useAuth } from '@/features/auth/application/AuthContext';
 import { NavigationBarUser } from './NavbarUser';
+import Image from 'next/image';
 
 interface MenuItem {
   title: string;
@@ -51,9 +52,9 @@ interface NavbarProps {
 const Navbar = ({
   logo = {
     url: '/',
-    src: 'amu.png',
+    src: '/amu.png',
     alt: 'logo',
-    title: 'CourseCraft',
+    title: 'Amu AI',
   },
   menu = [
     { title: 'Home', url: '/' },
@@ -75,10 +76,12 @@ const Navbar = ({
           <div className="flex items-center gap-6">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              <img
+              <Image
                 src={logo.src}
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
+                width={32}
+                height={32}
               />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}

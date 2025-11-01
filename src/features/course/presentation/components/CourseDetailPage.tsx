@@ -1,17 +1,19 @@
 'use client';
 
 import React from 'react';
-import { useGetCourse } from '../application/useGetCourses';
-import { ChapterList } from '../../chapters/presentation/ChapterList';
+import { useGetCourse } from '../../application/useGetCourses';
+import { ChapterList } from '../../../chapters/presentation/list/ChapterList';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
-import { CourseInfoCard } from './CourseInfoCard';
+import { CourseInfoCard } from '../card/CourseInfoCard';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
+
+  console.log('Course Detail Data:', data);
 
   if (isLoading) {
     return (
@@ -59,7 +61,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
 
       <CourseInfoCard
         duration={data.duration}
-        noOfChapters={data.no_of_chapters}
+        noOfChapters={data.noOfChapters}
         language={data.language}
         includeCertificate={data.include_certificate}
         level={data.level}

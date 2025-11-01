@@ -33,7 +33,9 @@ export const CourseInfoCard = ({
     {
       icon: BookIcon,
       label: 'Chapters',
-      value: `${noOfChapters} ${noOfChapters === 1 ? 'Chapter' : 'Chapters'}`,
+      value: `${noOfChapters === undefined ? 'N/A' : noOfChapters} ${
+        noOfChapters === 1 ? 'Chapter' : 'Chapters'
+      }`,
     },
     {
       icon: BarChartIcon,

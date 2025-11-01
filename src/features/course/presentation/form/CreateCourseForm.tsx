@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { courseFormSchema, CourseFormValues } from '../domain/CourseSchema';
 import { CreateCoursePayload } from '@/server/features/course/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -14,7 +13,6 @@ import {
   FormMessage,
   FormDescription,
 } from '@/components/ui/form';
-import handleCreateCourse from '../application/handleCreateCourse';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +23,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Loader2, BookOpen, Sparkles } from 'lucide-react';
+import handleCreateCourse from '../../application/handleCreateCourse';
+import { CourseFormValues, courseFormSchema } from '../../domain/CourseSchema';
 
 interface CourseFormProps {
   initialValues?: Partial<CourseFormValues>;
