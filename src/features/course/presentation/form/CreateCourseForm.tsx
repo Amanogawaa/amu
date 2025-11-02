@@ -46,7 +46,7 @@ const CreateCourseForm = ({
       level: 'beginner' as const,
       language: 'english',
       duration: '5 hours',
-      noOfChapters: 5,
+      noOfModules: 5,
       ...initialValues,
     }),
     [initialValues]
@@ -180,13 +180,13 @@ const CreateCourseForm = ({
               )}
             />
 
-            {/* Number of Chapters */}
+            {/* Number of Modules */}
             <FormField
-              name="noOfChapters"
+              name="noOfModules"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Chapters *</FormLabel>
+                  <FormLabel>Number of Modules *</FormLabel>
                   <FormControl>
                     <Input
                       {...field}

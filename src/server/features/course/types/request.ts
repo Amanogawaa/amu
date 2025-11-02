@@ -3,7 +3,7 @@ export type CreateCoursePayload = {
   category: string;
   level: string;
   duration: string;
-  noOfChapters: number;
+  noOfModules: number;
   language: string;
 };
 

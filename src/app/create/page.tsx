@@ -1,7 +1,7 @@
 'use client';
 
 import useCreateCourse from '@/features/course/application/useCreateCourse';
-import CreateCourseForm from '@/features/course/presentation/CreateCourseForm';
+import CreateCourseForm from '@/features/course/presentation/form/CreateCourseForm';
 import React from 'react';
 
 const CreatePage = () => {
