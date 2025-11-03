@@ -14,10 +14,6 @@ const nextConfig: NextConfig = {
       //   source: '/api/:path*',
       //   destination: 'https://amu-api.onrender.com/api/:path*/',
       // },
-      // {
-      //   source: '/api/:path*',
-      //   destination: 'http://192.168.100.153:8080/api/:path*/',
-      // },
     ];
   },
 };
