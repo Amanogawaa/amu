@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { CheckCircle2Icon } from 'lucide-react';
 import { useGetChapters } from '../../application/useGetChapters';
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 interface Chapter {
   id: string;
@@ -20,11 +21,11 @@ interface Chapter {
 
 interface ChapterListProps {
   chapters?: Chapter[];
-  courseId: string;
+  moduleId: string;
 }
 
-export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
-  const { data } = useGetChapters(courseId);
+export const ChapterList = ({ chapters, moduleId }: ChapterListProps) => {
+  const { data } = useGetChapters(moduleId);
   const hasRealChapters = chapters && chapters.length > 0;
 
   const initialValues = useMemo(() => {
@@ -51,23 +52,9 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
         <div className="space-y-3">
           {data?.map((chapter, index) => (
             <div key={chapter.id}>
-              {/* TODO: Implement later */}
-              <div
-                className={`flex items-start gap-4 p-4 rounded-lg transition-colors ${
-                  chapter.isLocked
-                    ? 'bg-muted/50 opacity-60'
-                    : 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
-                }`}
-              >
-                {/* TODO: Implement later */}
+              <div className="flex items-start gap-4 p-4 rounded-lg transition-colors bg-muted/30 hover:bg-muted/50 cursor-pointer">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-background border">
-                  {chapter.isCompleted ? (
-                    <CheckCircle2Icon className="h-5 w-5 text-green-500" />
-                  ) : chapter.isLocked ? (
-                    <LockIcon className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <PlayCircleIcon className="h-5 w-5 text-primary" />
-                  )}
+                  <PlayCircleIcon className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
@@ -83,22 +70,17 @@ export const ChapterList = ({ chapters, courseId }: ChapterListProps) => {
                       {chapter.estimatedDuration}
                     </div>
                   </div>
-                  {/* implement later on */}
-                  {!chapter.isLocked && !hasRealChapters && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="mt-2 h-8 text-xs"
-                      disabled
-                    >
-                      Start Chapter
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="mt-2 h-8 text-xs"
+                    asChild
+                  >
+                    <Link href={`/chapters/${chapter.id}`}>View Chapter</Link>
+                  </Button>
                 </div>
               </div>
-              {/* {index < displayChapters.length - 1 && (
-                <Separator className="my-3" />
-              )} */}
+              {index < data.length - 1 && <Separator className="my-3" />}
             </div>
           ))}
         </div>

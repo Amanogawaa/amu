@@ -1,9 +1,9 @@
 import { getChapters } from '@/server/features/chapters';
 import { useQuery } from '@tanstack/react-query';
 
-export function useGetChapters(courseId: string) {
+export function useGetChapters(moduleId: string) {
   return useQuery({
-    queryKey: ['chapters', courseId],
-    queryFn: async () => getChapters(courseId),
+    queryKey: ['chapters', moduleId],
+    queryFn: async () => getChapters(moduleId),
   });
 }

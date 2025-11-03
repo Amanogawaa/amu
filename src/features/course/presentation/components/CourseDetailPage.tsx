@@ -9,11 +9,10 @@ import { AlertCircle } from 'lucide-react';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
 import { CourseInfoCard } from '../card/CourseInfoCard';
+import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
-
-  console.log('Course Detail Data:', data);
 
   if (isLoading) {
     return (
@@ -73,7 +72,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         prerequisites={data.prequisites}
       />
 
-      <ChapterList courseId={courseId} />
+      <ModuleList courseId={courseId} />
     </div>
   );
 };

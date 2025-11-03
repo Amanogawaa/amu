@@ -11,7 +11,7 @@ export default function handleCreateCourse(
     level: values.level,
     language: values.language,
     duration: values.duration,
-    noOfChapters: values.noOfChapters,
+    noOfModules: values.noOfModules,
   };
 
   onSubmit(payload);

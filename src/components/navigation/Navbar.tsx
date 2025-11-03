@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu } from 'lucide-react';
+import { Menu, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -98,8 +98,9 @@ const Navbar = ({
           <div className="flex gap-2">
             {user ? (
               <div className="hidden md:flex items-center gap-2">
-                <Button asChild variant="outline" size="sm">
+                <Button asChild variant="outline" className="rounded-full py-5">
                   <a href="/create">Create</a>
+                  {/* <Plus size={45} /> */}
                 </Button>
                 <NavigationBarUser
                   name={user.displayName ?? user.uid}

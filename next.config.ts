@@ -5,15 +5,19 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       // development proxy to backend API
-      // {
-      //   source: '/api/:path*',
-      //   destination: 'http://localhost:8080/api/:path*/',
-      // },
-      // production proxy to backend API
       {
         source: '/api/:path*',
-        destination: 'https://amu-api.onrender.com/api/:path*/',
+        destination: 'http://localhost:8080/api/:path*/',
       },
+      // production proxy to backend API
+      // {
+      //   source: '/api/:path*',
+      //   destination: 'https://amu-api.onrender.com/api/:path*/',
+      // },
+      // {
+      //   source: '/api/:path*',
+      //   destination: 'http://192.168.100.153:8080/api/:path*/',
+      // },
     ];
   },
 };

@@ -3,7 +3,7 @@ export type Course = {
   name: string;
   description: string;
   category: string;
-  level: string;
+  level: 'beginner' | 'intermediate' | 'advanced';
   topic: string;
   prequisites: string;
   language: string;
