@@ -24,3 +24,16 @@ export type ListCoursesResponse = {
   previous?: string | null;
   results: Course[];
 };
+
+export type CourseValidationResponse = {
+  isComplete: boolean;
+  missingComponents: string[];
+  details: {
+    hasModules: boolean;
+    modulesCount: number;
+    hasChapters: boolean;
+    chaptersCount: number;
+    hasLessons: boolean;
+    lessonsCount: number;
+  };
+};

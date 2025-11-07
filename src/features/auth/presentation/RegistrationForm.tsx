@@ -15,6 +15,8 @@ import Link from 'next/link';
 import { GalleryVerticalEnd, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
 const RegistrationForm = ({
   className,
@@ -27,7 +29,11 @@ const RegistrationForm = ({
     },
   });
 
-  const { loading, signUp, user } = useAuth();
+  const { loading, signUp, user, signInWithGoogle } = useAuth();
+
+  if (user) {
+    redirect('/');
+  }
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -36,7 +42,7 @@ const RegistrationForm = ({
       ) : (
         <>
           <Form {...form}>
-            <form
+            <form 
               method="post"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -50,7 +56,12 @@ const RegistrationForm = ({
                   className="flex flex-col items-center gap-2 font-medium"
                 >
                   <div className="flex size-8 items-center justify-center rounded-md">
-                    <GalleryVerticalEnd className="size-6" />
+                    <Image
+                      src="/amu.png"
+                      width={64}
+                      height={64}
+                      alt="Amu Logo"
+                    />
                   </div>
                   <h1 className="sr-only">Acme Inc.</h1>
                 </Link>
@@ -128,7 +139,7 @@ const RegistrationForm = ({
             <Button
               variant="outline"
               className="w-full rounded-lg p-5 "
-              // onClick={() => loginWithGoogle()}
+              onClick={() => signInWithGoogle()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path

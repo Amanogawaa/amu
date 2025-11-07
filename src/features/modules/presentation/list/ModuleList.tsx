@@ -1,33 +1,33 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpenIcon, LockIcon, PlayCircleIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2Icon } from 'lucide-react';
-import { useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGetModules } from '@/features/modules/application/useGetModules';
-import { Separator } from '@radix-ui/react-separator';
-import Link from 'next/link';
-import { Module } from '@/server/features/modules/types';
+import { useCourseRoom, useResourceEvents } from '@/hooks/use-socket-events';
+import { BookOpenIcon, PlayCircleIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import ModuleForm from '../form/ModuleForm';
 
-// interface Module {
-//   id: string;
-//   moduleName: string;
-//   description: string;
-//   duration: string;
-//   order: number;
-//   isCompleted?: boolean;
-//   isLocked?: boolean;
-// }
-
 interface ModuleListProps {
-  Modules?: Module[];
   courseId: string;
 }
 
-export const ModuleList = ({ Modules, courseId }: ModuleListProps) => {
+export const ModuleList = ({ courseId }: ModuleListProps) => {
   const { data } = useGetModules(courseId);
+  const router = useRouter();
+
+  useCourseRoom(courseId);
+
+  useResourceEvents({
+    resourceType: 'module',
+    queryKey: ['modules', courseId],
+  });
+
+  const sortedModules = data
+    ?.map((module) => module)
+    .sort((a, b) => {
+      return a.moduleOrder - b.moduleOrder;
+    });
 
   return (
     <Card>
@@ -35,7 +35,7 @@ export const ModuleList = ({ Modules, courseId }: ModuleListProps) => {
         <div>
           <CardTitle className="flex items-center gap-2 text-xl">
             <BookOpenIcon className="h-5 w-5 text-primary" />
-            Course Modules
+            Course Materials
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             {data?.length} {data?.length === 1 ? 'Module' : 'Modules'}
@@ -48,7 +48,7 @@ export const ModuleList = ({ Modules, courseId }: ModuleListProps) => {
           <ModuleForm courseId={courseId} />
         ) : (
           <div className="space-y-3">
-            {data?.map((module, index) => (
+            {sortedModules?.map((module) => (
               <div key={module.id}>
                 <div className="flex items-start gap-4 p-4 rounded-lg transition-colors bg-muted/30 hover:bg-muted/50 cursor-pointer">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-background border">
@@ -72,13 +72,14 @@ export const ModuleList = ({ Modules, courseId }: ModuleListProps) => {
                       size="sm"
                       variant="ghost"
                       className="mt-2 h-8 text-xs"
-                      asChild
+                      onClick={() =>
+                        router.push(`/courses/${courseId}/modules/${module.id}`)
+                      }
                     >
-                      <Link href={`/modules/${module.id}`}>View Module</Link>
+                      View Module
                     </Button>
                   </div>
                 </div>
-                {index < data.length - 1 && <Separator className="my-3" />}
               </div>
             ))}
           </div>

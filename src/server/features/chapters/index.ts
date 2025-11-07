@@ -12,5 +12,5 @@ export async function getChapter(chapterId: string) {
 export async function createChapter(
   payload: CreateChapterPayload
 ): Promise<Chapter> {
-  return apiRequest<CreateChapterPayload, Chapter>('chapters', 'post', payload);
+  return apiRequest<CreateChapterPayload, Chapter>('chapter', 'post', payload);
 }

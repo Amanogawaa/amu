@@ -47,6 +47,7 @@ const CreateCourseForm = ({
       language: 'english',
       duration: '5 hours',
       noOfModules: 5,
+      userInstructions: '',
       ...initialValues,
     }),
     [initialValues]
@@ -99,6 +100,29 @@ const CreateCourseForm = ({
                 </FormControl>
                 <FormDescription className="text-foreground text-xs">
                   What would you like to learn about?
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="userInstructions"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Additional Instructions</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="e.g., Make it beginner-friendly"
+                    type="text"
+                    disabled={isPending}
+                    className="rounded-lg border border-secondary p-5 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
+                  />
+                </FormControl>
+                <FormDescription className="text-foreground text-xs">
+                  Any specific requests for the course content?
                 </FormDescription>
                 <FormMessage />
               </FormItem>

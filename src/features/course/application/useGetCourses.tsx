@@ -10,10 +10,8 @@ export function useListCourses(options?: { page?: number; enabled?: boolean }) {
     queryKey: ['courses', page],
     queryFn: () => listCourses(page),
     enabled,
-    staleTime: 0,
-    gcTime: 10 * 60 * 1000,
-    refetchInterval: 10000,
-    refetchIntervalInBackground: false,
+    // staleTime: 0,
+    // gcTime: 10 * 60 * 1000,
   });
 }
 
@@ -24,8 +22,6 @@ export function useGetCourse(courseId: string) {
     enabled: !!courseId,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    refetchInterval: 10000,
-    refetchIntervalInBackground: false,
   });
 }
 
@@ -35,8 +31,6 @@ export function useInfiniteListCourses(filters?: CourseFilters) {
     queryFn: async ({ pageParam = 1 }) => {
       return await listCourses(pageParam, filters);
     },
-    refetchInterval: 10000,
-    refetchIntervalInBackground: false,
     getNextPageParam: (lastPage) => {
       if (lastPage.next) {
         try {

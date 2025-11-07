@@ -1,10 +1,9 @@
 'use client';
 
-// parent component
-import React from 'react';
-import { useInfiniteListCourses } from '../../application/useGetCourses';
-import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
+import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
+import { useResourceEvents } from '@/hooks/use-socket-events';
+import { useInfiniteListCourses } from '../../application/useGetCourses';
 import CourseCard from '../card/CourseCard';
 
 const CourseGrid = () => {
@@ -13,7 +12,10 @@ const CourseGrid = () => {
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
 
-  console.log('Courses Data:', flatData);
+  useResourceEvents({
+    resourceType: 'course',
+    queryKey: ['courses'],
+  });
 
   if (isPending) {
     return (

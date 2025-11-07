@@ -1,21 +1,20 @@
+import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../application/AuthContext';
 import { redirect } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
-import {
-  Form,
-  FormItem,
-  FormField,
-  FormControl,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import Link from 'next/link';
-import { GalleryVerticalEnd, Mail } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 const LoginForm = ({
   className,
@@ -28,7 +27,11 @@ const LoginForm = ({
     },
   });
 
-  const { loading, signIn, signInWithGoogle } = useAuth();
+  const { loading, signIn, signInWithGoogle, user } = useAuth();
+
+  if (user) {
+    redirect('/');
+  }
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -51,7 +54,12 @@ const LoginForm = ({
                   className="flex flex-col items-center gap-2 font-medium"
                 >
                   <div className="flex size-8 items-center justify-center rounded-md">
-                    <GalleryVerticalEnd className="size-6" />
+                    <Image
+                      src="/amu.png"
+                      width={64}
+                      height={64}
+                      alt="Amu Logo"
+                    />
                   </div>
                   <span className="sr-only">Acme Inc.</span>
                 </Link>

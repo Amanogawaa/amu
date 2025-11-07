@@ -1,3 +1,4 @@
+import { User } from 'lucide-react';
 import z from 'zod';
 
 export const courseFormSchema = z.object({
@@ -9,6 +10,7 @@ export const courseFormSchema = z.object({
   noOfModules: z
     .number({ error: 'Number of modules must be a number' })
     .min(1, 'There must be at least 1 module'),
+  userInstructions: z.string().optional(),
 });
 
 export type CourseFormValues = z.infer<typeof courseFormSchema>;

@@ -14,14 +14,10 @@ export default function useCreateModules() {
     },
 
     onSuccess: (data, variables) => {
-      console.log('Modules created successfully:', data);
       queryClient.invalidateQueries({
         queryKey: ['modules', variables.courseId],
       });
 
-      queryClient.invalidateQueries({
-        queryKey: ['course', variables.courseId],
-      });
       toast.success('Modules generated successfully!');
       router.refresh();
     },

@@ -1,5 +1,9 @@
 import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
 
 export default function Loading() {
-  return <GeneralLoadingPage />;
+  return (
+    <div className="flex justify-center items-center ">
+      <GeneralLoadingPage />
+    </div>
+  );
 }

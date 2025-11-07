@@ -1,7 +1,31 @@
 'use client';
 
-import { BookOpenIcon } from 'lucide-react';
+import {
+  ArchiveIcon,
+  BookOpenIcon,
+  CalendarPlusIcon,
+  ClockIcon,
+  ListFilterPlusIcon,
+  MailCheckIcon,
+  MoreHorizontalIcon,
+  TagIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 interface CourseHeaderProps {
   name: string;
@@ -57,6 +81,66 @@ export const CourseHeader = ({
               <p className="text-muted-foreground text-base mt-2">{subtitle}</p>
             )}
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="More Options">
+                <MoreHorizontalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <MailCheckIcon />
+                  Mark as Read
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ArchiveIcon />
+                  Archive
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <ClockIcon />
+                  Snooze
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <CalendarPlusIcon />
+                  Add to Calendar
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ListFilterPlusIcon />
+                  Add to List
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <TagIcon />
+                    Label As...
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup>
+                      <DropdownMenuRadioItem value="personal">
+                        Personal
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="work">
+                        Work
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="other">
+                        Other
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem variant="destructive">
+                  <Trash2Icon />
+                  Trash
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

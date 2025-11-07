@@ -6,15 +6,17 @@ export default function handleCreateChapter(
   onSubmit: (payload: CreateChapterPayload) => void
 ) {
   const payload: CreateChapterPayload = {
-    courseId: values.courseId,
+    moduleId: values.moduleId,
+    moduleName: values.moduleName,
+    moduleDescription: values.moduleDescription,
+    moduleLearningObjectives: values.moduleLearningObjectives,
+    moduleKeySkills: values.moduleKeySkills,
+    estimatedDuration: values.estimatedDuration,
+    estimatedChapterCount: values.estimatedChapterCount,
     courseName: values.courseName,
-    description: values.description,
-    learningOutcomes: values.learningOutcomes,
-    duration: values.duration,
-    noOfChapters: values.noOfChapters,
     level: values.level,
     language: values.language,
-    prerequisites: values.prerequisites,
+    moduleOrder: values.moduleOrder,
   };
 
   onSubmit(payload);

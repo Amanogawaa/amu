@@ -62,13 +62,15 @@ const ChapterPage = () => {
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <Link
-            href={`/courses/${chapter.courseId}`}
+            href={`/courses/${chapter.id}`}
             className="hover:text-foreground transition-colors font-medium"
           >
             {chapter.courseName}
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
-          <span className="font-medium text-foreground">{chapter.title}</span>
+          <span className="font-medium text-foreground">
+            {chapter.chapterName}
+          </span>
         </nav>
 
         {/* Chapter Content */}
@@ -81,9 +83,9 @@ const ChapterPage = () => {
                 Chapter {chapter.chapterOrder}
               </span>
             </div>
-            <h1 className="text-3xl font-bold">{chapter.title}</h1>
+            <h1 className="text-3xl font-bold">{chapter.chapterName}</h1>
             <p className="text-muted-foreground text-lg">
-              {chapter.description}
+              {chapter.chapterDescription}
             </p>
           </div>
 

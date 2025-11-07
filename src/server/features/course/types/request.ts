@@ -5,6 +5,7 @@ export type CreateCoursePayload = {
   duration: string;
   noOfModules: number;
   language: string;
+  userInstructions?: string;
 };
 
 export type DeleteCoursePayload = {

@@ -10,6 +10,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   AuthError,
+  updateProfile,
+  UserCredential,
 } from 'firebase/auth';
 import { auth } from '@/utils/firebase';
 import Cookies from 'js-cookie';
@@ -21,8 +23,9 @@ interface AuthContextType {
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<UserCredential>;
   signOut: () => Promise<void>;
+  updateProfilePicture: (photoURL: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -121,8 +124,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push('/');
+      const result = await signInWithPopup(auth, provider);
+      return result;
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -142,6 +145,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateProfilePicture = async (photoURL: string) => {
+    try {
+      setError(null);
+      if (!user) {
+        throw new Error('No user is currently signed in');
+      }
+      await updateProfile(user, { photoURL });
+      await user.reload();
+      setUser({ ...user });
+    } catch (err) {
+      const errorMessage = getErrorMessage(err as AuthError);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -150,6 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signUp,
     signInWithGoogle,
     signOut,
+    updateProfilePicture,
     clearError,
   };
 

@@ -1,15 +1,13 @@
 'use client';
 
-import React from 'react';
-import { useGetCourse } from '../../application/useGetCourses';
-import { ChapterList } from '../../../chapters/presentation/list/ChapterList';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
 import { AlertCircle } from 'lucide-react';
+import { useGetCourse } from '../../application/useGetCourses';
+import { CourseInfoCard } from '../card/CourseInfoCard';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
-import { CourseInfoCard } from '../card/CourseInfoCard';
-import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);

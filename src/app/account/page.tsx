@@ -8,6 +8,7 @@ import {
 import { ProgressCard } from '@/features/progress/presentation/ProgressCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   User2Icon,
   BookOpen,
@@ -16,6 +17,9 @@ import {
   Award,
 } from 'lucide-react';
 import React from 'react';
+import { ProfilePictureSelector } from '@/features/user/presentation/ProfilePictureSelector';
+import { UserProfileForm } from '@/features/user/presentation/UserProfileForm';
+import { useUserProfile } from '@/features/user/application/useUser';
 
 // TODO: here will be account settings and preferences management, where user will be able to update their profile and choose their profile image
 
@@ -23,15 +27,15 @@ import React from 'react';
 
 const AccountPage = () => {
   const { user } = useAuth();
+  const { data: userProfile } = useUserProfile();
   const { data: progressSummary, isLoading: isSummaryLoading } =
     useProgressSummary();
   const { data: allProgress, isLoading: isProgressLoading } = useAllProgress();
 
-  console.log('Authenticated user:', user?.uid);
-
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-6xl ">
+        {/* Profile Header */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mt-10">
           <div className="space-y-3">
             <div className="flex items-center gap-4">
@@ -48,6 +52,51 @@ const AccountPage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* User Profile Card */}
+        <Card className="mt-8">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+              <div className="flex flex-col items-center gap-3">
+                <Avatar className="h-32 w-32 border-4 border-primary/20">
+                  <AvatarImage
+                    src={user?.photoURL || '/profile_1'}
+                    alt={user?.displayName || 'User profile'}
+                  />
+                  <AvatarFallback className="text-3xl">
+                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <ProfilePictureSelector currentPhotoURL={user?.photoURL} />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-2xl font-bold">
+                  {userProfile?.firstName || userProfile?.lastName
+                    ? `${user?.displayName || ''} ${
+                        userProfile.lastName || ''
+                      }`.trim()
+                    : user?.displayName || user?.uid}
+                </h2>
+                <p className="text-muted-foreground mt-1">{user?.email}</p>
+                <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                  <div className="px-3 py-1 bg-primary/10 rounded-full text-sm">
+                    Member since{' '}
+                    {user?.metadata.creationTime &&
+                      new Date(user.metadata.creationTime).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* User Profile Edit Form */}
+        <div className="mt-6">
+          <UserProfileForm
+            firstName={userProfile?.firstName}
+            lastName={userProfile?.lastName}
+          />
         </div>
 
         {/* Progress Summary Cards */}

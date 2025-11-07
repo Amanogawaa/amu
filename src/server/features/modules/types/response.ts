@@ -24,6 +24,8 @@ export interface Module {
   estimatedDuration: string;
   estimatedChapterCount?: number;
   learningObjectives: string[];
+  level: string;
+  language: string;
   keySkills?: string[];
   prerequisiteModules?: string[];
   createdAt?: Date;

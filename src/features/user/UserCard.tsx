@@ -9,6 +9,7 @@ import {
   Shield,
   Ban,
 } from 'lucide-react';
+import { UserProfile } from 'firebase/auth';
 
 interface UserProfileCardProps {
   userProfile: UserProfile;

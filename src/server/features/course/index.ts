@@ -4,6 +4,7 @@ import {
   CourseFilters,
   CreateCoursePayload,
   ListCoursesResponse,
+  CourseValidationResponse,
 } from './types';
 
 export async function listCourses(
@@ -39,4 +40,31 @@ export async function createCourse(
   payload: CreateCoursePayload
 ): Promise<Course> {
   return apiRequest<CreateCoursePayload, Course>('/courses', 'post', payload);
+}
+
+export async function validateCourse(
+  courseId: string
+): Promise<{ data: CourseValidationResponse; message: string }> {
+  return apiRequest<null, { data: CourseValidationResponse; message: string }>(
+    `/courses/${courseId}/validate`,
+    'get'
+  );
+}
+
+export async function publishCourse(
+  courseId: string
+): Promise<{ data: Course; message: string }> {
+  return apiRequest<null, { data: Course; message: string }>(
+    `/courses/${courseId}/publish`,
+    'patch'
+  );
+}
+
+export async function unpublishCourse(
+  courseId: string
+): Promise<{ data: Course; message: string }> {
+  return apiRequest<null, { data: Course; message: string }>(
+    `/courses/${courseId}/unpublish`,
+    'patch'
+  );
 }

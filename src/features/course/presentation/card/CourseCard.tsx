@@ -15,6 +15,7 @@ import {
   Clock,
   GraduationCap,
   Layers,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -40,14 +41,16 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
             {course.name}
           </CardTitle>
-          <Badge
-            className={
-              levelColors[course.level as keyof typeof levelColors] ||
-              levelColors.beginner
-            }
-          >
-            {course.level}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge
+              className={
+                levelColors[course.level as keyof typeof levelColors] ||
+                levelColors.beginner
+              }
+            >
+              {course.level}
+            </Badge>
+          </div>
         </div>
         {course.subtitle && (
           <CardDescription className="text-sm line-clamp-1">
@@ -69,7 +72,7 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Layers className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.no_of_chapters} chapters</span>
+            <span className="text-xs">{course.noOfChapters} modules</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <BookOpen className="w-4 h-4 text-primary" />
@@ -107,7 +110,7 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
         )}
       </CardContent>
 
-      <CardFooter className="pt-4 border-t border-border">
+      <CardFooter className="pt-4 border-t border-border flex gap-2">
         <Button
           className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           variant="outline"

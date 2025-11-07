@@ -20,6 +20,7 @@ import {
 import { useAuth } from '@/features/auth/application/AuthContext';
 import { NavigationBarUser } from './NavbarUser';
 import Image from 'next/image';
+import { ModeToggle } from '../ThemeToggle';
 
 interface MenuItem {
   title: string;
@@ -95,7 +96,8 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <ModeToggle />
             {user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="outline" className="rounded-full py-5">

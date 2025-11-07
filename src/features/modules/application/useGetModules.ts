@@ -1,4 +1,4 @@
-import { getModules } from '@/server/features/modules';
+import { getModule, getModules } from '@/server/features/modules';
 import { useQuery } from '@tanstack/react-query';
 
 export function useGetModules(courseId: string) {
@@ -9,7 +9,16 @@ export function useGetModules(courseId: string) {
     },
     enabled: !!courseId,
     staleTime: 0,
-    refetchInterval: 1000,
-    refetchIntervalInBackground: false,
+  });
+}
+
+export function useGetModule(moduleId: string) {
+  return useQuery({
+    queryKey: ['module', moduleId],
+    queryFn: async () => {
+      return getModule(moduleId);
+    },
+    enabled: !!moduleId,
+    staleTime: 0,
   });
 }

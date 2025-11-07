@@ -12,6 +12,7 @@ export default function handleCreateCourse(
     language: values.language,
     duration: values.duration,
     noOfModules: values.noOfModules,
+    userInstructions: values.userInstructions,
   };
 
   onSubmit(payload);

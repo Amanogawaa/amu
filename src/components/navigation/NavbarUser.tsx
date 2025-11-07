@@ -8,6 +8,7 @@ import {
   UserCircleIcon,
   Settings,
   BookOpen,
+  Kanban,
 } from 'lucide-react';
 
 import {
@@ -21,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { useAuth } from '@/features/auth/application/AuthContext';
 
 interface NavigationBarUserProps {
   name: string | null;
@@ -33,13 +35,22 @@ export function NavigationBarUser({
   email,
   logout,
 }: NavigationBarUserProps) {
+  const { user } = useAuth();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-accent hover:text-accent-foreground transition duration-300 rounded-full text-foreground">
-        <Avatar className="h-10 w-10 ">
+        <Avatar className="h-10 w-10 border-2 border-primary/20">
           <span className="sr-only">User Avatar</span>
-          <AvatarImage />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage
+            src={user?.photoURL || '/profile_1.png'}
+            alt={name || 'User'}
+          />
+          <AvatarFallback>
+            {name?.charAt(0).toUpperCase() ||
+              email?.charAt(0).toUpperCase() ||
+              'U'}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -75,7 +86,7 @@ export function NavigationBarUser({
             asChild
             className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
           >
-            <Link href={'/courses'}>
+            <Link href={'/my-courses'}>
               <BookOpen className="mr-2 h-4 w-4" />
               My Courses
             </Link>
@@ -91,9 +102,14 @@ export function NavigationBarUser({
               </Link>
             </DropdownMenuItem>
           )} */}
-          <DropdownMenuItem className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground">
-            <BellIcon className="mr-2 h-4 w-4" />
-            Notifications
+          <DropdownMenuItem
+            asChild
+            className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
+          >
+            <Link href={'/courses'}>
+              <Kanban className="mr-2 h-4 w-4" />
+              Courses
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border" />
