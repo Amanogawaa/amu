@@ -19,6 +19,8 @@ interface LessonContentProps {
 export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const { data: lesson, isLoading, isError } = useGetLesson(lessonId);
 
+  console.log('Lesson Data:', lesson);
+
   if (isLoading) {
     return (
       <div className="space-y-4">

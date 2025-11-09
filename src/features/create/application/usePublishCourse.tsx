@@ -13,7 +13,7 @@ export function useValidateCourse(courseId: string) {
     queryKey: ['course-validation', courseId],
     queryFn: () => validateCourse(courseId),
     enabled: !!courseId,
-    staleTime: 30000, // 30 seconds
+    staleTime: 30000,
     gcTime: 5 * 60 * 1000,
   });
 }

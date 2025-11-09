@@ -1,6 +1,6 @@
 'use client';
 
-import { useValidateCourse } from '@/features/course/application/usePublishCourse';
+import { useValidateCourse } from '@/features/create/application/usePublishCourse';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';

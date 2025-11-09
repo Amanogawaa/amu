@@ -71,7 +71,7 @@ const Navbar = ({
   const { user, signOut } = useAuth();
   return (
     <section className="py-4 sticky top-0 backdrop-blur-lg bg-background/30 border-b border-border/40 z-50 shadow-sm">
-      <div className="container max-w-6xl mx-auto">
+      <div className="container max-w-7xl mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
@@ -124,7 +124,7 @@ const Navbar = ({
         </nav>
 
         {/* Mobile Menu */}
-        <div className="block lg:hidden">
+        <div className="block lg:hidden px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">

@@ -5,7 +5,7 @@ import {
   usePublishCourse,
   useUnpublishCourse,
   useValidateCourse,
-} from '@/features/course/application/usePublishCourse';
+} from '@/features/create/application/usePublishCourse';
 import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import {
   Dialog,

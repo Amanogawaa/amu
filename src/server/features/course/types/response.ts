@@ -13,6 +13,7 @@ export type Course = {
   banner_url: string;
   include_certificate: boolean;
   publish: boolean;
+  archive: boolean;
   subtitle: string;
   created_at: Date;
   updated_at: Date;

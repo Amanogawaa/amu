@@ -1,21 +1,13 @@
 'use client';
 
 import useCreateCourse from '@/features/course/application/useCreateCourse';
-import CreateCourseForm from '@/features/course/presentation/form/CreateCourseForm';
-import React from 'react';
+import FullGenerationPage from '@/features/create/presentation/FullGenerationPage';
 
 const CreatePage = () => {
-  const { mutate, isPending } = useCreateCourse();
-
   return (
     <section className="flex flex-col min-h-screen w-full">
-      <div className="container mx-auto max-w-2xl my-auto">
-        <CreateCourseForm
-          onSubmit={(payload) => {
-            mutate(payload);
-          }}
-          isPending={isPending}
-        />
+      <div className="container mx-auto max-w-6xl my-auto space-y-6">
+        <FullGenerationPage />;
       </div>
     </section>
   );

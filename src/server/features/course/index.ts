@@ -5,6 +5,8 @@ import {
   CreateCoursePayload,
   ListCoursesResponse,
   CourseValidationResponse,
+  FullGenerationRequest,
+  FullGenerationResponse,
 } from './types';
 
 export async function listCourses(
@@ -66,5 +68,33 @@ export async function unpublishCourse(
   return apiRequest<null, { data: Course; message: string }>(
     `/courses/${courseId}/unpublish`,
     'patch'
+  );
+}
+
+export async function archiveCourse(
+  courseId: string
+): Promise<{ data: Course; message: string }> {
+  return apiRequest<null, { data: Course; message: string }>(
+    `/courses/${courseId}/archive`,
+    'patch'
+  );
+}
+
+export async function unarchiveCourse(
+  courseId: string
+): Promise<{ data: Course; message: string }> {
+  return apiRequest<null, { data: Course; message: string }>(
+    `/courses/${courseId}/unarchive`,
+    'patch'
+  );
+}
+
+export async function generateFullCourse(
+  payload: FullGenerationRequest
+): Promise<FullGenerationResponse> {
+  return apiRequest<FullGenerationRequest, FullGenerationResponse>(
+    '/courses/generate-full',
+    'post',
+    payload
   );
 }
