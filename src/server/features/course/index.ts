@@ -2,11 +2,11 @@ import apiRequest from '@/server/helpers/apiRequest';
 import {
   Course,
   CourseFilters,
-  CreateCoursePayload,
-  ListCoursesResponse,
   CourseValidationResponse,
+  CreateCoursePayload,
   FullGenerationRequest,
   FullGenerationResponse,
+  ListCoursesResponse,
 } from './types';
 
 export async function listCourses(
@@ -25,6 +25,14 @@ export async function listCourses(
     }
     if (filters.language) {
       params.append('language', filters.language);
+    }
+
+    if (filters.publish !== undefined) {
+      params.append('publish', filters.publish.toString());
+    }
+
+    if (filters.archive !== undefined) {
+      params.append('archive', filters.archive.toString());
     }
   }
 

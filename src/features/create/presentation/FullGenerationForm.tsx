@@ -67,8 +67,8 @@ export function FullGenerationForm({
   });
 
   const handleSubmit = (values: FullGenerationFormValues) => {
+    console.log('Form Values:', values);
     onSubmit(values as FullGenerationRequest);
-    // console.log('Form Submitted:', values);
   };
 
   return (
@@ -230,12 +230,16 @@ export function FullGenerationForm({
                 <FormControl>
                   <Input
                     {...field}
+                    value={field.value || ''}
                     type="number"
                     min={1}
                     max={10}
                     disabled={isGenerating}
-                    className="rounded-lg"
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                    className="rounded-lg border border-secondary p-5 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value === '' ? '' : parseInt(value, 10));
+                    }}
                   />
                 </FormControl>
                 <FormDescription>1-10 modules</FormDescription>

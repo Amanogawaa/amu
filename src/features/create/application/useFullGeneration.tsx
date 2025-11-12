@@ -9,6 +9,7 @@ import {
   FullGenerationRequest,
   GenerationStatus,
 } from '@/server/features/course/types';
+import { useRouter } from 'next/navigation';
 
 interface UseFullGenerationReturn {
   progress: GenerationProgress | null;
@@ -19,9 +20,10 @@ interface UseFullGenerationReturn {
   resetGeneration: () => void;
 }
 
-const GENERATION_TIMEOUT = 10 * 60 * 1000;
+const GENERATION_TIMEOUT = 10 * 60 * 1500;
 
 export function useFullGeneration(): UseFullGenerationReturn {
+  const router = useRouter();
   const { socket, isConnected } = useSocket();
   const [progress, setProgress] = useState<GenerationProgress | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -42,6 +44,8 @@ export function useFullGeneration(): UseFullGenerationReturn {
           } chapters, and ${data.data?.lessonsCount || 0} lessons`,
           duration: 5000,
         });
+
+        router.push(`/create/${data.data?.courseId}`);
 
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);

@@ -21,7 +21,7 @@ import {
   BookOpen,
   ChevronRight,
 } from 'lucide-react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 interface ChapterItemProps {
   chapter: {
@@ -35,20 +35,16 @@ interface ChapterItemProps {
 const ChapterItem = ({ chapter }: ChapterItemProps) => {
   const router = useRouter();
   const params = useParams();
-  const searchParams = useSearchParams();
   const courseId = params.courseId as string;
   const moduleId = params.moduleId as string;
-
-  const selectedLessonId = searchParams.get('lessonId');
+  const selectedLessonId = params.lessonId as string | undefined;
 
   const { data: lessons, isLoading: lessonsLoading } = useGetLessons(
     chapter.id
   );
 
-  const handleLessonClick = (lessonId: string, lessonName: string) => {
-    const url = `/courses/${courseId}/modules/${moduleId}?lessonId=${lessonId}&lessonName=${encodeURIComponent(
-      lessonName
-    )}`;
+  const handleLessonClick = (lessonId: string) => {
+    const url = `/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`;
     router.push(url);
   };
 
@@ -98,9 +94,7 @@ const ChapterItem = ({ chapter }: ChapterItemProps) => {
                   return (
                     <SidebarMenuSubItem key={lesson.id}>
                       <SidebarMenuSubButton
-                        onClick={() =>
-                          handleLessonClick(lesson.id, lesson.lessonName)
-                        }
+                        onClick={() => handleLessonClick(lesson.id)}
                         className="w-full cursor-pointer truncate px-3"
                         isActive={isActive}
                       >

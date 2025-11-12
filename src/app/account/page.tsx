@@ -5,6 +5,7 @@ import {
   useAllProgress,
   useProgressSummary,
 } from '@/features/progress/application/useProgress';
+import { useProgressWithCourseDetails } from '@/features/progress/application/useProgressWithCourseDetails';
 import { ProgressCard } from '@/features/progress/presentation/ProgressCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,15 +16,28 @@ import {
   TrendingUp,
   CheckCircle2,
   Award,
+  ArrowUpDown,
 } from 'lucide-react';
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { ProfilePictureSelector } from '@/features/user/presentation/ProfilePictureSelector';
 import { UserProfileForm } from '@/features/user/presentation/UserProfileForm';
 import { useUserProfile } from '@/features/user/application/useUser';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import Link from 'next/link';
 
 // TODO: here will be account settings and preferences management, where user will be able to update their profile and choose their profile image
 
 // TODO: the image will be uploaded and displayed here, user can choose from a set of predefined images or upload their own
+
+type SortOption = 'recent' | 'progress' | 'name';
+type FilterOption = 'all' | 'in-progress' | 'completed' | 'not-started';
 
 const AccountPage = () => {
   const { user } = useAuth();
@@ -31,6 +45,45 @@ const AccountPage = () => {
   const { data: progressSummary, isLoading: isSummaryLoading } =
     useProgressSummary();
   const { data: allProgress, isLoading: isProgressLoading } = useAllProgress();
+  const { data: progressWithCourses, isLoading: isEnrichingProgress } =
+    useProgressWithCourseDetails(allProgress);
+
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
+  const [filterBy, setFilterBy] = useState<FilterOption>('all');
+
+  // Filtered and sorted progress
+  const displayedProgress = useMemo(() => {
+    if (!progressWithCourses) return [];
+
+    // Filter
+    let filtered = progressWithCourses.filter((p) => {
+      if (filterBy === 'all') return true;
+      if (filterBy === 'completed') return p.percentComplete === 100;
+      if (filterBy === 'in-progress')
+        return p.percentComplete > 0 && p.percentComplete < 100;
+      if (filterBy === 'not-started') return p.percentComplete === 0;
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      if (sortBy === 'recent') {
+        return (
+          new Date(b.lastActivityAt).getTime() -
+          new Date(a.lastActivityAt).getTime()
+        );
+      }
+      if (sortBy === 'progress') {
+        return b.percentComplete - a.percentComplete;
+      }
+      if (sortBy === 'name') {
+        return (a.courseName || '').localeCompare(b.courseName || '');
+      }
+      return 0;
+    });
+
+    return filtered;
+  }, [progressWithCourses, sortBy, filterBy]);
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
@@ -177,8 +230,52 @@ const AccountPage = () => {
 
         {/* Course Progress List */}
         <div className="mt-10">
-          <h2 className="text-2xl font-bold mb-4">My Courses</h2>
-          {isProgressLoading ? (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h2 className="text-2xl font-bold">My Courses</h2>
+            <div className="flex flex-wrap gap-3">
+              {/* Filter Buttons */}
+              <div className="flex gap-2">
+                <Button
+                  variant={filterBy === 'all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterBy('all')}
+                >
+                  All
+                </Button>
+                <Button
+                  variant={filterBy === 'in-progress' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterBy('in-progress')}
+                >
+                  In Progress
+                </Button>
+                <Button
+                  variant={filterBy === 'completed' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterBy('completed')}
+                >
+                  Completed
+                </Button>
+              </div>
+
+              {/* Sort Select */}
+              <Select
+                value={sortBy}
+                onValueChange={(value) => setSortBy(value as SortOption)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recent">Recent Activity</SelectItem>
+                  <SelectItem value="progress">Progress %</SelectItem>
+                  <SelectItem value="name">Alphabetical</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {isProgressLoading || isEnrichingProgress ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[...Array(4)].map((_, i) => (
                 <Card key={i}>
@@ -196,24 +293,43 @@ const AccountPage = () => {
                 </Card>
               ))}
             </div>
-          ) : allProgress && allProgress.length > 0 ? (
+          ) : displayedProgress && displayedProgress.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {allProgress.map((progress) => (
+              {displayedProgress.map((progress) => (
                 <ProgressCard
                   key={progress.id}
                   progress={progress}
-                  courseName={`Course ${progress.courseId.substring(0, 8)}`}
+                  courseName={
+                    progress.courseName ||
+                    `Course ${progress.courseId.substring(0, 8)}`
+                  }
+                  courseDescription={progress.courseDescription}
                 />
               ))}
             </div>
+          ) : progressWithCourses && progressWithCourses.length > 0 ? (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-10">
+                <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-muted-foreground text-center mb-4">
+                  No courses match the selected filter.
+                </p>
+                <Button variant="outline" onClick={() => setFilterBy('all')}>
+                  Show All Courses
+                </Button>
+              </CardContent>
+            </Card>
           ) : (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-10">
                 <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground text-center">
+                <p className="text-muted-foreground text-center mb-4">
                   No courses enrolled yet. Start learning by exploring our
                   courses!
                 </p>
+                <Link href="/explore">
+                  <Button>Explore Courses</Button>
+                </Link>
               </CardContent>
             </Card>
           )}

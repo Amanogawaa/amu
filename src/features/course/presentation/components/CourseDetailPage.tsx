@@ -8,9 +8,14 @@ import { useGetCourse } from '../../application/useGetCourses';
 import { CourseInfoCard } from '../card/CourseInfoCard';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
+import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
+import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
+  const { data: progress, isLoading: progressLoading } =
+    useProgressForCourse(courseId);
 
   if (isLoading) {
     return (
@@ -58,11 +63,36 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
 
       <CourseInfoCard
         duration={data.duration}
-        noOfChapters={data.noOfChapters}
+        noOfModules={data.noOfModules}
         language={data.language}
-        includeCertificate={data.include_certificate}
         level={data.level}
       />
+
+      {/* Course Progress */}
+      {!progressLoading && progress && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-lg">Your Progress</h3>
+                <CourseStatusBadge percentComplete={progress.percentComplete} />
+              </div>
+              <ProgressBar
+                percent={progress.percentComplete}
+                showLabel
+                size="lg"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>
+                  {progress.lessonsCompleted.length} of {progress.totalLessons}{' '}
+                  lessons completed
+                </span>
+                <span>{progress.percentComplete}%</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <CourseContent
         description={data.description}

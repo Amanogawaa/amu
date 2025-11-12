@@ -42,7 +42,7 @@ const RegistrationForm = ({
       ) : (
         <>
           <Form {...form}>
-            <form 
+            <form
               method="post"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -139,7 +139,15 @@ const RegistrationForm = ({
             <Button
               variant="outline"
               className="w-full rounded-lg p-5 "
-              onClick={() => signInWithGoogle()}
+              onClick={async () => {
+                try {
+                  await signInWithGoogle();
+                } catch (err: any) {
+                  if (!err?.cancelled) {
+                    console.error('Google sign-in error:', err);
+                  }
+                }
+              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path

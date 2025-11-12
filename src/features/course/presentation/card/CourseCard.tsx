@@ -72,7 +72,7 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Layers className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.noOfChapters} modules</span>
+            <span className="text-xs">{course.noOfModules} modules</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <BookOpen className="w-4 h-4 text-primary" />

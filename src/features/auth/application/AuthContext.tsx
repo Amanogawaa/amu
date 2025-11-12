@@ -16,6 +16,7 @@ import {
 import { auth } from '@/utils/firebase';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { logger } from '@/lib/loggers';
 
 interface AuthContextType {
   user: User | null;
@@ -81,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             sameSite: 'strict',
           });
         } catch (err) {
-          console.error('Error getting ID token:', err);
+          logger.error('Error getting ID token:', err);
         }
       } else {
         Cookies.remove('auth-token');
@@ -127,7 +128,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await signInWithPopup(auth, provider);
       return result;
     } catch (err) {
-      const errorMessage = getErrorMessage(err as AuthError);
+      const authError = err as AuthError;
+
+      if (
+        authError.code === 'auth/popup-closed-by-user' ||
+        authError.code === 'auth/cancelled-popup-request'
+      ) {
+        return Promise.reject({ cancelled: true });
+      }
+
+      const errorMessage = getErrorMessage(authError);
       setError(errorMessage);
       throw new Error(errorMessage);
     }

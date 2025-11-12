@@ -10,8 +10,6 @@ export function useListCourses(options?: { page?: number; enabled?: boolean }) {
     queryKey: ['courses', page],
     queryFn: () => listCourses(page),
     enabled,
-    // staleTime: 0,
-    // gcTime: 10 * 60 * 1000,
   });
 }
 

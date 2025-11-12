@@ -7,7 +7,7 @@ const CreatePage = () => {
   return (
     <section className="flex flex-col min-h-screen w-full">
       <div className="container mx-auto max-w-6xl my-auto space-y-6">
-        <FullGenerationPage />;
+        <FullGenerationPage />
       </div>
     </section>
   );

@@ -8,11 +8,13 @@ import type {
 } from '../domain/types';
 import { getProfile } from '@/server/features/user';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export const useUserProfile = () => {
   return useQuery({
     queryKey: ['userProfile'],
     queryFn: async () => {
-      await getProfile();
+      return await getProfile();
     },
   });
 };
@@ -45,7 +47,6 @@ export const useUpdateUserProfile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      // Also refresh Firebase user
       user?.reload();
     },
   });

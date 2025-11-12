@@ -1,7 +1,8 @@
 'use client';
 
+import { logger } from '@/lib/loggers';
 import { createCourse } from '@/server/features/course';
-import { Course, CreateCoursePayload } from '@/server/features/course/types';
+import { CreateCoursePayload } from '@/server/features/course/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -25,7 +26,7 @@ export default function useCreateCourse() {
 
     onError: (error) => {
       toast.error('Failed to create course. Please try again.');
-      console.error('Error creating course:', error);
+      logger.error('Error creating course:', error);
     },
   });
 }

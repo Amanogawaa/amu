@@ -1,3 +1,4 @@
+import { logger } from '@/lib/loggers';
 import { createChapter } from '@/server/features/chapters';
 import { CreateChapterPayload } from '@/server/features/chapters/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -28,7 +29,7 @@ export default function useCreateChapter() {
 
     onError: (error) => {
       toast.error('Failed to create chapter. Please try again.');
-      console.error('Error creating chapter:', error);
+      logger.error('Error creating chapter:', error);
     },
   });
 }

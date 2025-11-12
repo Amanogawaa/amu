@@ -9,6 +9,7 @@ interface MarkCompleteButtonProps {
   courseId: string;
   lessonId: string;
   initialCompleted?: boolean;
+  totalLessons?: number;
   onProgressUpdate?: (completed: boolean) => void;
 }
 
@@ -16,6 +17,7 @@ export function MarkCompleteButton({
   courseId,
   lessonId,
   initialCompleted = false,
+  totalLessons,
   onProgressUpdate,
 }: MarkCompleteButtonProps) {
   const [isCompleted, setIsCompleted] = useState(initialCompleted);
@@ -28,7 +30,6 @@ export function MarkCompleteButton({
   const handleToggle = () => {
     const newCompletedState = !isCompleted;
 
-    // Optimistic update
     setIsCompleted(newCompletedState);
 
     markProgress.mutate(
@@ -36,13 +37,13 @@ export function MarkCompleteButton({
         courseId,
         lessonId,
         completed: newCompletedState,
+        totalLessons,
       },
       {
         onSuccess: () => {
           onProgressUpdate?.(newCompletedState);
         },
         onError: () => {
-          // Revert on error
           setIsCompleted(!newCompletedState);
         },
       }

@@ -1,29 +1,18 @@
 'use client';
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import {
-  Sparkles,
-  ArrowLeft,
-  AlertCircle,
-  CheckCircle2,
-  Wifi,
-  WifiOff,
-} from 'lucide-react';
-import { useSocket } from '@/provider/SocketProvider';
+import { GenerationStatus } from '@/server/features/course/types';
+import { CheckCircle2, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useFullGeneration } from '../application/useFullGeneration';
 import { FullGenerationForm } from '../presentation/FullGenerationForm';
 import { GenerationProgressDisplay } from '../presentation/GenerationProgressDisplay';
-import { GenerationStatus } from '@/server/features/course/types';
 
 export default function FullGenerationPage() {
   const router = useRouter();
-  const { isConnected } = useSocket();
-  const { progress, isGenerating, error, startGeneration, resetGeneration } =
+  const { progress, isGenerating, startGeneration, resetGeneration } =
     useFullGeneration();
 
   const isCompleted = progress?.status === GenerationStatus.COMPLETED;
@@ -54,39 +43,7 @@ export default function FullGenerationPage() {
               </p>
             </div>
           </div>
-
-          {/* Connection Status
-          <div className="flex items-center gap-2 mt-4">
-            {isConnected ? (
-              <div className="flex items-center gap-2 text-sm text-green-600">
-                <Wifi className="h-4 w-4" />
-                <span>Connected - Ready to generate</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-orange-600">
-                <WifiOff className="h-4 w-4" />
-                <span>Connecting to server...</span>
-              </div>
-            )}
-          </div> */}
         </div>
-
-        {!isConnected && (
-          <Alert className="mb-6 border-orange-500">
-            <AlertCircle className="h-4 w-4 text-orange-500" />
-            <AlertDescription>
-              Socket connection is not established. Please wait for the
-              connection before generating a course.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {error && !isGenerating && (
-          <Alert className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
 
         <div className="flex flex-col justify-center gap-8">
           <div>

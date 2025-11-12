@@ -15,14 +15,15 @@ export type DeleteCoursePayload = {
 export type CourseFilters = {
   category?: string;
   level?: string;
+  uid?: string;
+  publish?: boolean;
+  archive?: boolean;
+  search?: string;
   language?: string;
   limit?: number;
-  offset: number;
+  offset?: number;
 };
 
-/**
- * Generation Status Types
- */
 export enum GenerationStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
@@ -30,9 +31,6 @@ export enum GenerationStatus {
   FAILED = 'failed',
 }
 
-/**
- * Generation Step Types
- */
 export enum GenerationStep {
   COURSE = 'course',
   MODULES = 'modules',
@@ -40,9 +38,6 @@ export enum GenerationStep {
   LESSONS = 'lessons',
 }
 
-/**
- * Progress data received from Socket.IO
- */
 export interface GenerationProgress {
   jobId: string;
   userId: string;

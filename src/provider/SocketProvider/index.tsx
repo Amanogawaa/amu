@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { auth } from '@/utils/firebase';
+import { logger } from '@/lib/loggers';
 
 interface SocketContextType {
   socket: Socket | null;
@@ -29,20 +30,35 @@ interface SocketProviderProps {
 export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const socketRef = useRef<Socket | null>(null);
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     const initializeSocket = async () => {
+      if (isInitializedRef.current) {
+        logger.debug('Socket already initialized, skipping re-initialization');
+        return;
+      }
+
+      if (socketRef.current) {
+        logger.debug(
+          'Socket instance already exists, skipping re-initialization'
+        );
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+
+      isInitializedRef.current = true;
+
       try {
-        // Get current user's token
         const user = auth.currentUser;
         if (!user) {
-          console.log('No authenticated user, skipping socket connection');
+          logger.log('No authenticated user, skipping socket connection');
           return;
         }
 
         const token = await user.getIdToken();
 
-        // Create socket connection
         const socketInstance = io(
           process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
           {
@@ -53,42 +69,42 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionAttempts: 5,
+            timeout: 20000,
           }
         );
 
         socketInstance.on('connect', () => {
-          console.log('Socket connected:', socketInstance.id);
+          logger.log('Socket connected:', socketInstance.id);
           setIsConnected(true);
         });
 
         socketInstance.on('disconnect', (reason) => {
-          console.log('Socket disconnected:', reason);
+          logger.log('Socket disconnected:', reason);
           setIsConnected(false);
         });
 
         socketInstance.on('connect_error', (error) => {
-          console.error('Socket connection error:', error);
+          logger.error('Socket connection error:', error);
           setIsConnected(false);
         });
 
+        socketRef.current = socketInstance;
         setSocket(socketInstance);
-
-        return () => {
-          socketInstance.disconnect();
-        };
       } catch (error) {
-        console.error('Failed to initialize socket:', error);
+        logger.error('Failed to initialize socket:', error);
+      } finally {
+        isInitializedRef.current = false;
       }
     };
 
-    // Listen to auth state changes
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         initializeSocket();
       } else {
-        // Disconnect socket if user logs out
-        if (socket) {
-          socket.disconnect();
+        if (socketRef.current) {
+          logger.debug('User logged out, disconnecting socket');
+          socketRef.current.disconnect();
+          socketRef.current = null;
           setSocket(null);
           setIsConnected(false);
         }
@@ -98,7 +114,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     return () => {
       unsubscribe();
       if (socket) {
+        logger.debug('Cleaning up socket on unmount');
         socket.disconnect();
+        socketRef.current = null;
       }
     };
   }, []);

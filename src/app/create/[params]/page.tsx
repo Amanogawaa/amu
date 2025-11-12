@@ -26,7 +26,7 @@ import { Lesson } from '@/server/features/lessons/types';
 import { getChapters } from '@/server/features/chapters';
 import { getLessons } from '@/server/features/lessons';
 import { useQuery } from '@tanstack/react-query';
-import { useGetLessons } from '@/features/lessons/application/useGetLessons';
+import { useGetLessons } from '@/features/lessons/application/useGetLesson';
 
 const PublishPage = () => {
   const params = useParams();
@@ -161,12 +161,19 @@ const PublishPage = () => {
       <div className="container mx-auto max-w-6xl py-10 px-4">
         {/* Header */}
         <div className="mb-8 space-y-4">
-          <Link href="/create">
-            <Button variant="ghost" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Create
-            </Button>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href="/create">
+              <Button variant="ghost" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Create
+              </Button>
+            </Link>
+            <Link href={`/courses/${courseId}`}>
+              <Button variant="outline" className="gap-2">
+                Preview Course
+              </Button>
+            </Link>
+          </div>
 
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">

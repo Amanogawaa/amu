@@ -11,17 +11,15 @@ import {
 
 interface CourseInfoCardProps {
   duration: string;
-  noOfChapters: number;
+  noOfModules: number;
   language: string;
-  includeCertificate: boolean;
   level: string;
 }
 
 export const CourseInfoCard = ({
   duration,
-  noOfChapters,
+  noOfModules,
   language,
-  includeCertificate,
   level,
 }: CourseInfoCardProps) => {
   const infoItems = [
@@ -32,9 +30,9 @@ export const CourseInfoCard = ({
     },
     {
       icon: BookIcon,
-      label: 'Chapters',
-      value: `${noOfChapters === undefined ? 'N/A' : noOfChapters} ${
-        noOfChapters === 1 ? 'Chapter' : 'Chapters'
+      label: 'Modules',
+      value: `${noOfModules === undefined ? 'N/A' : noOfModules} ${
+        noOfModules === 1 ? 'Module' : 'Modules'
       }`,
     },
     {

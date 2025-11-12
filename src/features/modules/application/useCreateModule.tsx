@@ -1,3 +1,4 @@
+import { logger } from '@/lib/loggers';
 import { createModules } from '@/server/features/modules';
 import { CreateModulePayload } from '@/server/features/modules/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,7 +25,7 @@ export default function useCreateModules() {
 
     onError: (error) => {
       toast.error('Failed to create modules. Please try again.');
-      console.error('Error creating modules:', error);
+      logger.error('Error creating modules:', error);
     },
   });
 }

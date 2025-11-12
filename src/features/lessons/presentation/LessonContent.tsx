@@ -10,7 +10,17 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useGetLesson } from '@/features/lessons/application/useGetLesson';
-import { Button } from '@/components/ui/button';
+import {
+  TranscriptViewer,
+  VideoSelector,
+  YouTubePlayer,
+} from '@/components/video';
+import { useQuizForLesson } from '@/features/quiz/application/useQuiz';
+import { QuizPlayer } from '@/features/quiz/presentation/QuizPlayer';
+import { useLessonCourse } from '@/features/lessons/application/useLessonCourse';
+import { MarkCompleteButton } from '@/features/progress/presentation/MarkCompleteButton';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
+import { useCourseLessonCount } from '@/features/progress/application/useCourseLessonCount';
 
 interface LessonContentProps {
   lessonId: string;
@@ -18,8 +28,12 @@ interface LessonContentProps {
 
 export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const { data: lesson, isLoading, isError } = useGetLesson(lessonId);
-
-  console.log('Lesson Data:', lesson);
+  const { data: quiz, isLoading: quizLoading } = useQuizForLesson(lessonId);
+  const { data: courseInfo } = useLessonCourse(lessonId);
+  const { data: progress } = useProgressForCourse(courseInfo?.courseId || '');
+  const { data: totalLessons } = useCourseLessonCount(
+    courseInfo?.courseId || ''
+  );
 
   if (isLoading) {
     return (
@@ -70,12 +84,28 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
             Lesson {lesson.lessonOrder} • {lesson.type}
           </span>
         </div>
-        <h1 className="text-3xl font-bold">{lesson.lessonName}</h1>
-        <p className="text-muted-foreground text-lg">
-          {lesson.lessonDescription}
-        </p>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span>Duration: {lesson.duration}</span>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold">{lesson.lessonName}</h1>
+            <p className="text-muted-foreground text-lg mt-2">
+              {lesson.lessonDescription}
+            </p>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+              <span>Duration: {lesson.duration}</span>
+            </div>
+          </div>
+          {courseInfo?.courseId && (
+            <div className="flex-shrink-0">
+              <MarkCompleteButton
+                courseId={courseInfo.courseId}
+                lessonId={lessonId}
+                totalLessons={totalLessons}
+                initialCompleted={
+                  progress?.lessonsCompleted?.includes(lessonId) || false
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -83,30 +113,48 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
       {lesson.type === 'video' && lesson.videoSearchQuery && (
         <Card className="bg-blue-500/5 border-blue-500/20">
           <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <Video className="h-5 w-5 text-blue-500 mt-0.5" />
-              <div>
-                <h3 className="font-semibold mb-1">Video Content</h3>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Search for:{' '}
-                  <span className="font-medium">{lesson.videoSearchQuery}</span>
-                </p>
-                <Button size="sm" variant="outline" asChild>
-                  <a
-                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
-                      lesson.videoSearchQuery
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Search on YouTube
-                    <ExternalLink className="h-3 w-3 ml-2" />
-                  </a>
-                </Button>
-              </div>
-            </div>
+            <VideoSelector
+              searchQuery={lesson.videoSearchQuery}
+              lessonId={lessonId}
+              selectedVideoId={lesson.selectedVideoId}
+            />
+
+            <TranscriptViewer
+              lessonId={lessonId}
+              videoId={lesson.selectedVideoId}
+            />
           </CardContent>
         </Card>
+      )}
+
+      {lesson.type === 'quiz' && (
+        <div>
+          {quizLoading ? (
+            <Card>
+              <CardContent className="pt-6">
+                <Skeleton className="h-8 w-full mb-4" />
+                <Skeleton className="h-32 w-full mb-4" />
+                <Skeleton className="h-10 w-32" />
+              </CardContent>
+            </Card>
+          ) : quiz ? (
+            <QuizPlayer quiz={quiz} lessonId={lessonId} />
+          ) : (
+            <Card className="border-yellow-500/20 bg-yellow-500/5">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3 text-yellow-600 dark:text-yellow-400">
+                  <AlertCircle className="h-5 w-5" />
+                  <div>
+                    <p className="font-semibold">Quiz Not Available</p>
+                    <p className="text-sm text-muted-foreground">
+                      The quiz for this lesson hasn't been generated yet.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
 
       {/* Lesson Content */}

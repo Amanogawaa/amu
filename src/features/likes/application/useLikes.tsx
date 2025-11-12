@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/loggers';
 import {
   toggleLike,
   getLikeStatus,
@@ -20,7 +21,6 @@ export function useToggleLike(courseId: string) {
 
     onSuccess: (data) => {
       toast.success(data.data.liked ? 'Course liked!' : 'Like removed');
-      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ['likeStatus', courseId] });
       queryClient.invalidateQueries({ queryKey: ['likes', courseId] });
       queryClient.invalidateQueries({ queryKey: ['myLikes'] });
@@ -29,7 +29,7 @@ export function useToggleLike(courseId: string) {
 
     onError: (error) => {
       toast.error('Failed to update like. Please try again.');
-      console.error('Error toggling like:', error);
+      logger.error('Error toggling like:', error);
     },
   });
 }

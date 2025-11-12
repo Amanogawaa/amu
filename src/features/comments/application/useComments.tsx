@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/loggers';
 import {
   createComment,
   getCommentsForCourse,
@@ -34,7 +35,7 @@ export function useCreateComment(courseId: string) {
 
     onError: (error) => {
       toast.error('Failed to post comment. Please try again.');
-      console.error('Error creating comment:', error);
+      logger.error('Error creating comment:', error);
     },
   });
 }
@@ -97,7 +98,7 @@ export function useUpdateComment() {
 
     onError: (error) => {
       toast.error('Failed to update comment. Please try again.');
-      console.error('Error updating comment:', error);
+      logger.error('Error updating comment:', error);
     },
   });
 }
@@ -119,7 +120,7 @@ export function useDeleteComment(courseId: string) {
 
     onError: (error) => {
       toast.error('Failed to delete comment. Please try again.');
-      console.error('Error deleting comment:', error);
+      logger.error('Error deleting comment:', error);
     },
   });
 }

@@ -21,7 +21,7 @@ const ModuleForm = ({ courseId }: { courseId: string }) => {
       level: course.level,
       duration: course.duration,
       language: course.language,
-      noOfModules: course.noOfChapters,
+      noOfModules: course.noOfModules,
       prerequisites: course.prequisites || '',
     };
 

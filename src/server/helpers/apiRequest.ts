@@ -9,7 +9,7 @@ export default async function apiRequest<TPayload, TResponse>(
 ): Promise<TResponse> {
   try {
     const config: AxiosRequestConfig = {
-      baseURL: process.env.API_BASE_URL ?? '/api',
+      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api',
       ...axiosConfigOverride,
     };
     const serverConnectionInstance =

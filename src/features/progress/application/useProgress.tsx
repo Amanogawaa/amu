@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/loggers';
 import {
   markLessonProgress,
   getProgressForCourse,
@@ -27,7 +28,6 @@ export function useMarkLessonProgress() {
       toast.success(
         variables.completed ? 'Lesson marked complete!' : 'Progress updated'
       );
-      // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['progress'] });
       queryClient.invalidateQueries({
         queryKey: ['progress', variables.courseId],
@@ -37,7 +37,7 @@ export function useMarkLessonProgress() {
 
     onError: (error) => {
       toast.error('Failed to update progress. Please try again.');
-      console.error('Error updating progress:', error);
+      logger.error('Error updating progress:', error);
     },
   });
 }
@@ -50,7 +50,6 @@ export function useProgressForCourse(courseId: string) {
         const response = await getProgressForCourse(courseId);
         return response.data;
       } catch (error: any) {
-        // Return null if no progress found (404)
         if (error.message?.includes('404') || error.response?.status === 404) {
           return null;
         }
@@ -98,7 +97,7 @@ export function useDeleteProgress() {
 
     onError: (error) => {
       toast.error('Failed to reset progress. Please try again.');
-      console.error('Error deleting progress:', error);
+      logger.error('Error deleting progress:', error);
     },
   });
 }

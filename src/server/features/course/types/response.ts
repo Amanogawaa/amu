@@ -9,7 +9,7 @@ export type Course = {
   language: string;
   learning_outcomes: string[];
   duration: string;
-  noOfChapters: number;
+  noOfModules: number;
   banner_url: string;
   include_certificate: boolean;
   publish: boolean;

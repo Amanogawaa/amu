@@ -1,3 +1,5 @@
+'use client';
+
 import { getLesson, getLessons } from '@/server/features/lessons';
 import { useQuery } from '@tanstack/react-query';
 
