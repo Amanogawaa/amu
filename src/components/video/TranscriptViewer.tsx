@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileText, Download, Copy, Check, RefreshCw } from 'lucide-react';
+import { logger } from '@/lib/loggers';
 
 interface TranscriptViewerProps {
   lessonId: string;
@@ -64,7 +65,7 @@ export const TranscriptViewer = ({
       const data = await response.json();
       setTranscript(data);
     } catch (err) {
-      console.error('Error fetching transcript:', err);
+      logger.error('Error fetching transcript:', err);
       setError('Failed to load transcript. Please try again.');
     } finally {
       setLoading(false);
@@ -107,7 +108,7 @@ export const TranscriptViewer = ({
         stats: data.stats,
       });
     } catch (err: any) {
-      console.error('Error generating transcript:', err);
+      logger.error('Error generating transcript:', err);
       setError(err.message || 'Failed to generate transcript');
     } finally {
       setLoading(false);
@@ -122,7 +123,7 @@ export const TranscriptViewer = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      logger.error('Failed to copy:', err);
     }
   };
 

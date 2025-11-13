@@ -1,4 +1,5 @@
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { createChapter } from '@/server/features/chapters';
 import { CreateChapterPayload } from '@/server/features/chapters/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,11 +17,11 @@ export default function useCreateChapter() {
 
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['chapters', variables.moduleId],
+        queryKey: queryKeys.chapters.list(variables.moduleId),
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['module', variables.moduleId],
+        queryKey: queryKeys.modules.detail(variables.moduleId),
       });
 
       toast.success('Chapter created successfully!');
@@ -28,8 +29,7 @@ export default function useCreateChapter() {
     },
 
     onError: (error) => {
-      toast.error('Failed to create chapter. Please try again.');
-      logger.error('Error creating chapter:', error);
+      showErrorToast(error, 'Failed to create chapter. Please try again.');
     },
   });
 }

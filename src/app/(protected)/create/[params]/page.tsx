@@ -2,6 +2,7 @@
 
 import { redirect, useParams } from 'next/navigation';
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { useGetCourse } from '@/features/course/application/useGetCourses';
 import { useGetModules } from '@/features/modules/application/useGetModules';
 import {
@@ -12,10 +13,7 @@ import {
   useArchiveCourse,
   useUnarchiveCourse,
 } from '@/features/create/application/useArchiveCourse';
-import {
-  CoursePreview,
-  CoursePreviewSkeleton,
-} from '@/features/create/presentation/CoursePreview';
+import { CoursePreviewSkeleton } from '@/features/create/presentation/CoursePreview';
 import { PublishArchiveActions } from '@/features/create/presentation/PublishArchiveActions';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
@@ -28,11 +26,21 @@ import { getLessons } from '@/server/features/lessons';
 import { useQuery } from '@tanstack/react-query';
 import { useGetLessons } from '@/features/lessons/application/useGetLesson';
 
+const CoursePreview = dynamic(
+  () =>
+    import('@/features/create/presentation/CoursePreview').then((mod) => ({
+      default: mod.CoursePreview,
+    })),
+  {
+    loading: () => <CoursePreviewSkeleton />,
+    ssr: false,
+  }
+);
+
 const PublishPage = () => {
   const params = useParams();
   const courseId = params.params as string;
 
-  // Fetch course data
   const {
     data: course,
     isLoading: isCourseLoading,
@@ -41,11 +49,9 @@ const PublishPage = () => {
   const { data: modules = [], isLoading: isModulesLoading } =
     useGetModules(courseId);
 
-  // Fetch validation data
   const { data: validationData, isLoading: isValidating } =
     useValidateCourse(courseId);
 
-  // Fetch all chapters for all modules
   const { data: allChapters = [], isLoading: isChaptersLoading } = useQuery({
     queryKey: ['all-chapters', courseId, modules],
     queryFn: async () => {
@@ -60,7 +66,6 @@ const PublishPage = () => {
     enabled: modules.length > 0,
   });
 
-  // Fetch all lessons for all chapters
   const { data: allLessons = [], isLoading: isLessonsLoading } = useQuery({
     queryKey: ['all-lessons', courseId, allChapters],
     queryFn: async () => {
@@ -79,9 +84,6 @@ const PublishPage = () => {
     allChapters.length > 0 ? allChapters[0].id : ''
   );
 
-  console.log('Lessons for first chapter:', lessons);
-
-  // Mutations
   const { mutate: publishCourse, isPending: isPublishing } = usePublishCourse();
   const { mutate: archiveCourse, isPending: isArchiving } = useArchiveCourse();
   const { mutate: unarchiveCourse, isPending: isUnarchiving } =

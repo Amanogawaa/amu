@@ -1,5 +1,7 @@
 'use client';
 
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { archiveCourse, unarchiveCourse } from '@/server/features/course';
 import { toast } from 'sonner';
@@ -11,18 +13,16 @@ export function useArchiveCourse() {
     mutationFn: (courseId: string) => archiveCourse(courseId),
     onSuccess: (data, courseId) => {
       toast.success('Course archived successfully!');
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
       queryClient.invalidateQueries({
-        queryKey: ['course-validation', courseId],
+        queryKey: queryKeys.courses.detail(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.validation(courseId),
       });
     },
     onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Failed to archive course';
-      toast.error(errorMessage);
+      showErrorToast(error, 'Failed to archive course');
     },
   });
 }
@@ -34,18 +34,16 @@ export function useUnarchiveCourse() {
     mutationFn: (courseId: string) => unarchiveCourse(courseId),
     onSuccess: (data, courseId) => {
       toast.success('Course unarchived successfully!');
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
       queryClient.invalidateQueries({
-        queryKey: ['course-validation', courseId],
+        queryKey: queryKeys.courses.detail(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.validation(courseId),
       });
     },
     onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Failed to unarchive course';
-      toast.error(errorMessage);
+      showErrorToast(error, 'Failed to unarchive course');
     },
   });
 }

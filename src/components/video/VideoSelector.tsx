@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Play, ExternalLink } from 'lucide-react';
 import { YouTubePlayer } from './YouTubePlayer';
+import { logger } from '@/lib/loggers';
 
 interface Video {
   videoId: string;
@@ -63,7 +64,7 @@ export const VideoSelector = ({
         onVideoSelect?.(firstVideoId);
       }
     } catch (error) {
-      console.error('Failed to fetch videos:', error);
+      logger.error('Failed to fetch videos:', error);
       setError('Failed to load videos. Please try again later.');
     } finally {
       setLoading(false);

@@ -14,6 +14,7 @@ import {
 import { Loader2, Pencil, Save, X } from 'lucide-react';
 import { useUpdateUserProfile } from '../application/useUser';
 import { toast } from 'sonner';
+import { logger } from '@/lib/loggers';
 
 interface UserProfileFormProps {
   firstName?: string;
@@ -37,7 +38,7 @@ export function UserProfileForm({ firstName, lastName }: UserProfileFormProps) {
       toast.success('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      logger.error('Error updating profile:', error);
       toast.error('Failed to update profile');
     }
   };

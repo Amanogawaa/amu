@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getCourseById } from '@/server/features/course';
 import type { UserProgress } from '@/server/features/progress/types';
+import { logger } from '@/lib/loggers';
 
 export function useProgressWithCourseDetails(
   progress: UserProgress[] | undefined
@@ -29,7 +30,7 @@ export function useProgressWithCourseDetails(
             courseLevel: course.level,
           };
         } catch (error) {
-          console.error(`Error fetching course ${p.courseId}:`, error);
+          logger.error(`Error fetching course ${p.courseId}:`, error);
           return {
             ...p,
             courseName: `Course ${p.courseId.substring(0, 8)}`,

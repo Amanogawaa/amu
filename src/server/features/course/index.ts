@@ -42,6 +42,39 @@ export async function listCourses(
   return apiRequest<null, ListCoursesResponse>(url, 'get');
 }
 
+export async function listMyCourses(
+  page: number,
+  filters?: CourseFilters
+): Promise<ListCoursesResponse> {
+  const params = new URLSearchParams();
+  params.append('page', page.toString());
+
+  if (filters) {
+    if (filters.category) {
+      params.append('category', filters.category);
+    }
+    if (filters.level) {
+      params.append('level', filters.level);
+    }
+    if (filters.language) {
+      params.append('language', filters.language);
+    }
+
+    if (filters.publish !== undefined) {
+      params.append('publish', filters.publish.toString());
+    }
+
+    if (filters.archive !== undefined) {
+      params.append('archive', filters.archive.toString());
+    }
+  }
+
+  const queryString = params.toString();
+  const url = `/my-courses?${queryString ? `${queryString}` : ''}`;
+
+  return apiRequest<null, ListCoursesResponse>(url, 'get');
+}
+
 export async function getCourseById(courseId: string): Promise<Course> {
   return apiRequest<null, Course>(`/courses/${courseId}`, 'get');
 }

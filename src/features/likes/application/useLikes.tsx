@@ -1,6 +1,7 @@
 'use client';
 
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import {
   toggleLike,
   getLikeStatus,
@@ -21,22 +22,25 @@ export function useToggleLike(courseId: string) {
 
     onSuccess: (data) => {
       toast.success(data.data.liked ? 'Course liked!' : 'Like removed');
-      queryClient.invalidateQueries({ queryKey: ['likeStatus', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['likes', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['myLikes'] });
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.likes.status(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.likes.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.likes.my() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.detail(courseId),
+      });
     },
 
     onError: (error) => {
-      toast.error('Failed to update like. Please try again.');
-      logger.error('Error toggling like:', error);
+      showErrorToast(error, 'Failed to update like. Please try again.');
     },
   });
 }
 
 export function useLikeStatus(courseId: string) {
   return useQuery({
-    queryKey: ['likeStatus', courseId],
+    queryKey: queryKeys.likes.status(courseId),
     queryFn: async () => {
       const response = await getLikeStatus(courseId);
       return response.data;
@@ -47,7 +51,7 @@ export function useLikeStatus(courseId: string) {
 
 export function useLikesForCourse(courseId: string, limit = 50, offset = 0) {
   return useQuery({
-    queryKey: ['likes', courseId, limit, offset],
+    queryKey: queryKeys.likes.course(courseId, limit, offset),
     queryFn: async () => {
       const response = await getLikesForCourse(courseId, limit, offset);
       return response.data;
@@ -58,7 +62,7 @@ export function useLikesForCourse(courseId: string, limit = 50, offset = 0) {
 
 export function useMyLikes() {
   return useQuery<Like[]>({
-    queryKey: ['myLikes'],
+    queryKey: queryKeys.likes.my(),
     queryFn: async () => {
       const response = await getMyLikes();
       return response.data;

@@ -1,3 +1,5 @@
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/application/AuthContext';
 import type {
@@ -7,12 +9,13 @@ import type {
   UserResponse,
 } from '../domain/types';
 import { getProfile } from '@/server/features/user';
+import { toast } from 'sonner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export const useUserProfile = () => {
   return useQuery({
-    queryKey: ['userProfile'],
+    queryKey: queryKeys.user.profile(),
     queryFn: async () => {
       return await getProfile();
     },
@@ -46,8 +49,12 @@ export const useUpdateUserProfile = () => {
       return data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      toast.success('Profile updated successfully!');
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile() });
       user?.reload();
+    },
+    onError: (error) => {
+      showErrorToast(error, 'Failed to update profile');
     },
   });
 };
@@ -81,9 +88,12 @@ export const useUploadProfilePicture = () => {
       return data.data.photoURL;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      // Also refresh Firebase user
+      toast.success('Profile picture updated!');
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile() });
       user?.reload();
+    },
+    onError: (error) => {
+      showErrorToast(error, 'Failed to upload profile picture');
     },
   });
 };

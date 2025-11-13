@@ -5,6 +5,7 @@ import { CardContent } from '@/components/ui/card';
 import { useGetModule } from '@/features/modules/application/useGetModules';
 import { Loader2, PackageXIcon, Sparkles } from 'lucide-react';
 import useCreateChapter from '../../application/useCreateChapter';
+import { logger } from '@/lib/loggers';
 
 const ChapterForm = ({ moduleId }: { moduleId: string }) => {
   const { mutateAsync, isPending } = useCreateChapter();
@@ -30,7 +31,7 @@ const ChapterForm = ({ moduleId }: { moduleId: string }) => {
     try {
       await mutateAsync(payload);
     } catch (err) {
-      console.error('Module generation failed', err);
+      logger.error('Module generation failed', err);
       throw err;
     }
   };

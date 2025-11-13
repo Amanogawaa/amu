@@ -1,6 +1,7 @@
 'use client';
 
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import {
   createComment,
   getCommentsForCourse,
@@ -28,14 +29,15 @@ export function useCreateComment(courseId: string) {
 
     onSuccess: () => {
       toast.success('Comment posted successfully!');
-      queryClient.invalidateQueries({ queryKey: ['comments', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['myComments'] });
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.my() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.detail(courseId),
+      });
     },
 
     onError: (error) => {
-      toast.error('Failed to post comment. Please try again.');
-      logger.error('Error creating comment:', error);
+      showErrorToast(error, 'Failed to post comment. Please try again.');
     },
   });
 }
@@ -47,7 +49,12 @@ export function useCommentsForCourse(
   parentId?: string | null
 ) {
   return useQuery({
-    queryKey: ['comments', courseId, limit, offset, parentId],
+    queryKey: queryKeys.comments.course(
+      courseId,
+      limit,
+      offset,
+      parentId ?? undefined
+    ),
     queryFn: async () => {
       const response = await getCommentsForCourse(
         courseId,
@@ -63,7 +70,7 @@ export function useCommentsForCourse(
 
 export function useComment(commentId: string) {
   return useQuery<Comment>({
-    queryKey: ['comment', commentId],
+    queryKey: queryKeys.comments.detail(commentId),
     queryFn: async () => {
       const response = await getCommentById(commentId);
       return response.data;
@@ -89,16 +96,15 @@ export function useUpdateComment() {
     onSuccess: (data) => {
       toast.success('Comment updated successfully!');
       queryClient.invalidateQueries({
-        queryKey: ['comment', data.data.id],
+        queryKey: queryKeys.comments.detail(data.data.id),
       });
       queryClient.invalidateQueries({
-        queryKey: ['comments', data.data.courseId],
+        queryKey: queryKeys.comments.lists(),
       });
     },
 
     onError: (error) => {
-      toast.error('Failed to update comment. Please try again.');
-      logger.error('Error updating comment:', error);
+      showErrorToast(error, 'Failed to update comment. Please try again.');
     },
   });
 }
@@ -113,21 +119,22 @@ export function useDeleteComment(courseId: string) {
 
     onSuccess: () => {
       toast.success('Comment deleted successfully');
-      queryClient.invalidateQueries({ queryKey: ['comments', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['myComments'] });
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.my() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.detail(courseId),
+      });
     },
 
     onError: (error) => {
-      toast.error('Failed to delete comment. Please try again.');
-      logger.error('Error deleting comment:', error);
+      showErrorToast(error, 'Failed to delete comment. Please try again.');
     },
   });
 }
 
 export function useMyComments() {
   return useQuery<Comment[]>({
-    queryKey: ['myComments'],
+    queryKey: queryKeys.comments.my(),
     queryFn: async () => {
       const response = await getMyComments();
       return response.data;
@@ -137,7 +144,7 @@ export function useMyComments() {
 
 export function useReplies(parentId: string) {
   return useQuery<Comment[]>({
-    queryKey: ['replies', parentId],
+    queryKey: queryKeys.comments.replies(parentId),
     queryFn: async () => {
       const response = await getReplies(parentId);
       return response.data;

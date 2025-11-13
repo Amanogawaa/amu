@@ -14,10 +14,15 @@ interface GeneralEmptyPageProps {
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
-  type?: 'course' | 'lesson' | 'chapter' | 'default';
+  type?: 'course' | 'lesson' | 'chapter' | 'default' | 'publish';
 }
 
 const emptyStateConfig = {
+  publish: {
+    icon: BookOpen,
+    title: 'No published courses',
+    description: 'There are no published courses available at the moment.',
+  },
   course: {
     icon: BookOpen,
     title: 'No courses found',

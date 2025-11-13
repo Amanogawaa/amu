@@ -15,15 +15,6 @@ const CoursesPage = () => {
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-5xl ">
-        {/* <div className="flex items-center text-sm text-muted-foreground mb-6 uppercase tracking-wider">
-          <Link
-            href="/courses"
-            className="hover:text-foreground transi1tion-colors"
-          >
-            COURSE
-          </Link>
-        </div> */}
-
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mt-10">
           <div className="space-y-3">
             <div className="flex items-center gap-4">
@@ -35,14 +26,13 @@ const CoursesPage = () => {
                   MY COURSES
                 </h1>
                 <p className="text-muted-foreground text-lg">
-                  List of courses you are enrolled in
+                  Manage your generated courses
                 </p>
               </div>
             </div>
           </div>
         </div>
-        {/* <SocketTestPanel /> */}
-        <CourseGrid />
+        <CourseGrid uid={user.uid} />
       </div>
     </section>
   );

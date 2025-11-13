@@ -25,6 +25,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { FullGenerationRequest } from '@/server/features/course/types';
+import { logger } from '@/lib/loggers';
 
 const fullGenerationSchema = z.object({
   topic: z.string().min(3, 'Topic must be at least 3 characters'),
@@ -67,7 +68,7 @@ export function FullGenerationForm({
   });
 
   const handleSubmit = (values: FullGenerationFormValues) => {
-    console.log('Form Values:', values);
+    logger.log('Form Values:', values);
     onSubmit(values as FullGenerationRequest);
   };
 

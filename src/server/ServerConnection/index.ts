@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { auth } from '@/utils/firebase';
 import { User } from 'firebase/auth';
 import Cookies from 'js-cookie';
+import { logger } from '@/lib/loggers';
 
 class serverConnectionSingleton {
   private static instance: AxiosInstance;
@@ -48,7 +49,7 @@ class serverConnectionSingleton {
             const token = await currentUser.getIdToken();
             config.headers.Authorization = `Bearer ${token}`;
           } catch (error) {
-            console.error('Error getting ID token:', error);
+            logger.error('Error getting ID token:', error);
             const cookieToken = Cookies.get('auth-token');
             if (cookieToken) {
               config.headers.Authorization = `Bearer ${cookieToken}`;
@@ -71,7 +72,7 @@ class serverConnectionSingleton {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          console.error(
+          logger.error(
             'Unauthorized access - possibly expired token or no token.'
           );
           Cookies.remove('auth-token');

@@ -1,6 +1,7 @@
 'use client';
 
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import {
   markLessonProgress,
   getProgressForCourse,
@@ -28,23 +29,22 @@ export function useMarkLessonProgress() {
       toast.success(
         variables.completed ? 'Lesson marked complete!' : 'Progress updated'
       );
-      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.progress.all });
       queryClient.invalidateQueries({
-        queryKey: ['progress', variables.courseId],
+        queryKey: queryKeys.progress.course(variables.courseId),
       });
-      queryClient.invalidateQueries({ queryKey: ['progressSummary'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.progress.summary() });
     },
 
     onError: (error) => {
-      toast.error('Failed to update progress. Please try again.');
-      logger.error('Error updating progress:', error);
+      showErrorToast(error, 'Failed to update progress. Please try again.');
     },
   });
 }
 
 export function useProgressForCourse(courseId: string) {
   return useQuery<UserProgress | null>({
-    queryKey: ['progress', courseId],
+    queryKey: queryKeys.progress.course(courseId),
     queryFn: async () => {
       try {
         const response = await getProgressForCourse(courseId);
@@ -62,7 +62,7 @@ export function useProgressForCourse(courseId: string) {
 
 export function useAllProgress() {
   return useQuery<UserProgress[]>({
-    queryKey: ['progress'],
+    queryKey: queryKeys.progress.all,
     queryFn: async () => {
       const response = await getAllProgress();
       return response.data;
@@ -72,7 +72,7 @@ export function useAllProgress() {
 
 export function useProgressSummary() {
   return useQuery<ProgressSummary>({
-    queryKey: ['progressSummary'],
+    queryKey: queryKeys.progress.summary(),
     queryFn: async () => {
       const response = await getProgressSummary();
       return response.data;
@@ -90,14 +90,15 @@ export function useDeleteProgress() {
 
     onSuccess: (_, courseId) => {
       toast.success('Progress reset successfully');
-      queryClient.invalidateQueries({ queryKey: ['progress'] });
-      queryClient.invalidateQueries({ queryKey: ['progress', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['progressSummary'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.progress.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.progress.course(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.progress.summary() });
     },
 
     onError: (error) => {
-      toast.error('Failed to reset progress. Please try again.');
-      logger.error('Error deleting progress:', error);
+      showErrorToast(error, 'Failed to reset progress. Please try again.');
     },
   });
 }

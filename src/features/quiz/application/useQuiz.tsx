@@ -1,6 +1,7 @@
 'use client';
 
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import {
   getQuizForLesson,
   submitQuiz,
@@ -13,7 +14,7 @@ import { toast } from 'sonner';
 
 export function useQuizForLesson(lessonId: string) {
   return useQuery({
-    queryKey: ['quiz', lessonId],
+    queryKey: queryKeys.quiz.lesson(lessonId),
     queryFn: async () => {
       const response = await getQuizForLesson(lessonId);
       return response.data;
@@ -40,21 +41,22 @@ export function useSubmitQuiz(quizId: string, lessonId: string) {
         toast.error(`Quiz failed. You scored ${score}%. Try again!`);
       }
 
-      queryClient.invalidateQueries({ queryKey: ['quiz', lessonId] });
-      queryClient.invalidateQueries({ queryKey: ['attempts', quizId] });
-      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.quiz.lesson(lessonId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.quiz.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.progress.all });
     },
 
     onError: (error) => {
-      toast.error('Failed to submit quiz. Please try again.');
-      logger.error('Error submitting quiz:', error);
+      showErrorToast(error, 'Failed to submit quiz. Please try again.');
     },
   });
 }
 
 export function useUserAttempts(quizId: string) {
   return useQuery({
-    queryKey: ['attempts', quizId],
+    queryKey: [...queryKeys.quiz.all, 'attempts', quizId],
     queryFn: async () => {
       const response = await getUserAttempts(quizId);
       return response.data;
@@ -65,7 +67,7 @@ export function useUserAttempts(quizId: string) {
 
 export function useAttempt(attemptId: string) {
   return useQuery({
-    queryKey: ['attempt', attemptId],
+    queryKey: [...queryKeys.quiz.all, 'attempt', attemptId],
     queryFn: async () => {
       const response = await getAttemptById(attemptId);
       return response.data;

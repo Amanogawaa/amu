@@ -1,6 +1,7 @@
 'use client';
 
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { createCourse } from '@/server/features/course';
 import { CreateCoursePayload } from '@/server/features/course/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,19 +15,17 @@ export default function useCreateCourse() {
   return useMutation({
     mutationFn: async (payload: CreateCoursePayload) => {
       const result = await createCourse(payload);
-
       return result;
     },
 
     onSuccess: (data: any) => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all });
       toast.success('Course created successfully!');
       router.push(`/create/${data.data.id}`);
     },
 
     onError: (error) => {
-      toast.error('Failed to create course. Please try again.');
-      logger.error('Error creating course:', error);
+      showErrorToast(error, 'Failed to create course. Please try again.');
     },
   });
 }

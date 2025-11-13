@@ -1,19 +1,7 @@
-'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function CTA() {
-  const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle email submission logic here
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
-  };
-
   return (
     <section
       id="cta"
@@ -54,15 +42,10 @@ export default function CTA() {
         </p>
 
         {/* Email form */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-8 max-w-2xl mx-auto"
-        >
+        <form className="flex flex-col sm:flex-row gap-4 justify-center mb-8 max-w-2xl mx-auto">
           <div className="relative flex-1">
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
               className="w-full px-6 py-4 rounded-full text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/50 transition-all shadow-lg"
@@ -85,39 +68,16 @@ export default function CTA() {
             type="submit"
             className="group bg-primary hover:bg-white hover:text-primary text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl whitespace-nowrap"
           >
-            {isSubmitted ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Subscribed!
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                Get Early Access
-                <svg
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </span>
-            )}
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Subscribed!
+            </span>
           </button>
         </form>
 

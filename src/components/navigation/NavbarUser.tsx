@@ -86,9 +86,9 @@ export function NavigationBarUser({
             asChild
             className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
           >
-            <Link href={'/my-courses'}>
+            <Link href={'/my-learning'}>
               <BookOpen className="mr-2 h-4 w-4" />
-              My Courses
+              My Learning
             </Link>
           </DropdownMenuItem>
           {/* {isAdmin && (

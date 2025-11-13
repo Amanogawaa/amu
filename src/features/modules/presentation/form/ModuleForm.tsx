@@ -5,6 +5,7 @@ import { CardContent } from '@/components/ui/card';
 import { useGetCourse } from '@/features/course/application/useGetCourses';
 import { Loader2, PackageXIcon, Sparkles } from 'lucide-react';
 import useCreateModules from '../../application/useCreateModule';
+import { logger } from '@/lib/loggers';
 
 const ModuleForm = ({ courseId }: { courseId: string }) => {
   const { data: course } = useGetCourse(courseId);
@@ -28,7 +29,7 @@ const ModuleForm = ({ courseId }: { courseId: string }) => {
     try {
       await mutateAsync(payload);
     } catch (err) {
-      console.error('Module generation failed', err);
+      logger.error('Module generation failed', err);
     }
   };
 

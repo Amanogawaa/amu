@@ -1,5 +1,6 @@
 export type Course = {
   id: string;
+  uid: string;
   name: string;
   description: string;
   category: string;
@@ -12,6 +13,11 @@ export type Course = {
   noOfModules: number;
   banner_url: string;
   include_certificate: boolean;
+  enrollmentCount?: number;
+  skillsGained: string[];
+  likesCount?: number;
+  commentsCount?: number;
+  isEnrolled?: boolean;
   publish: boolean;
   archive: boolean;
   subtitle: string;

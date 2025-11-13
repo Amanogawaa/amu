@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { logger } from '@/lib/loggers';
 
 interface Notification {
   type: string;
@@ -21,7 +22,7 @@ export function SocketTestPanel() {
 
     // Listen for notifications
     socket.on('notification', (data: Notification) => {
-      console.log('Received notification:', data);
+      logger.log('Received notification:', data);
       setNotifications((prev) => [data, ...prev].slice(0, 10)); // Keep last 10
     });
 
@@ -37,7 +38,7 @@ export function SocketTestPanel() {
     }
 
     // This would typically be done from the backend
-    console.log('Socket connected, ID:', socket.id);
+    logger.log('Socket connected, ID:', socket.id);
   };
 
   const clearNotifications = () => {

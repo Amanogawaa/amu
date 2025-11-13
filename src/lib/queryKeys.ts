@@ -49,6 +49,18 @@ export const queryKeys = {
       [...queryKeys.progress.all, courseId] as const,
   },
 
+  // Enrollments
+  enrollments: {
+    all: ['enrollments'] as const,
+    lists: () => [...queryKeys.enrollments.all, 'list'] as const,
+    list: (filters?: any) =>
+      [...queryKeys.enrollments.lists(), filters] as const,
+    status: (courseId: string) =>
+      [...queryKeys.enrollments.all, 'status', courseId] as const,
+    count: (courseId: string) =>
+      [...queryKeys.enrollments.all, 'count', courseId] as const,
+  },
+
   // Comments
   comments: {
     all: ['comments'] as const,

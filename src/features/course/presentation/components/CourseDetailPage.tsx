@@ -55,10 +55,14 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   return (
     <div className="space-y-6">
       <CourseHeader
+        courseId={courseId}
         name={data.name}
         subtitle={data.subtitle}
         category={data.category}
         level={data.level}
+        ownerId={data.uid}
+        isPublished={data.publish}
+        isArchived={data.archive}
       />
 
       <CourseInfoCard

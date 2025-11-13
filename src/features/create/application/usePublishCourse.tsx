@@ -1,5 +1,7 @@
 'use client';
 
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   publishCourse,
@@ -10,7 +12,7 @@ import { toast } from 'sonner';
 
 export function useValidateCourse(courseId: string) {
   return useQuery({
-    queryKey: ['course-validation', courseId],
+    queryKey: queryKeys.courses.validation(courseId),
     queryFn: () => validateCourse(courseId),
     enabled: !!courseId,
     staleTime: 30000,
@@ -25,18 +27,16 @@ export function usePublishCourse() {
     mutationFn: (courseId: string) => publishCourse(courseId),
     onSuccess: (data, courseId) => {
       toast.success('Course published successfully!');
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
       queryClient.invalidateQueries({
-        queryKey: ['course-validation', courseId],
+        queryKey: queryKeys.courses.detail(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.validation(courseId),
       });
     },
     onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Failed to publish course';
-      toast.error(errorMessage);
+      showErrorToast(error, 'Failed to publish course');
     },
   });
 }
@@ -48,15 +48,13 @@ export function useUnpublishCourse() {
     mutationFn: (courseId: string) => unpublishCourse(courseId),
     onSuccess: (data, courseId) => {
       toast.success('Course unpublished successfully!');
-      queryClient.invalidateQueries({ queryKey: ['course', courseId] });
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.detail(courseId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.all });
     },
     onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Failed to unpublish course';
-      toast.error(errorMessage);
+      showErrorToast(error, 'Failed to unpublish course');
     },
   });
 }

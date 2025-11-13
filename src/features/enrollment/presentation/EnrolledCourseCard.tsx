@@ -10,26 +10,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useEnrollmentCount } from '@/features/enrollment/application/useEnrollment';
-import { Course } from '@/server/features/course/types';
+import { EnrollmentWithCourse } from '@/server/features/enrollment/types';
 import {
   ArrowRight,
   BookOpen,
   Clock,
   GraduationCap,
   Layers,
-  Trash2,
-  User2,
+  Calendar,
 } from 'lucide-react';
 import Link from 'next/link';
 
-interface CourseCardProps {
-  course: Course;
-  href?: string;
+interface EnrolledCourseCardProps {
+  enrollment: EnrollmentWithCourse;
 }
 
-const CourseCard = ({ course, href }: CourseCardProps) => {
-  const { data: enrollmentCount } = useEnrollmentCount(course.id);
+const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
+  const { course, enrolledAt, status } = enrollment;
 
   const levelColors = {
     beginner:
@@ -40,14 +37,30 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
       'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize',
   };
 
-  const cardContent = (
+  const statusColors = {
+    active:
+      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    completed: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
+    dropped: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+  };
+
+  const formatEnrollmentDate = (date: Date) => {
+    const enrollDate = new Date(date);
+    return enrollDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  return (
     <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
             {course.name}
           </CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Badge
               className={
                 levelColors[course.level as keyof typeof levelColors] ||
@@ -70,6 +83,20 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           {course.description}
         </p>
 
+        {/* Enrollment Status Badge */}
+        <div className="mb-4">
+          <Badge
+            className={statusColors[status] || statusColors.active}
+            variant="outline"
+          >
+            {status === 'active'
+              ? '📚 Learning'
+              : status === 'completed'
+              ? '✓ Completed'
+              : 'Dropped'}
+          </Badge>
+        </div>
+
         {/* Course Info Grid */}
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -88,6 +115,12 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
             <GraduationCap className="w-4 h-4 text-primary" />
             <span className="text-xs capitalize">{course.language}</span>
           </div>
+        </div>
+
+        {/* Enrollment Date */}
+        <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
+          <Calendar className="w-4 h-4 text-primary" />
+          <span>Enrolled on {formatEnrollmentDate(enrolledAt)}</span>
         </div>
 
         {/* Learning Outcomes Preview */}
@@ -114,15 +147,6 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
             )}
           </div>
         )}
-
-        {enrollmentCount !== undefined && (
-          <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
-            <User2 className="w-4 h-4 text-primary" />
-            <span>
-              {enrollmentCount} enrollee{enrollmentCount !== 1 ? 's' : ''}
-            </span>
-          </div>
-        )}
       </CardContent>
 
       <CardFooter className="pt-4 border-t border-border flex gap-2">
@@ -132,24 +156,13 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           asChild
         >
           <Link href={`/courses/${course.id}`}>
-            View Course
+            {status === 'active' ? 'Continue Learning' : 'View Course'}
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
       </CardFooter>
     </Card>
   );
-
-  // If href is provided, wrap in Link
-  if (href) {
-    return (
-      <Link href={href} className="block h-full">
-        {cardContent}
-      </Link>
-    );
-  }
-
-  return cardContent;
 };
 
-export default CourseCard;
+export default EnrolledCourseCard;

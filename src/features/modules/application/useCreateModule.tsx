@@ -1,4 +1,5 @@
-import { logger } from '@/lib/loggers';
+import { queryKeys } from '@/lib/queryKeys';
+import { showErrorToast } from '@/lib/errorHandling';
 import { createModules } from '@/server/features/modules';
 import { CreateModulePayload } from '@/server/features/modules/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +17,7 @@ export default function useCreateModules() {
 
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['modules', variables.courseId],
+        queryKey: queryKeys.modules.list(variables.courseId),
       });
 
       toast.success('Modules generated successfully!');
@@ -24,8 +25,7 @@ export default function useCreateModules() {
     },
 
     onError: (error) => {
-      toast.error('Failed to create modules. Please try again.');
-      logger.error('Error creating modules:', error);
+      showErrorToast(error, 'Failed to create modules. Please try again.');
     },
   });
 }

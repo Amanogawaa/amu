@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useSocket } from '@/provider/SocketProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { logger } from '@/lib/loggers';
 
 interface SocketEventHandlers {
   resourceType: 'course' | 'module' | 'lesson' | 'chapter';
@@ -47,7 +48,7 @@ export const useCourseRoom = (courseId: string | null) => {
 
     // Listen for confirmation
     socket.on('course:joined', (data) => {
-      console.log('Joined course room:', data.courseId);
+      logger.log('Joined course room:', data.courseId);
     });
 
     return () => {
@@ -69,7 +70,7 @@ export const useModuleRoom = (moduleId: string | null) => {
     socket.emit('module:join', moduleId);
 
     socket.on('module:joined', (data) => {
-      console.log('Joined module room:', data.moduleId);
+      logger.log('Joined module room:', data.moduleId);
     });
 
     return () => {
@@ -86,7 +87,7 @@ export const useProgressTracker = () => {
 
   const updateProgress = (lessonId: string, progress: number) => {
     if (!socket || !isConnected) {
-      console.warn('Socket not connected, cannot update progress');
+      logger.warn('Socket not connected, cannot update progress');
       return;
     }
 
@@ -97,7 +98,7 @@ export const useProgressTracker = () => {
     if (!socket || !isConnected) return;
 
     socket.on('progress:updated', (data) => {
-      console.log('Progress updated:', data);
+      logger.log('Progress updated:', data);
     });
 
     return () => {
@@ -123,7 +124,7 @@ export const useCommentListener = (
 
     // Listen for new comments
     socket.on('comment:created', (data) => {
-      console.log('New comment received:', data);
+      logger.log('New comment received:', data);
       if (onNewComment) {
         onNewComment(data.comment);
       }

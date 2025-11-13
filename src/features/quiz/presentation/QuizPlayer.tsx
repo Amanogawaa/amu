@@ -1,14 +1,30 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useSubmitQuiz } from '@/features/quiz/application/useQuiz';
 import { Loader2 } from 'lucide-react';
-import { QuizResults } from './QuizResults';
 import { Quiz } from '@/server/features/quiz/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Lazy load QuizResults - only loaded when quiz is submitted
+const QuizResults = dynamic(
+  () => import('./QuizResults').then((mod) => ({ default: mod.QuizResults })),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 interface QuizPlayerProps {
   quiz: Quiz;

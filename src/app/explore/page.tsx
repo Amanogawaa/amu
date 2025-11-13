@@ -4,23 +4,38 @@ import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
 import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
 import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
 import CourseCard from '@/features/course/presentation/card/CourseCard';
-import CourseGrid from '@/features/course/presentation/grid/CourseGrid';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types/request';
-import { StarsIcon, User2Icon } from 'lucide-react';
-import React from 'react';
-
-// TODO: display only courses with published attr = true
+import { StarsIcon } from 'lucide-react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 const ExplorePage = () => {
   const filters: CourseFilters = {
     publish: true,
   };
 
-  const { data, isPending, hasNextPage, isFetchingNextPage, isError } =
-    useInfiniteListCourses(filters);
+  const {
+    data,
+    isPending,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    fetchNextPage,
+  } = useInfiniteListCourses(filters);
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
+
+  const { ref: sentinelRef, inView } = useInView({
+    threshold: 0,
+    rootMargin: '200px',
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useResourceEvents({
     resourceType: 'course',
@@ -42,7 +57,7 @@ const ExplorePage = () => {
   if (flatData.length === 0) {
     return (
       <div className="mt-5">
-        <GeneralEmptyPage type="course" />
+        <GeneralEmptyPage type="publish" />
       </div>
     );
   }
@@ -78,6 +93,19 @@ const ExplorePage = () => {
               <CourseCardSkeleton key={`loading-${index}`} />
             ))}
         </div>
+
+        {hasNextPage && (
+          <div
+            ref={sentinelRef}
+            className="h-10 mt-4 flex items-center justify-center"
+          >
+            {!isFetchingNextPage && (
+              <p className="text-sm text-muted-foreground">
+                Loading more courses...
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -10,17 +11,57 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useGetLesson } from '@/features/lessons/application/useGetLesson';
-import {
-  TranscriptViewer,
-  VideoSelector,
-  YouTubePlayer,
-} from '@/components/video';
 import { useQuizForLesson } from '@/features/quiz/application/useQuiz';
-import { QuizPlayer } from '@/features/quiz/presentation/QuizPlayer';
 import { useLessonCourse } from '@/features/lessons/application/useLessonCourse';
 import { MarkCompleteButton } from '@/features/progress/presentation/MarkCompleteButton';
 import { useProgressForCourse } from '@/features/progress/application/useProgress';
 import { useCourseLessonCount } from '@/features/progress/application/useCourseLessonCount';
+
+const VideoSelector = dynamic(
+  () =>
+    import('@/components/video/VideoSelector').then((mod) => ({
+      default: mod.VideoSelector,
+    })),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <Skeleton className="h-96 w-full rounded-lg" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+const TranscriptViewer = dynamic(
+  () =>
+    import('@/components/video/TranscriptViewer').then((mod) => ({
+      default: mod.TranscriptViewer,
+    })),
+  {
+    loading: () => <Skeleton className="h-64 w-full rounded-lg" />,
+    ssr: false,
+  }
+);
+
+const QuizPlayer = dynamic(
+  () =>
+    import('@/features/quiz/presentation/QuizPlayer').then((mod) => ({
+      default: mod.QuizPlayer,
+    })),
+  {
+    loading: () => (
+      <Card>
+        <CardContent className="pt-6">
+          <Skeleton className="h-8 w-full mb-4" />
+          <Skeleton className="h-32 w-full mb-4" />
+          <Skeleton className="h-10 w-32" />
+        </CardContent>
+      </Card>
+    ),
+    ssr: false,
+  }
+);
 
 interface LessonContentProps {
   lessonId: string;

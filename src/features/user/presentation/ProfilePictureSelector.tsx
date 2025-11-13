@@ -15,6 +15,7 @@ import { Camera, Check, Upload } from 'lucide-react';
 import { useAuth } from '@/features/auth/application/AuthContext';
 import { useUploadProfilePicture } from '../application/useUser';
 import { toast } from 'sonner';
+import { logger } from '@/lib/loggers';
 
 const PROFILE_PICTURES = Array.from({ length: 14 }, (_, i) => ({
   id: i + 1,
@@ -89,7 +90,7 @@ export function ProfilePictureSelector({
       }
       setIsOpen(false);
     } catch (error) {
-      console.error('Error updating profile picture:', error);
+      logger.error('Error updating profile picture:', error);
       toast.error('Failed to update profile picture');
     }
   };

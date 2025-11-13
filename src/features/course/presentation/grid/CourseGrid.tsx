@@ -3,12 +3,23 @@
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
 import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
 import { useResourceEvents } from '@/hooks/use-socket-events';
-import { useInfiniteListCourses } from '../../application/useGetCourses';
+import { CourseFilters } from '@/server/features/course/types';
+import { useInfiniteListMyCourses } from '../../application/useGetCourses';
 import CourseCard from '../card/CourseCard';
 
-const CourseGrid = () => {
+interface CourseGridProps {
+  uid?: string;
+  filters?: CourseFilters;
+}
+
+const CourseGrid = ({ uid, filters }: CourseGridProps) => {
+  const courseFilters: CourseFilters = {
+    ...filters,
+    ...(uid && { uid }),
+  };
+
   const { data, isPending, hasNextPage, isFetchingNextPage, isError } =
-    useInfiniteListCourses();
+    useInfiniteListMyCourses(courseFilters);
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
 
