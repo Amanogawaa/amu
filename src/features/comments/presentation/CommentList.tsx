@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
 import { useCommentsForCourse } from '../application/useComments';
 import { CommentForm } from './CommentForm';
 import { CommentItem } from './CommentItem';
@@ -14,6 +15,7 @@ interface CommentListProps {
 
 export function CommentList({ courseId }: CommentListProps) {
   const [page, setPage] = useState(0);
+  const [showCommentForm, setShowCommentForm] = useState(false);
   const limit = 20;
   const offset = page * limit;
 
@@ -34,6 +36,7 @@ export function CommentList({ courseId }: CommentListProps) {
   const comments = commentsData?.comments || [];
   const total = commentsData?.total || 0;
   const hasMore = offset + comments.length < total;
+  const hasComments = comments.length > 0;
 
   return (
     <div className="space-y-6">
@@ -42,7 +45,11 @@ export function CommentList({ courseId }: CommentListProps) {
           <MessageCircle className="h-5 w-5" />
           Comments ({total})
         </h3>
-        <CommentForm courseId={courseId} />
+        {(hasComments || showCommentForm) && (
+          <div data-comment-form>
+            <CommentForm courseId={courseId} />
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -59,10 +66,11 @@ export function CommentList({ courseId }: CommentListProps) {
             ))}
           </>
         ) : comments.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground border rounded-lg">
-            <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No comments yet. Be the first to comment!</p>
-          </div>
+          <EnhancedEmptyState
+            type="no-comments"
+            customAction={() => setShowCommentForm(true)}
+            customActionLabel="Start the Discussion"
+          />
         ) : (
           <>
             {comments.map((comment) => (

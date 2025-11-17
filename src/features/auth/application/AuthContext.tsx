@@ -12,6 +12,9 @@ import {
   AuthError,
   updateProfile,
   UserCredential,
+  GithubAuthProvider,
+  linkWithPopup,
+  unlink,
 } from 'firebase/auth';
 import { auth } from '@/utils/firebase';
 import Cookies from 'js-cookie';
@@ -24,6 +27,9 @@ interface AuthContextType {
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  linkGithub: () => Promise<void>;
+  unlinkGithub: () => Promise<void>;
+  githubLinked: boolean;
   signInWithGoogle: () => Promise<UserCredential>;
   signOut: () => Promise<void>;
   updateProfilePicture: (photoURL: string) => Promise<void>;
@@ -67,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [githubLinked, setGithubLinked] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -78,8 +84,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const token = await user.getIdToken();
           Cookies.set('auth-token', token, {
             expires: 7,
-            secure: true,
-            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
           });
         } catch (err) {
           logger.error('Error getting ID token:', err);
@@ -93,6 +100,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const hasGithub = user.providerData.some(
+        (provider) => provider.providerId === 'github.com'
+      );
+      setGithubLinked(hasGithub);
+    } else {
+      setGithubLinked(false);
+    }
+  }, [user]);
+
   const clearError = () => {
     setError(null);
   };
@@ -101,7 +119,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/');
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -113,7 +130,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push('/signin');
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -147,7 +163,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       await firebaseSignOut(auth);
-      router.push('/signin');
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -171,6 +186,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const linkGithub = async () => {
+    try {
+      setError(null);
+
+      if (!user) {
+        throw new Error('No user is currently signed in');
+      }
+
+      const provider = new GithubAuthProvider();
+      provider.addScope('repo');
+
+      await linkWithPopup(user, provider);
+      setGithubLinked(true);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error as AuthError);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  const unlinkGithub = async () => {
+    try {
+      setError(null);
+      if (!user) throw new Error('No user signed in');
+
+      await unlink(user, 'github.com');
+      setGithubLinked(false);
+    } catch (err) {
+      const errorMessage = getErrorMessage(err as AuthError);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -181,6 +230,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     updateProfilePicture,
     clearError,
+    linkGithub,
+    unlinkGithub,
+    githubLinked,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

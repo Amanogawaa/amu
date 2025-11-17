@@ -25,6 +25,8 @@ import {
 import { Loader2, BookOpen, Sparkles } from 'lucide-react';
 import handleCreateCourse from '../../application/handleCreateCourse';
 import { CourseFormValues, courseFormSchema } from '../../domain/CourseSchema';
+import { RateLimitIndicator } from '@/components/rate-limit/RateLimitIndicator';
+import { useRateLimiter } from '@/hooks/useRateLimiter';
 
 interface CourseFormProps {
   initialValues?: Partial<CourseFormValues>;
@@ -39,6 +41,11 @@ const CreateCourseForm = ({
   isPending,
   isEdit,
 }: CourseFormProps) => {
+  const { allowed: rateLimitAllowed } = useRateLimiter({
+    config: { maxAttempts: 3 },
+    autoRefresh: true,
+  });
+
   const defaultValues = useMemo(
     () => ({
       topic: '',
@@ -82,6 +89,11 @@ const CreateCourseForm = ({
             handleCreateCourse(form.getValues(), (payload) => onSubmit(payload))
           )}
         >
+          {/* Rate Limit Indicator */}
+          {!isEdit && (
+            <RateLimitIndicator maxAttempts={3} showWhenAllowed={true} />
+          )}
+
           {/* Topic Field */}
           <FormField
             name="topic"
@@ -235,8 +247,8 @@ const CreateCourseForm = ({
           <div className="flex gap-4 pt-4">
             <Button
               type="submit"
-              disabled={isPending}
-              className="flex-1 h-12 text-base rounded-lg bg-primary p-5 text-primary-foreground hover:bg-foreground/80"
+              disabled={isPending || (!isEdit && !rateLimitAllowed)}
+              className="flex-1 h-12 text-base rounded-lg bg-primary p-5 text-primary-foreground hover:bg-foreground/80 disabled:opacity-50"
             >
               {isPending ? (
                 <>

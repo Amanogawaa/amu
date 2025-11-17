@@ -2,16 +2,13 @@ import { queryKeys } from '@/lib/queryKeys';
 import { showErrorToast } from '@/lib/errorHandling';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/application/AuthContext';
-import type {
-  UpdateUserProfile,
-  UploadProfilePictureResponse,
-  UserProfile,
-  UserResponse,
-} from '../domain/types';
-import { getProfile } from '@/server/features/user';
+import type { UpdateUserProfile } from '../domain/types';
+import {
+  getProfile,
+  updateProfile,
+  uploadProfilePicture,
+} from '@/server/features/user';
 import { toast } from 'sonner';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export const useUserProfile = () => {
   return useQuery({
@@ -28,25 +25,7 @@ export const useUpdateUserProfile = () => {
 
   return useMutation({
     mutationFn: async (updates: UpdateUserProfile) => {
-      if (!user) throw new Error('User not authenticated');
-
-      const token = await user.getIdToken();
-      const response = await fetch(`${API_URL}/user/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updates),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update profile');
-      }
-
-      const data: UserResponse = await response.json();
-      return data.data;
+      return await updateProfile(updates);
     },
     onSuccess: () => {
       toast.success('Profile updated successfully!');
@@ -66,26 +45,7 @@ export const useUploadProfilePicture = () => {
   return useMutation({
     mutationFn: async (file: File) => {
       if (!user) throw new Error('User not authenticated');
-
-      const token = await user.getIdToken();
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(`${API_URL}/user/profile/picture`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to upload profile picture');
-      }
-
-      const data: UploadProfilePictureResponse = await response.json();
-      return data.data.photoURL;
+      return await uploadProfilePicture(file);
     },
     onSuccess: () => {
       toast.success('Profile picture updated!');

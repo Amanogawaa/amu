@@ -1,8 +1,5 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2Icon, InfoIcon } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 
 interface CourseContentProps {
   description: string;
@@ -17,7 +14,6 @@ export const CourseContent = ({
 }: CourseContentProps) => {
   return (
     <div className="space-y-6 mb-8">
-      {/* Description */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">

@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGetModules } from '@/features/modules/application/useGetModules';
 import { useCourseRoom, useResourceEvents } from '@/hooks/use-socket-events';
-import { BookOpenIcon, PlayCircleIcon } from 'lucide-react';
+import { BookOpenIcon, PlayCircleIcon, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ModuleForm from '../form/ModuleForm';
+import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
+import { cn } from '@/lib/utils';
 
 interface ModuleListProps {
   courseId: string;
@@ -14,6 +16,7 @@ interface ModuleListProps {
 
 export const ModuleList = ({ courseId }: ModuleListProps) => {
   const { data } = useGetModules(courseId);
+  const { data: enrollmentStatus } = useEnrollmentStatus(courseId);
   const router = useRouter();
 
   useCourseRoom(courseId);
@@ -28,6 +31,8 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
     .sort((a, b) => {
       return a.moduleOrder - b.moduleOrder;
     });
+
+  const isEnrolled = enrollmentStatus?.isEnrolled || false;
 
   return (
     <Card>
@@ -50,16 +55,34 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
           <div className="space-y-3">
             {sortedModules?.map((module) => (
               <div key={module.id}>
-                <div className="flex items-start gap-4 p-4 rounded-lg transition-colors bg-muted/30 hover:bg-muted/50 cursor-pointer">
+                <div
+                  className={cn(
+                    'flex items-start gap-4 p-4 rounded-lg transition-colors',
+                    isEnrolled
+                      ? 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
+                      : 'bg-muted/20 border border-dashed'
+                  )}
+                >
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-background border">
-                    <PlayCircleIcon className="h-5 w-5 text-primary" />
+                    {isEnrolled ? (
+                      <PlayCircleIcon className="h-5 w-5 text-primary" />
+                    ) : (
+                      <Lock className="h-5 w-5 text-muted-foreground" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-foreground mb-1">
-                          {module.moduleName}
-                        </h3>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-foreground">
+                            {module.moduleName}
+                          </h3>
+                          {!isEnrolled && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-muted border text-muted-foreground">
+                              Locked
+                            </span>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground line-clamp-2">
                           {module.moduleDescription}
                         </p>
@@ -68,16 +91,24 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                         {module.estimatedDuration}
                       </div>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="mt-2 h-8 text-xs"
-                      onClick={() =>
-                        router.push(`/courses/${courseId}/modules/${module.id}`)
-                      }
-                    >
-                      View Module
-                    </Button>
+                    {isEnrolled ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="mt-2 h-8 text-xs"
+                        onClick={() =>
+                          router.push(
+                            `/courses/${courseId}/modules/${module.id}`
+                          )
+                        }
+                      >
+                        View Module
+                      </Button>
+                    ) : (
+                      <p className="mt-2 text-xs text-muted-foreground italic">
+                        Enroll to access this module
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

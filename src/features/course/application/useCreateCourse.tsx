@@ -7,6 +7,7 @@ import { CreateCoursePayload } from '@/server/features/course/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { checkRateLimit, recordAttempt } from '@/utils/rateLimiter';
 
 export default function useCreateCourse() {
   const router = useRouter();
@@ -14,7 +15,21 @@ export default function useCreateCourse() {
 
   return useMutation({
     mutationFn: async (payload: CreateCoursePayload) => {
+      // Check rate limit before making request
+      const rateLimitStatus = checkRateLimit();
+
+      if (!rateLimitStatus.allowed) {
+        throw new Error(
+          rateLimitStatus.message ||
+            'Rate limit exceeded. Please try again later.'
+        );
+      }
+
       const result = await createCourse(payload);
+
+      // Record successful attempt
+      recordAttempt();
+
       return result;
     },
 

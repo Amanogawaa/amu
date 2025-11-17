@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
+import { GitHubConnectButton } from '@/features/auth/presentation/GithubButton';
 
 // TODO: here will be account settings and preferences management, where user will be able to update their profile and choose their profile image
 
@@ -132,17 +133,12 @@ const AccountPage = () => {
                     : user?.displayName || user?.uid}
                 </h2>
                 <p className="text-muted-foreground mt-1">{user?.email}</p>
-                <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
-                  <div className="px-3 py-1 bg-primary/10 rounded-full text-sm">
-                    Member since{' '}
-                    {user?.metadata.creationTime &&
-                      new Date(user.metadata.creationTime).toLocaleDateString()}
-                  </div>
-                </div>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        <GitHubConnectButton />
 
         {/* User Profile Edit Form */}
         <div className="mt-6">

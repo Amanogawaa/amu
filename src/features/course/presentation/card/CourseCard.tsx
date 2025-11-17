@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useEnrollmentCount } from '@/features/enrollment/application/useEnrollment';
+import { LikeButton } from '@/features/likes/presentation/LikeButton';
 import { Course } from '@/server/features/course/types';
 import {
   ArrowRight,
@@ -22,6 +23,7 @@ import {
   User2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/features/auth/application/AuthContext';
 
 interface CourseCardProps {
   course: Course;
@@ -30,6 +32,8 @@ interface CourseCardProps {
 
 const CourseCard = ({ course, href }: CourseCardProps) => {
   const { data: enrollmentCount } = useEnrollmentCount(course.id);
+  const { user } = useAuth();
+  const isOwner = user?.uid === course.uid;
 
   const levelColors = {
     beginner:
@@ -126,8 +130,15 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
       </CardContent>
 
       <CardFooter className="pt-4 border-t border-border flex gap-2">
+        {!isOwner && (
+          <LikeButton
+            courseId={course.id}
+            showCount={true}
+            className="shrink-0"
+          />
+        )}
         <Button
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+          className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           variant="outline"
           asChild
         >

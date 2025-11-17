@@ -50,7 +50,6 @@ export function ProfilePictureSelector({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       toast.error('Invalid file type', {
@@ -59,8 +58,7 @@ export function ProfilePictureSelector({
       return;
     }
 
-    // Validate file size (5MB max)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       toast.error('File too large', {
         description: 'Maximum file size is 5MB',
@@ -79,7 +77,6 @@ export function ProfilePictureSelector({
   const handleSave = async () => {
     try {
       if (selectedFile) {
-        // Upload custom image
         const photoURL = await uploadMutation.mutateAsync(selectedFile);
         await updateProfilePicture(photoURL);
         toast.success('Profile picture uploaded successfully');

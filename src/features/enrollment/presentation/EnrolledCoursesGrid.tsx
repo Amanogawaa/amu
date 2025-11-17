@@ -1,7 +1,7 @@
 'use client';
 
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
+import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
 import { useUserEnrollments } from '../application/useEnrollment';
 import EnrolledCourseCard from '@/features/enrollment/presentation/EnrolledCourseCard';
 
@@ -19,15 +19,7 @@ const EnrolledCoursesGrid = () => {
   }
 
   if (!enrollments || enrollments.length === 0) {
-    return (
-      <div className="mt-5">
-        <GeneralEmptyPage
-          type="course"
-          title="No Enrolled Courses"
-          description="You haven't enrolled in any courses yet. Browse published courses to get started!"
-        />
-      </div>
-    );
+    return <EnhancedEmptyState type="no-enrolled-courses" />;
   }
 
   return (

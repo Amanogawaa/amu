@@ -4,6 +4,7 @@ import { useAuth } from '@/features/auth/application/AuthContext';
 import { BookOpenIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import EnrolledCoursesGrid from '@/features/enrollment/presentation/EnrolledCoursesGrid';
+import { CodePlayground } from '@/features/code-playground/presentation/CodePlayground';
 
 const MyLearningPage = () => {
   const { user } = useAuth();
@@ -32,6 +33,8 @@ const MyLearningPage = () => {
             </div>
           </div>
         </div>
+        <CodePlayground />
+
         <EnrolledCoursesGrid />
       </div>
     </section>

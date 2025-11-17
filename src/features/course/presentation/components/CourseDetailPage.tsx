@@ -11,11 +11,16 @@ import { CourseHeader } from './CourseHeader';
 import { useProgressForCourse } from '@/features/progress/application/useProgress';
 import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
 import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
+import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
+import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
+import { CommentList } from '@/features/comments/presentation/CommentList';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
   const { data: progress, isLoading: progressLoading } =
     useProgressForCourse(courseId);
+  const { data: enrollmentStatus, isLoading: enrollmentLoading } =
+    useEnrollmentStatus(courseId);
 
   if (isLoading) {
     return (
@@ -72,8 +77,11 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
       />
 
-      {/* Course Progress */}
-      {!progressLoading && progress && (
+      {!enrollmentLoading && !enrollmentStatus?.isEnrolled && (
+        <EnrollmentPrompt courseId={courseId} variant="banner" />
+      )}
+
+      {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
         <Card>
           <CardContent className="pt-6">
             <div className="space-y-3">
@@ -105,6 +113,13 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
       />
 
       <ModuleList courseId={courseId} />
+
+      {/* Comments Section */}
+      <Card>
+        <CardContent className="pt-6">
+          <CommentList courseId={courseId} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

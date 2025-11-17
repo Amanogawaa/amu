@@ -46,6 +46,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { LikeButton } from '@/features/likes/presentation/LikeButton';
 
 interface CourseHeaderProps {
   courseId: string;
@@ -71,13 +72,11 @@ export const CourseHeader = ({
   const { user } = useAuth();
   const isOwner = user?.uid === ownerId;
 
-  // Enrollment hooks (for non-owners)
   const { data: enrollmentStatus, isLoading: isLoadingEnrollment } =
     useEnrollmentStatus(courseId, !isOwner && !!user);
   const { mutate: enroll, isPending: isEnrolling } = useEnrollCourse();
   const { mutate: unenroll, isPending: isUnenrolling } = useUnenrollCourse();
 
-  // Owner action hooks
   const { mutate: publish, isPending: isPublishing } = usePublishCourse();
   const { mutate: unpublish, isPending: isUnpublishing } = useUnpublishCourse();
   const { mutate: archive, isPending: isArchiving } = useArchiveCourse();
@@ -114,7 +113,6 @@ export const CourseHeader = ({
   };
 
   const handleDelete = () => {
-    // TODO: Implement delete course functionality
     console.log('Delete course:', courseId);
     setShowDeleteDialog(false);
   };
@@ -173,103 +171,111 @@ export const CourseHeader = ({
               )}
             </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="More Options">
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                {isOwner ? (
-                  // Owner actions
-                  <>
-                    <DropdownMenuGroup>
-                      {!isPublished ? (
-                        <DropdownMenuItem
-                          onClick={handlePublish}
-                          disabled={isPublishing}
-                        >
-                          <SendIcon className="h-4 w-4 mr-2" />
-                          {isPublishing ? 'Publishing...' : 'Publish Course'}
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={handleUnpublish}
-                          disabled={isUnpublishing}
-                        >
-                          <SendIcon className="h-4 w-4 mr-2" />
-                          {isUnpublishing
-                            ? 'Unpublishing...'
-                            : 'Unpublish Course'}
-                        </DropdownMenuItem>
-                      )}
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              {!isOwner && <LikeButton courseId={courseId} showCount={true} />}
 
-                      {!isArchived ? (
-                        <DropdownMenuItem
-                          onClick={handleArchive}
-                          disabled={isArchiving}
-                        >
-                          <ArchiveIcon className="h-4 w-4 mr-2" />
-                          {isArchiving ? 'Archiving...' : 'Archive Course'}
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={handleUnarchive}
-                          disabled={isUnarchiving}
-                        >
-                          <ArchiveIcon className="h-4 w-4 mr-2" />
-                          {isUnarchiving
-                            ? 'Unarchiving...'
-                            : 'Unarchive Course'}
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuGroup>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label="More Options"
+                  >
+                    <MoreHorizontalIcon />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52">
+                  {isOwner ? (
+                    <>
+                      <DropdownMenuGroup>
+                        {!isPublished ? (
+                          <DropdownMenuItem
+                            onClick={handlePublish}
+                            disabled={isPublishing}
+                          >
+                            <SendIcon className="h-4 w-4 mr-2" />
+                            {isPublishing ? 'Publishing...' : 'Publish Course'}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={handleUnpublish}
+                            disabled={isUnpublishing}
+                          >
+                            <SendIcon className="h-4 w-4 mr-2" />
+                            {isUnpublishing
+                              ? 'Unpublishing...'
+                              : 'Unpublish Course'}
+                          </DropdownMenuItem>
+                        )}
 
-                    <DropdownMenuSeparator />
+                        {!isArchived ? (
+                          <DropdownMenuItem
+                            onClick={handleArchive}
+                            disabled={isArchiving}
+                          >
+                            <ArchiveIcon className="h-4 w-4 mr-2" />
+                            {isArchiving ? 'Archiving...' : 'Archive Course'}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={handleUnarchive}
+                            disabled={isUnarchiving}
+                          >
+                            <ArchiveIcon className="h-4 w-4 mr-2" />
+                            {isUnarchiving
+                              ? 'Unarchiving...'
+                              : 'Unarchive Course'}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuGroup>
 
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => setShowDeleteDialog(true)}
-                      >
-                        <Trash2Icon className="h-4 w-4 mr-2" />
-                        Delete Course
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </>
-                ) : (
-                  // Non-owner actions (Enroll/Unenroll)
-                  <>
-                    <DropdownMenuGroup>
-                      {isLoadingEnrollment ? (
-                        <DropdownMenuItem disabled>
-                          <UserCheckIcon className="h-4 w-4 mr-2" />
-                          Loading...
-                        </DropdownMenuItem>
-                      ) : isEnrolled ? (
+                      <DropdownMenuSeparator />
+
+                      <DropdownMenuGroup>
                         <DropdownMenuItem
-                          onClick={() => setShowUnenrollDialog(true)}
-                          disabled={isUnenrolling}
+                          variant="destructive"
+                          onClick={() => setShowDeleteDialog(true)}
                         >
-                          <LogOutIcon className="h-4 w-4 mr-2" />
-                          {isUnenrolling
-                            ? 'Unenrolling...'
-                            : 'Unenroll from Course'}
+                          <Trash2Icon className="h-4 w-4 mr-2" />
+                          Delete Course
                         </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={handleEnroll}
-                          disabled={isEnrolling}
-                        >
-                          <UserPlusIcon className="h-4 w-4 mr-2" />
-                          {isEnrolling ? 'Enrolling...' : 'Enroll in Course'}
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuGroup>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      </DropdownMenuGroup>
+                    </>
+                  ) : (
+                    // Non-owner actions (Enroll/Unenroll)
+                    <>
+                      <DropdownMenuGroup>
+                        {isLoadingEnrollment ? (
+                          <DropdownMenuItem disabled>
+                            <UserCheckIcon className="h-4 w-4 mr-2" />
+                            Loading...
+                          </DropdownMenuItem>
+                        ) : isEnrolled ? (
+                          <DropdownMenuItem
+                            onClick={() => setShowUnenrollDialog(true)}
+                            disabled={isUnenrolling}
+                          >
+                            <LogOutIcon className="h-4 w-4 mr-2" />
+                            {isUnenrolling
+                              ? 'Unenrolling...'
+                              : 'Unenroll from Course'}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={handleEnroll}
+                            disabled={isEnrolling}
+                          >
+                            <UserPlusIcon className="h-4 w-4 mr-2" />
+                            {isEnrolling ? 'Enrolling...' : 'Enroll in Course'}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuGroup>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </div>

@@ -1,18 +1,34 @@
 'use client';
 
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
+import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
 import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
 import CourseCard from '@/features/course/presentation/card/CourseCard';
+import {
+  FilterPanel,
+  CourseFiltersState,
+} from '@/features/course/presentation/FilterPanel';
+import { SearchBar } from '@/features/course/presentation/SearchBar';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types/request';
 import { StarsIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 const ExplorePage = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterState, setFilterState] = useState<CourseFiltersState>({
+    category: '',
+    level: '',
+    language: '',
+  });
+
   const filters: CourseFilters = {
     publish: true,
+    search: searchQuery || undefined,
+    category: filterState.category || undefined,
+    level: filterState.level || undefined,
+    language: filterState.language || undefined,
   };
 
   const {
@@ -42,6 +58,16 @@ const ExplorePage = () => {
     queryKey: ['courses'],
   });
 
+  // Handle search callback from SearchBar
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  // Handle filter changes from FilterPanel
+  const handleFilterChange = (newFilters: CourseFiltersState) => {
+    setFilterState(newFilters);
+  };
+
   if (isPending) {
     return (
       <div className="container mx-auto max-w-5xl ">
@@ -55,10 +81,17 @@ const ExplorePage = () => {
   }
 
   if (flatData.length === 0) {
-    return (
-      <div className="mt-5">
-        <GeneralEmptyPage type="publish" />
-      </div>
+    // Check if it's a search/filter result with no matches
+    const hasActiveFilters =
+      searchQuery ||
+      filterState.category ||
+      filterState.level ||
+      filterState.language;
+
+    return hasActiveFilters ? (
+      <EnhancedEmptyState type="no-search-results" />
+    ) : (
+      <EnhancedEmptyState type="no-published-courses" />
     );
   }
 
@@ -83,7 +116,20 @@ const ExplorePage = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+
+        {/* Search and Filter Section */}
+        <div className="mt-8 space-y-4">
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search courses by title or topic..."
+          />
+          <FilterPanel
+            onFilterChange={handleFilterChange}
+            initialFilters={filterState}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {flatData.map((course) => (
             <CourseCard course={course} key={course.id} />
           ))}

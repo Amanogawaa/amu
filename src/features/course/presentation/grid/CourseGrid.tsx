@@ -1,7 +1,7 @@
 'use client';
 
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import GeneralEmptyPage from '@/components/states/GeneralEmptyPage';
+import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types';
 import { useInfiniteListMyCourses } from '../../application/useGetCourses';
@@ -39,11 +39,7 @@ const CourseGrid = ({ uid, filters }: CourseGridProps) => {
   }
 
   if (flatData.length === 0) {
-    return (
-      <div className="mt-5">
-        <GeneralEmptyPage type="course" />
-      </div>
-    );
+    return <EnhancedEmptyState type="no-courses" />;
   }
 
   return (
