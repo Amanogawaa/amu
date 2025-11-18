@@ -83,7 +83,6 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
           {course.description}
         </p>
 
-        {/* Enrollment Status Badge */}
         <div className="mb-4">
           <Badge
             className={statusColors[status] || statusColors.active}

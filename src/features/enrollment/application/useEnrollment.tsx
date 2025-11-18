@@ -87,10 +87,11 @@ export function useEnrollmentStatus(courseId: string, enabled: boolean = true) {
   });
 }
 
-export function useUserEnrollments(filters?: EnrollmentFilters) {
+export function useUserEnrollments(filters?: EnrollmentFilters, enabled: boolean = true) {
   return useQuery({
     queryKey: queryKeys.enrollments.list(filters),
     queryFn: () => getUserEnrollments(filters),
+    enabled,
     staleTime: 60000,
     gcTime: 10 * 60 * 1000,
   });

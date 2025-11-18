@@ -72,9 +72,12 @@ class serverConnectionSingleton {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          logger.error(
-            'Unauthorized access - possibly expired token or no token.'
-          );
+          const hadToken = error.config?.headers?.Authorization;
+          if (hadToken) {
+            logger.error(
+              'Unauthorized access - possibly expired token or no token.'
+            );
+          }
           Cookies.remove('auth-token');
         }
         return Promise.reject(error);

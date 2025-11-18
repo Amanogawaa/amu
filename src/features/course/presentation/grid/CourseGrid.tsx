@@ -6,6 +6,7 @@ import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types';
 import { useInfiniteListMyCourses } from '../../application/useGetCourses';
 import CourseCard from '../card/CourseCard';
+import { useAuth } from '@/features/auth/application/AuthContext';
 
 interface CourseGridProps {
   uid?: string;
@@ -13,13 +14,15 @@ interface CourseGridProps {
 }
 
 const CourseGrid = ({ uid, filters }: CourseGridProps) => {
+  const { user, loading: authLoading } = useAuth();
+
   const courseFilters: CourseFilters = {
     ...filters,
     ...(uid && { uid }),
   };
 
   const { data, isPending, hasNextPage, isFetchingNextPage, isError } =
-    useInfiniteListMyCourses(courseFilters);
+    useInfiniteListMyCourses(courseFilters, !!user && !authLoading);
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
 
@@ -28,7 +31,7 @@ const CourseGrid = ({ uid, filters }: CourseGridProps) => {
     queryKey: ['courses'],
   });
 
-  if (isPending) {
+  if (authLoading || isPending) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
         {Array.from({ length: 6 }).map((_, index) => (

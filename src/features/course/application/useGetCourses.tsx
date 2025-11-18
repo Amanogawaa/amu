@@ -58,12 +58,16 @@ export function useInfiniteListCourses(filters?: CourseFilters) {
   });
 }
 
-export function useInfiniteListMyCourses(filters?: CourseFilters) {
+export function useInfiniteListMyCourses(
+  filters?: CourseFilters,
+  enabled: boolean = true
+) {
   return useInfiniteQuery({
     queryKey: queryKeys.courses.infinite(filters),
     queryFn: async ({ pageParam = 1 }) => {
       return await listMyCourses(pageParam, filters);
     },
+    enabled,
     getNextPageParam: (lastPage) => {
       if (lastPage.next) {
         try {

@@ -77,7 +77,6 @@ export const EnrollmentPrompt = ({
     );
   }
 
-  // Default card variant
   return (
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
       <CardContent className="pt-6">

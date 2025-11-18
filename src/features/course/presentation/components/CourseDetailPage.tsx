@@ -14,9 +14,11 @@ import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatus
 import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
 import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
 import { CommentList } from '@/features/comments/presentation/CommentList';
+import { useAuth } from '@/features/auth/application/AuthContext';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
+  const { user } = useAuth();
   const { data: progress, isLoading: progressLoading } =
     useProgressForCourse(courseId);
   const { data: enrollmentStatus, isLoading: enrollmentLoading } =
@@ -77,9 +79,11 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
       />
 
-      {!enrollmentLoading && !enrollmentStatus?.isEnrolled && (
-        <EnrollmentPrompt courseId={courseId} variant="banner" />
-      )}
+      {!enrollmentLoading &&
+        !enrollmentStatus?.isEnrolled &&
+        user?.uid != data.uid && (
+          <EnrollmentPrompt courseId={courseId} variant="banner" />
+        )}
 
       {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
         <Card>

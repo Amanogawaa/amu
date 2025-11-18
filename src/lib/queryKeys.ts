@@ -106,4 +106,43 @@ export const queryKeys = {
     all: ['user'] as const,
     profile: () => [...queryKeys.user.all, 'profile'] as const,
   },
+
+  // Capstone
+  capstone: {
+    all: ['capstone'] as const,
+
+    // Guidelines
+    guidelines: () => [...queryKeys.capstone.all, 'guidelines'] as const,
+    guidelineByCourse: (courseId: string) =>
+      [...queryKeys.capstone.guidelines(), 'course', courseId] as const,
+    guidelineById: (id: string) =>
+      [...queryKeys.capstone.guidelines(), id] as const,
+
+    // Submissions
+    submissions: {
+      all: () => [...queryKeys.capstone.all, 'submissions'] as const,
+      lists: () => [...queryKeys.capstone.submissions.all(), 'list'] as const,
+      list: (filters?: any) =>
+        [...queryKeys.capstone.submissions.lists(), filters] as const,
+      details: () =>
+        [...queryKeys.capstone.submissions.all(), 'detail'] as const,
+      detail: (id: string) =>
+        [...queryKeys.capstone.submissions.details(), id] as const,
+    },
+
+    // Reviews
+    reviews: {
+      all: () => [...queryKeys.capstone.all, 'reviews'] as const,
+      lists: () => [...queryKeys.capstone.reviews.all(), 'list'] as const,
+      list: (filters?: any) =>
+        [...queryKeys.capstone.reviews.lists(), filters] as const,
+      details: () => [...queryKeys.capstone.reviews.all(), 'detail'] as const,
+      detail: (id: string) =>
+        [...queryKeys.capstone.reviews.details(), id] as const,
+    },
+
+    // Likes
+    likeStatus: (submissionId: string) =>
+      [...queryKeys.capstone.all, 'like-status', submissionId] as const,
+  },
 } as const;
