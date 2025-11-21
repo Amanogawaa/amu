@@ -15,6 +15,7 @@ export type Course = {
   include_certificate: boolean;
   enrollmentCount?: number;
   skillsGained: string[];
+  supportsCodePlayground?: boolean;
   likesCount?: number;
   commentsCount?: number;
   isEnrolled?: boolean;

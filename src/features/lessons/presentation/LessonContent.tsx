@@ -1,25 +1,31 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  AlertCircle,
-  Video,
-  FileText,
-  BookOpen,
-  ExternalLink,
-} from 'lucide-react';
-import { useGetLesson } from '@/features/lessons/application/useGetLesson';
-import { useQuizForLesson } from '@/features/quiz/application/useQuiz';
-import { useLessonCourse } from '@/features/lessons/application/useLessonCourse';
-import { MarkCompleteButton } from '@/features/progress/presentation/MarkCompleteButton';
-import { useProgressForCourse } from '@/features/progress/application/useProgress';
-import { useCourseLessonCount } from '@/features/progress/application/useCourseLessonCount';
 import { useAuth } from '@/features/auth/application/AuthContext';
+import { CodePlayground } from '@/features/code-playground/presentation/CodePlayground';
+import { useGetCourse } from '@/features/course/application/useGetCourses';
 import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
 import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
-import { CodePlayground } from '@/features/code-playground/presentation/CodePlayground';
+import { useGetLesson } from '@/features/lessons/application/useGetLesson';
+import { useLessonCourse } from '@/features/lessons/application/useLessonCourse';
+import { useCourseLessonCount } from '@/features/progress/application/useCourseLessonCount';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
+import { MarkCompleteButton } from '@/features/progress/presentation/MarkCompleteButton';
+import { useQuizForLesson } from '@/features/quiz/application/useQuiz';
+import {
+  AlertCircle,
+  BookOpen,
+  ExternalLink,
+  FileText,
+  Video,
+} from 'lucide-react';
+import dynamic from 'next/dynamic';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
 
 const VideoSelector = dynamic(
   () =>
@@ -75,12 +81,20 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const { data: lesson, isLoading, isError } = useGetLesson(lessonId);
   const { data: quiz, isLoading: quizLoading } = useQuizForLesson(lessonId);
   const { data: courseInfo } = useLessonCourse(lessonId);
+  const { data: course, isLoading: courseLoading } = useGetCourse(
+    courseInfo?.courseId || ''
+  );
   const { data: progress } = useProgressForCourse(courseInfo?.courseId || '');
   const { data: totalLessons } = useCourseLessonCount(
     courseInfo?.courseId || ''
   );
   const { data: enrollmentStatus, isLoading: enrollmentLoading } =
     useEnrollmentStatus(courseInfo?.courseId || '', !!courseInfo?.courseId);
+  const { user } = useAuth();
+
+  const isOwner = user?.uid === course?.uid;
+  const isEnrolled = enrollmentStatus?.isEnrolled || false;
+  const hasAccess = isOwner || isEnrolled;
 
   if (isLoading) {
     return (
@@ -121,8 +135,6 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
     }
   };
 
-  const isEnrolled = enrollmentStatus?.isEnrolled || false;
-
   return (
     <div className="space-y-6">
       {/* Lesson Header */}
@@ -143,7 +155,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
               <span>Duration: {lesson.duration}</span>
             </div>
           </div>
-          {courseInfo?.courseId && isEnrolled && (
+          {courseInfo?.courseId && hasAccess && (
             <div className="flex-shrink-0">
               <MarkCompleteButton
                 courseId={courseInfo.courseId}
@@ -158,23 +170,26 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
         </div>
       </div>
 
-      {/* Enrollment Gate */}
-      {!enrollmentLoading && !isEnrolled && courseInfo?.courseId && (
-        <EnrollmentPrompt
-          courseId={courseInfo.courseId}
-          variant="card"
-          title="Enroll to access this lesson"
-          benefits={[
-            'Watch video lessons and access transcripts',
-            'Read detailed lesson content and resources',
-            'Complete quizzes and track your progress',
-            'Unlock all course materials',
-          ]}
-        />
-      )}
+      {/* Enrollment Gate - Only show if not owner and not enrolled */}
+      {!enrollmentLoading &&
+        !courseLoading &&
+        !hasAccess &&
+        courseInfo?.courseId && (
+          <EnrollmentPrompt
+            courseId={courseInfo.courseId}
+            variant="card"
+            title="Enroll to access this lesson"
+            benefits={[
+              'Watch video lessons and access transcripts',
+              'Read detailed lesson content and resources',
+              'Complete quizzes and track your progress',
+              'Unlock all course materials',
+            ]}
+          />
+        )}
 
-      {/* Lesson Content - Only show if enrolled */}
-      {isEnrolled && (
+      {/* Lesson Content - Show if owner OR enrolled */}
+      {hasAccess && (
         <>
           {/* Video Search Query (if video type) */}
           {lesson.type === 'video' && lesson.videoSearchQuery && (
@@ -224,26 +239,78 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
             </div>
           )}
 
-          {/* Lesson Content */}
-          {lesson.content && (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="prose dark:prose-invert max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
-                </div>
-              </CardContent>
-            </Card>
+          {lesson.type === 'article' && (
+            <CardContent className="pt-6">
+              <div
+                className="prose prose-slate dark:prose-invert max-w-none 
+                  prose-pre:p-0 prose-pre:bg-transparent prose-pre:rounded-xl prose-pre:overflow-x-auto
+                  prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+                  prose-img:rounded-lg prose-img:shadow-md"
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkBreaks]}
+                  components={{
+                    code(props) {
+                      const { children, className, node, ...rest } = props;
+                      const match = /language-(\w+)/.exec(className || '');
+                      const isInline = !match;
+
+                      if (isInline) {
+                        return (
+                          <code
+                            className="rounded bg-muted text-foreground font-medium"
+                            {...rest}
+                          >
+                            {children}
+                          </code>
+                        );
+                      }
+
+                      const codeString = String(children).replace(/\n$/, '');
+
+                      return (
+                        <SyntaxHighlighter
+                          style={vscDarkPlus}
+                          language={match[1] || 'text'}
+                          PreTag="div"
+                          showLineNumbers={true}
+                          customStyle={{
+                            margin: 0,
+                            borderRadius: '0.75rem',
+                            fontSize: '0.95rem',
+                            lineHeight: '1.6',
+                            padding: '1rem',
+                          }}
+                          codeTagProps={{
+                            style: {
+                              fontFamily:
+                                '"Fira Code", "JetBrains Mono", monospace',
+                            },
+                          }}
+                        >
+                          {codeString}
+                        </SyntaxHighlighter>
+                      );
+                    },
+                  }}
+                >
+                  {lesson.content}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
           )}
 
-          {/* Learning Outcome */}
+          {/* Code Playground - Only show for courses that support it */}
+          {course?.supportsCodePlayground && lesson.type === 'article' && (
+            <CodePlayground />
+          )}
+
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="">
               <h3 className="font-semibold mb-2">Learning Outcome</h3>
               <p className="text-muted-foreground">{lesson.learningOutcome}</p>
             </CardContent>
           </Card>
-
-          <CodePlayground />
 
           {/* Prerequisites */}
           {lesson.prerequisites && lesson.prerequisites.length > 0 && (

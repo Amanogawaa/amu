@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import ModuleForm from '../form/ModuleForm';
 import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/features/auth/application/AuthContext';
+import { useGetCourse } from '@/features/course/application/useGetCourses';
 
 interface ModuleListProps {
   courseId: string;
@@ -17,6 +19,8 @@ interface ModuleListProps {
 export const ModuleList = ({ courseId }: ModuleListProps) => {
   const { data } = useGetModules(courseId);
   const { data: enrollmentStatus } = useEnrollmentStatus(courseId);
+  const { data: course } = useGetCourse(courseId);
+  const { user } = useAuth();
   const router = useRouter();
 
   useCourseRoom(courseId);
@@ -32,7 +36,9 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
       return a.moduleOrder - b.moduleOrder;
     });
 
+  const isOwner = user?.uid === course?.uid;
   const isEnrolled = enrollmentStatus?.isEnrolled || false;
+  const hasAccess = isOwner || isEnrolled;
 
   return (
     <Card>
@@ -58,13 +64,13 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                 <div
                   className={cn(
                     'flex items-start gap-4 p-4 rounded-lg transition-colors',
-                    isEnrolled
+                    hasAccess
                       ? 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
                       : 'bg-muted/20 border border-dashed'
                   )}
                 >
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-background border">
-                    {isEnrolled ? (
+                    {hasAccess ? (
                       <PlayCircleIcon className="h-5 w-5 text-primary" />
                     ) : (
                       <Lock className="h-5 w-5 text-muted-foreground" />
@@ -77,7 +83,7 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                           <h3 className="font-semibold text-foreground">
                             {module.moduleName}
                           </h3>
-                          {!isEnrolled && (
+                          {!hasAccess && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-muted border text-muted-foreground">
                               Locked
                             </span>
@@ -91,7 +97,7 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                         {module.estimatedDuration}
                       </div>
                     </div>
-                    {isEnrolled ? (
+                    {hasAccess ? (
                       <Button
                         size="sm"
                         variant="ghost"
