@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useGetChapters } from '@/features/chapters/application/useGetChapters';
 import ChapterItem from '@/features/chapters/presentation/ChapterItems';
 import { useGetCourse } from '@/features/course/application/useGetCourses';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
 import { useGetModules } from '../application/useGetModules';
@@ -29,8 +30,10 @@ export function ModuleChapterSidebar({ ...props }: ModuleChapterSidebarProps) {
   const { data: modules } = useGetModules(courseId);
   const { data: chapters, isLoading: chaptersLoading } =
     useGetChapters(moduleId);
+  const { data: progress } = useProgressForCourse(courseId);
 
   const currentModule = modules?.find((m) => m.id === moduleId);
+  const completedLessons = progress?.lessonsCompleted || [];
 
   return (
     <Sidebar {...props}>
@@ -60,7 +63,11 @@ export function ModuleChapterSidebar({ ...props }: ModuleChapterSidebarProps) {
               {chapters
                 .sort((a, b) => a.chapterOrder - b.chapterOrder)
                 .map((chapter) => (
-                  <ChapterItem key={chapter.id} chapter={chapter} />
+                  <ChapterItem
+                    key={chapter.id}
+                    chapter={chapter}
+                    completedLessons={completedLessons}
+                  />
                 ))}
             </SidebarMenu>
           ) : (

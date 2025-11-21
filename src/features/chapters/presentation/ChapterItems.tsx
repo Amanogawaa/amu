@@ -20,6 +20,7 @@ import {
   HelpCircle,
   BookOpen,
   ChevronRight,
+  CheckCircle2,
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -30,9 +31,10 @@ interface ChapterItemProps {
     chapterOrder: number;
     chapterDescription: string;
   };
+  completedLessons?: string[];
 }
 
-const ChapterItem = ({ chapter }: ChapterItemProps) => {
+const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
   const router = useRouter();
   const params = useParams();
   const courseId = params.courseId as string;
@@ -59,6 +61,10 @@ const ChapterItem = ({ chapter }: ChapterItemProps) => {
       default:
         return FileText;
     }
+  };
+
+  const isLessonCompleted = (lessonId: string) => {
+    return completedLessons.includes(lessonId);
   };
 
   return (
@@ -91,6 +97,7 @@ const ChapterItem = ({ chapter }: ChapterItemProps) => {
                 .map((lesson) => {
                   const Icon = getLessonIcon(lesson.type);
                   const isActive = selectedLessonId === lesson.id;
+                  const isCompleted = isLessonCompleted(lesson.id);
                   return (
                     <SidebarMenuSubItem key={lesson.id}>
                       <SidebarMenuSubButton
@@ -98,7 +105,11 @@ const ChapterItem = ({ chapter }: ChapterItemProps) => {
                         className="w-full cursor-pointer truncate px-3"
                         isActive={isActive}
                       >
-                        <Icon className="h-3 w-3" />
+                        {isCompleted ? (
+                          <CheckCircle2 className="h-3 w-3 text-green-600 fill-green-600" />
+                        ) : (
+                          <Icon className="h-3 w-3" />
+                        )}
                         <span className="flex-1 text-left">
                           <span className="text-xs text-muted-foreground">
                             {lesson.lessonOrder}.

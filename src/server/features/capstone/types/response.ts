@@ -50,11 +50,6 @@ export interface CapstoneReview {
   deleted: boolean;
 }
 
-export interface CapstoneGuidelineResponse {
-  data: CapstoneGuideline;
-  message: string;
-}
-
 export interface CapstoneSubmissionResponse {
   data: CapstoneSubmission;
   message: string;

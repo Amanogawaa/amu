@@ -22,6 +22,7 @@ export function CapstoneGuidelineCard({
   courseId,
 }: CapstoneGuidelineCardProps) {
   const { data, isLoading, error } = useGetCapstoneGuideline(courseId);
+  console.log('Capstone guideline data:', data);
 
   if (isLoading) {
     return (
@@ -49,7 +50,7 @@ export function CapstoneGuidelineCard({
     );
   }
 
-  const guideline = data.data;
+  const guideline = data;
 
   return (
     <Card>
@@ -142,7 +143,7 @@ export function CapstoneGuidelineCard({
               <span>Technical Requirements</span>
             </div>
             <div className="space-y-2 pl-6">
-              {guideline.technicalRequirements.languages.length > 0 && (
+              {/* {guideline.technicalRequirements.languages.length > 0 && (
                 <div>
                   <p className="text-xs font-medium mb-1">Languages:</p>
                   <div className="flex flex-wrap gap-2">
@@ -155,8 +156,8 @@ export function CapstoneGuidelineCard({
                     )}
                   </div>
                 </div>
-              )}
-              {guideline.technicalRequirements.frameworks.length > 0 && (
+              )} */}
+              {/* {guideline.technicalRequirements.frameworks.length > 0 && (
                 <div>
                   <p className="text-xs font-medium mb-1">Frameworks:</p>
                   <div className="flex flex-wrap gap-2">
@@ -169,7 +170,7 @@ export function CapstoneGuidelineCard({
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         )}

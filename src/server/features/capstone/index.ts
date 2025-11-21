@@ -1,6 +1,6 @@
 import apiRequest from '@/server/helpers/apiRequest';
 import {
-  CapstoneGuidelineResponse,
+  CapstoneGuideline,
   CapstoneSubmissionResponse,
   CapstoneSubmissionsListResponse,
   CapstoneReviewResponse,
@@ -18,8 +18,8 @@ import {
 
 export async function getCapstoneGuidelineByCourseId(
   courseId: string
-): Promise<CapstoneGuidelineResponse> {
-  return apiRequest<null, CapstoneGuidelineResponse>(
+): Promise<CapstoneGuideline> {
+  return apiRequest<null, CapstoneGuideline>(
     `/capstone/guidelines/course/${courseId}`,
     'get'
   );
@@ -27,8 +27,8 @@ export async function getCapstoneGuidelineByCourseId(
 
 export async function getCapstoneGuidelineById(
   id: string
-): Promise<CapstoneGuidelineResponse> {
-  return apiRequest<null, CapstoneGuidelineResponse>(
+): Promise<CapstoneGuideline> {
+  return apiRequest<null, CapstoneGuideline>(
     `/capstone/guidelines/${id}`,
     'get'
   );
