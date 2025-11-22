@@ -47,6 +47,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { LikeButton } from '@/features/likes/presentation/LikeButton';
+import useDeleteCourse from '../../application/useDeleteCourse';
 
 interface CourseHeaderProps {
   courseId: string;
@@ -81,6 +82,7 @@ export const CourseHeader = ({
   const { mutate: unpublish, isPending: isUnpublishing } = useUnpublishCourse();
   const { mutate: archive, isPending: isArchiving } = useArchiveCourse();
   const { mutate: unarchive, isPending: isUnarchiving } = useUnarchiveCourse();
+  const { mutate: deleteCourse, isPending: isDeleting } = useDeleteCourse();
 
   const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -114,6 +116,7 @@ export const CourseHeader = ({
 
   const handleDelete = () => {
     console.log('Delete course:', courseId);
+    deleteCourse(courseId);
     setShowDeleteDialog(false);
   };
 
@@ -171,7 +174,6 @@ export const CourseHeader = ({
               )}
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-center gap-2">
               {!isOwner && <LikeButton courseId={courseId} showCount={true} />}
 
@@ -243,7 +245,6 @@ export const CourseHeader = ({
                       </DropdownMenuGroup>
                     </>
                   ) : (
-                    // Non-owner actions (Enroll/Unenroll)
                     <>
                       <DropdownMenuGroup>
                         {isLoadingEnrollment ? (
@@ -280,7 +281,6 @@ export const CourseHeader = ({
         </div>
       </div>
 
-      {/* Unenroll Confirmation Dialog */}
       <AlertDialog
         open={showUnenrollDialog}
         onOpenChange={setShowUnenrollDialog}
@@ -302,7 +302,6 @@ export const CourseHeader = ({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>

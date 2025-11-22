@@ -63,7 +63,7 @@ const ModulePage = () => {
       <div className="p-6">
         <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
           <Link
-            href="/courses"
+            href="/my-learning"
             className="hover:text-foreground transition-colors font-medium"
           >
             Courses

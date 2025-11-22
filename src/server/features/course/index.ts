@@ -139,3 +139,7 @@ export async function generateFullCourse(
     payload
   );
 }
+
+export async function deleteCourse(courseId: string): Promise<void> {
+  return apiRequest<null, void>(`/courses/${courseId}`, 'delete');
+}
