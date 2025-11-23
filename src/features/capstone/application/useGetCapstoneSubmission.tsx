@@ -15,6 +15,6 @@ export function useGetCapstoneSubmission(
     queryKey: queryKeys.capstone.submissions.detail(id),
     queryFn: () => getCapstoneSubmissionById(id),
     enabled: options?.enabled !== false && !!id,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 }

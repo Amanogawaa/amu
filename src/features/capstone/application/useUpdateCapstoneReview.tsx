@@ -24,12 +24,10 @@ export function useUpdateCapstoneReview() {
     onSuccess: (data, variables) => {
       toast.success('Review updated successfully!');
 
-      // Invalidate specific review
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.detail(variables.id),
       });
 
-      // Invalidate reviews lists
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.lists(),
       });

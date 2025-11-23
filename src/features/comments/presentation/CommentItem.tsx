@@ -38,9 +38,7 @@ export function CommentItem({
   const repliesCount = replies?.length || 0;
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
-      deleteComment.mutate(comment.id);
-    }
+    deleteComment.mutate(comment.id);
   };
 
   const formatDate = (date: Date) => {
@@ -77,14 +75,12 @@ export function CommentItem({
   return (
     <Card className="p-4 hover:border-primary/20 transition-colors">
       <div className="flex gap-3">
-        {/* Avatar */}
         <Avatar className="h-10 w-10 shrink-0">
           <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
             {getInitials(comment.authorName || 'User')}
           </AvatarFallback>
         </Avatar>
 
-        {/* Comment Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-2 flex-wrap">
@@ -132,7 +128,6 @@ export function CommentItem({
             {comment.content}
           </p>
 
-          {/* Actions */}
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"

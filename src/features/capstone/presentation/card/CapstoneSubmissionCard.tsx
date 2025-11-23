@@ -76,34 +76,25 @@ export function CapstoneSubmissionCard({
   };
 
   return (
-    <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50">
-      <CardHeader className="pb-3">
+    <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-lg">
+      <CardHeader className="pb-3 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <Link href={`/capstone/submissions/${submission.id}`}>
-              <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+              <h3 className="text-base sm:text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">
                 {submission.title}
               </h3>
             </Link>
-            <div className="flex items-center gap-2 mt-2">
-              <Avatar className="h-6 w-6">
-                <AvatarFallback className="text-xs">
-                  {getInitials('User')}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm text-muted-foreground">
-                {submission.userId}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                • {formatDate(submission.submittedAt)}
-              </span>
-            </div>
           </div>
 
           {showActions && isOwner && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
+                >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -127,39 +118,59 @@ export function CapstoneSubmissionCard({
             </DropdownMenu>
           )}
         </div>
+
+        {/* Author Info */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Avatar className="h-6 w-6 shrink-0">
+            <AvatarFallback className="text-xs">
+              {getInitials(submission.githubRepoOwner || 'User')}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex items-center gap-1.5 min-w-0 flex-wrap text-xs sm:text-sm">
+            <span className="text-muted-foreground truncate max-w-[150px] sm:max-w-none">
+              {submission.githubRepoOwner}
+            </span>
+            <span className="text-muted-foreground hidden sm:inline">•</span>
+            <span className="text-muted-foreground whitespace-nowrap">
+              {formatDate(submission.submittedAt)}
+            </span>
+          </div>
+        </div>
       </CardHeader>
 
-      <CardContent className="flex-1 pb-3">
-        <p className="text-sm text-muted-foreground line-clamp-3">
+      <CardContent className="flex-1 pb-3 space-y-4">
+        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
           {submission.description}
         </p>
 
         {/* GitHub Stats */}
         {submission.repoMetadata && (
-          <div className="flex flex-wrap gap-3 mt-4">
+          <div className="flex flex-wrap gap-2">
             <Badge variant="secondary" className="text-xs">
               <Star className="h-3 w-3 mr-1" />
-              {submission.repoMetadata.stars} stars
+              {submission.repoMetadata.stars}
             </Badge>
-            <Badge variant="secondary" className="text-xs">
-              {submission.repoMetadata.language || 'N/A'}
-            </Badge>
+            {submission.repoMetadata.language && (
+              <Badge variant="secondary" className="text-xs">
+                {submission.repoMetadata.language}
+              </Badge>
+            )}
           </div>
         )}
       </CardContent>
 
-      <CardFooter className="pt-3 border-t flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <CardFooter className="pt-3 border-t flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button
             variant={isLiked ? 'default' : 'ghost'}
             size="sm"
             onClick={handleLike}
             disabled={toggleLike.isPending}
-            className="gap-1"
+            className="gap-1 h-8 px-2 sm:px-3"
           >
             <Heart
               className={cn(
-                'h-4 w-4 transition-all',
+                'h-3.5 w-3.5 sm:h-4 sm:w-4 transition-all',
                 isLiked && 'fill-current'
               )}
             />
@@ -167,25 +178,33 @@ export function CapstoneSubmissionCard({
           </Button>
 
           <Link href={`/capstone/submissions/${submission.id}#reviews`}>
-            <Button variant="ghost" size="sm" className="gap-1">
-              <MessageSquare className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1 h-8 px-2 sm:px-3"
+            >
+              <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="text-xs">{reviewsCount}</span>
             </Button>
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <a
-              href={submission.githubRepoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="h-4 w-4 mr-1" />
-              Code
-            </a>
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+          className="h-8 px-2 sm:px-3 shrink-0"
+        >
+          <a
+            href={submission.githubRepoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="gap-1"
+          >
+            <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="text-xs hidden sm:inline">Code</span>
+          </a>
+        </Button>
       </CardFooter>
     </Card>
   );

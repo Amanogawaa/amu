@@ -15,6 +15,6 @@ export function useGetCapstoneLikeStatus(
     queryKey: queryKeys.capstone.likeStatus(submissionId),
     queryFn: () => getCapstoneLikeStatus(submissionId),
     enabled: options?.enabled !== false && !!submissionId,
-    staleTime: 1 * 60 * 1000, // 1 minute
+    staleTime: 1 * 60 * 1000,
   });
 }

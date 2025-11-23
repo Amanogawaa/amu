@@ -24,12 +24,10 @@ export function useUpdateCapstoneSubmission() {
     onSuccess: (data, variables) => {
       toast.success('Capstone project updated successfully!');
 
-      // Invalidate specific submission
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.detail(variables.id),
       });
 
-      // Invalidate submissions lists
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.lists(),
       });

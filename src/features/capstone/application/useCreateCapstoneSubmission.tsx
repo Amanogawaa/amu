@@ -19,19 +19,16 @@ export function useCreateCapstoneSubmission() {
     onSuccess: (data) => {
       toast.success('Capstone project submitted successfully!');
 
-      // Invalidate submissions list
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.lists(),
       });
 
-      // Invalidate course-specific submissions
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.list({
           courseId: data.data.courseId,
         }),
       });
 
-      // Invalidate user's submissions
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.list({
           userId: data.data.userId,

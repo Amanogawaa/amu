@@ -8,9 +8,11 @@ import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPane
 import { SearchBar } from '@/features/course/presentation/SearchBar';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types/request';
-import { StarsIcon } from 'lucide-react';
+import { StarsIcon, Sparkles } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CapstoneGallery } from '@/features/capstone/presentation';
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -117,7 +119,8 @@ const ExplorePage = () => {
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
-      <div className="container mx-auto max-w-5xl ">
+      <div className="container mx-auto max-w-5xl">
+        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mt-10">
           <div className="space-y-3">
             <div className="flex items-center gap-4">
@@ -126,51 +129,76 @@ const ExplorePage = () => {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight uppercase">
-                  EXPLORE COURSES
+                  EXPLORE
                 </h1>
                 <p className="text-muted-foreground text-lg">
-                  Discover and explore a variety of courses tailored to your
-                  interests and goals.
+                  Discover courses and student capstone projects
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 space-y-4">
-          <SearchBar
-            onSearch={handleSearch}
-            placeholder="Search courses by title or topic..."
-          />
-          <LevelFilterPanel
-            selectedLevel={selectedLevel}
-            onLevelChange={handleLevelChange}
-          />
-        </div>
+        {/* Tabs */}
+        <Tabs defaultValue="courses" className="mt-8">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="courses" className="flex items-center gap-2">
+              <StarsIcon className="h-4 w-4" />
+              Courses
+            </TabsTrigger>
+            <TabsTrigger value="capstone" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Capstone Projects
+            </TabsTrigger>
+          </TabsList>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {filteredCourses.map((course) => (
-            <CourseCard course={course} key={course.id} />
-          ))}
+          {/* Courses Tab */}
+          <TabsContent value="courses" className="space-y-4 mt-6">
+            <SearchBar
+              onSearch={handleSearch}
+              placeholder="Search courses by title or topic..."
+            />
+            <LevelFilterPanel
+              selectedLevel={selectedLevel}
+              onLevelChange={handleLevelChange}
+            />
 
-          {isFetchingNextPage &&
-            Array.from({ length: 3 }).map((_, index) => (
-              <CourseCardSkeleton key={`loading-${index}`} />
-            ))}
-        </div>
+            {filteredCourses.length === 0 ? (
+              <EnhancedEmptyState type="no-search-results" />
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                  {filteredCourses.map((course) => (
+                    <CourseCard course={course} key={course.id} />
+                  ))}
 
-        {hasNextPage && (
-          <div
-            ref={sentinelRef}
-            className="h-10 mt-4 flex items-center justify-center"
-          >
-            {!isFetchingNextPage && (
-              <p className="text-sm text-muted-foreground">
-                Loading more courses...
-              </p>
+                  {isFetchingNextPage &&
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <CourseCardSkeleton key={`loading-${index}`} />
+                    ))}
+                </div>
+
+                {hasNextPage && (
+                  <div
+                    ref={sentinelRef}
+                    className="h-10 mt-4 flex items-center justify-center"
+                  >
+                    {!isFetchingNextPage && (
+                      <p className="text-sm text-muted-foreground">
+                        Loading more courses...
+                      </p>
+                    )}
+                  </div>
+                )}
+              </>
             )}
-          </div>
-        )}
+          </TabsContent>
+
+          {/* Capstone Tab */}
+          <TabsContent value="capstone" className="mt-6">
+            <CapstoneGallery limit={12} />
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );

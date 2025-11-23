@@ -4,14 +4,17 @@ import { CapstoneGuidelineCard } from '@/features/capstone/presentation';
 import { useGetCourse } from '@/features/course/application/useGetCourses';
 import { ChevronRight, Users, Upload } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import React from 'react';
 
-const CapstonePage = () => {
-  const params = useParams();
-  const courseId = params.courseId as string;
+interface CapstonePageProps {
+  params: Promise<{
+    courseId: string;
+  }>;
+}
 
+const CapstonePage = ({ params }: CapstonePageProps) => {
+  const { courseId } = React.use(params);
   const { data: course } = useGetCourse(courseId);
 
   return (
@@ -53,7 +56,6 @@ const CapstonePage = () => {
               </Button>
             </div>
           </div>
-
           <CapstoneGuidelineCard courseId={courseId} />
         </div>
       </div>

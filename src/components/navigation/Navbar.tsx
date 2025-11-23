@@ -55,12 +55,11 @@ const Navbar = ({
     url: '/',
     src: '/amu.png',
     alt: 'logo',
-    title: 'Amu AI',
+    title: 'CourseCraft',
   },
   menu = [
     { title: 'Home', url: '/' },
     { title: 'Explore', url: '/explore' },
-    { title: 'Capstone Gallery', url: '/explore/capstone' },
     { title: 'Features', url: '/features' },
     { title: 'About', url: '/about' },
   ],

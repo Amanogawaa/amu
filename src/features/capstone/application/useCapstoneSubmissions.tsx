@@ -18,6 +18,6 @@ export function useCapstoneSubmissions(
     queryKey: queryKeys.capstone.submissions.list(filters),
     queryFn: () => getCapstoneSubmissions(filters),
     enabled: options?.enabled !== false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 }

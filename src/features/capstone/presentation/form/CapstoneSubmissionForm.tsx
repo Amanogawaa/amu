@@ -1,11 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -16,15 +12,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/features/auth/application/AuthContext';
+import type { CapstoneSubmission } from '@/server/features/capstone/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ExternalLink, Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import { useCreateCapstoneSubmission } from '../../application/useCreateCapstoneSubmission';
 import { useUpdateCapstoneSubmission } from '../../application/useUpdateCapstoneSubmission';
-import { useUserProfile } from '@/features/user/application/useUser';
 import { GitHubConnectionRequired } from '../GitHubConnectionRequired';
-import { Loader2, Github, ExternalLink } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { CapstoneSubmission } from '@/server/features/capstone/types';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const submissionFormSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters'),
@@ -53,12 +51,17 @@ export function CapstoneSubmissionForm({
   submission,
   onSuccess,
 }: CapstoneSubmissionFormProps) {
-  const { data: profile, isLoading: profileLoading } = useUserProfile();
+  const { user, githubLinked, loading: authLoading } = useAuth();
   const createSubmission = useCreateCapstoneSubmission();
   const updateSubmission = useUpdateCapstoneSubmission();
 
   const isEditing = !!submission;
-  const hasGitHubConnected = profile?.githubUsername;
+
+  const githubProvider = user?.providerData.find(
+    (p: any) => p.providerId === 'github.com'
+  );
+  const githubUsername =
+    githubProvider?.displayName || githubProvider?.email?.split('@')[0];
 
   const form = useForm<SubmissionFormValues>({
     resolver: zodResolver(submissionFormSchema),
@@ -85,7 +88,7 @@ export function CapstoneSubmissionForm({
     onSuccess?.();
   };
 
-  if (profileLoading) {
+  if (authLoading) {
     return (
       <Card>
         <CardHeader>
@@ -100,7 +103,7 @@ export function CapstoneSubmissionForm({
     );
   }
 
-  if (!hasGitHubConnected) {
+  if (!githubLinked) {
     return <GitHubConnectionRequired />;
   }
 

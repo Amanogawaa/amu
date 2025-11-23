@@ -16,7 +16,7 @@ export default function CapstoneSubmitPage({
   const { courseId } = React.use(params);
 
   return (
-    <div className="container max-w-4xl py-8">
+    <div className="container max-w-4xl mx-auto py-8">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -34,7 +34,6 @@ export default function CapstoneSubmitPage({
   );
 }
 
-// Wrapper component to fetch guideline ID
 function CapstoneSubmissionFormWrapper({ courseId }: { courseId: string }) {
   const { data: guideline, isLoading } = useGetCapstoneGuideline(courseId);
 

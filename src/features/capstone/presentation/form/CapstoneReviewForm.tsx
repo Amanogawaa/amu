@@ -156,7 +156,7 @@ export function CapstoneReviewForm({
               name="highlights"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Highlights (Optional)</FormLabel>
+                  <FormLabel>Highlights </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="What did you like about this project? (One per line)"
@@ -180,7 +180,7 @@ export function CapstoneReviewForm({
               name="suggestions"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Suggestions (Optional)</FormLabel>
+                  <FormLabel>Suggestions </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="What could be improved? (One per line)"

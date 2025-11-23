@@ -19,19 +19,16 @@ export function useCreateCapstoneReview() {
     onSuccess: (data) => {
       toast.success('Review submitted successfully!');
 
-      // Invalidate reviews list
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.lists(),
       });
 
-      // Invalidate submission-specific reviews
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.list({
           capstoneSubmissionId: data.data.capstoneSubmissionId,
         }),
       });
 
-      // Invalidate the submission itself (review count changed)
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.detail(
           data.data.capstoneSubmissionId

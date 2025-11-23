@@ -10,7 +10,6 @@ export function useGenerateCapstone() {
     mutationFn: (courseId: string) => generateCapstoneGuideline(courseId),
     onSuccess: (data, courseId) => {
       toast.success('Capstone project generated successfully!');
-      // Invalidate the guideline query to refetch
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.guidelineByCourse(courseId),
       });

@@ -11,17 +11,14 @@ export function useDeleteCapstoneReview() {
     onSuccess: (_, reviewId) => {
       toast.success('Review deleted successfully');
 
-      // Invalidate specific review
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.detail(reviewId),
       });
 
-      // Invalidate reviews lists
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.reviews.lists(),
       });
 
-      // Invalidate submissions (review count changed)
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.lists(),
       });

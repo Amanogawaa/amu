@@ -18,6 +18,6 @@ export function useCapstoneReviews(
     queryKey: queryKeys.capstone.reviews.list(filters),
     queryFn: () => getCapstoneReviews(filters),
     enabled: options?.enabled !== false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 }

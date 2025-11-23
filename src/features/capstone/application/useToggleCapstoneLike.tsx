@@ -15,17 +15,14 @@ export function useToggleCapstoneLike() {
         : 'Removed from favorites';
       toast.success(message);
 
-      // Invalidate like status
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.likeStatus(submissionId),
       });
 
-      // Invalidate the submission (like count changed)
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.detail(submissionId),
       });
 
-      // Invalidate submissions lists
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.submissions.lists(),
       });
