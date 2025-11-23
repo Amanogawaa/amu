@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/features/auth/application/AuthContext';
+import { CourseValidationBadge } from '../components/CourseValidationBadge';
 
 interface CourseCardProps {
   course: Course;
@@ -60,6 +61,7 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
             >
               {course.level}
             </Badge>
+            {isOwner && <CourseValidationBadge courseId={course.id} compact />}
           </div>
         </div>
         {course.subtitle && (

@@ -55,7 +55,6 @@ const ModulePage = () => {
 
   return (
     <>
-      {/* Sidebar Toggle Button */}
       <div className="p-6 pb-0 md:hidden">
         <SidebarTrigger />
       </div>
@@ -81,9 +80,7 @@ const ModulePage = () => {
           </span>
         </nav>
 
-        {/* Module Content */}
         <div className="space-y-6">
-          {/* Module Header */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-primary">
               <BookOpen className="h-6 w-6" />
@@ -97,7 +94,6 @@ const ModulePage = () => {
             </p>
           </div>
 
-          {/* Module Details */}
           <Card>
             <CardContent className="pt-6">
               <div className="grid gap-4">
@@ -132,7 +128,6 @@ const ModulePage = () => {
             </CardContent>
           </Card>
 
-          {/* Instructions */}
           <Card className="bg-blue-500/5 border-blue-500/20">
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">

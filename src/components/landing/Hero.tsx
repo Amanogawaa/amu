@@ -3,14 +3,12 @@ import Link from 'next/link';
 export default function Hero() {
   return (
     <section className="relative pt-32 pb-20 px-4 bg-gradient-to-br from-white via-secondary/5 to-primary/5 overflow-hidden">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
       <div className="max-w-7xl mx-auto text-center relative z-10">
-        {/* Main heading with gradient text */}
         <h1 className="text-5xl md:text-7xl font-bold text-custom-foreground mb-6 animate-fade-in leading-tight">
           Learn to Code{' '}
           <span className="bg-gradient-to-r  from-secondary  to-primary bg-clip-text text-transparent">
@@ -18,7 +16,6 @@ export default function Hero() {
           </span>
         </h1>
 
-        {/* Subheading */}
         <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-12 animate-slide-up leading-relaxed">
           Amu AI generates{' '}
           <strong className="text-primary">
@@ -28,7 +25,6 @@ export default function Hero() {
           interactive exercises, and real-time help.
         </p>
 
-        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
           <Link
             href="/signup"
@@ -61,7 +57,6 @@ export default function Hero() {
           </button>
         </div>
 
-        {/* Trust indicators */}
         <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600 animate-fade-in">
           <div className="flex items-center gap-2">
             <svg
@@ -107,7 +102,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Visual mockup or illustration placeholder */}
         <div className="mt-16 animate-fade-in">
           <div className="relative max-w-5xl mx-auto">
             <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
@@ -129,7 +123,6 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-            {/* Decorative elements */}
             <div className="absolute -top-4 -left-4 w-24 h-24 bg-secondary/20 rounded-full blur-2xl -z-10" />
             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10" />
           </div>

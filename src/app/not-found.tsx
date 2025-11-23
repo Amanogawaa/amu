@@ -28,7 +28,6 @@ export default function NotFound() {
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-background via-background to-muted/20">
       <div className="max-w-2xl w-full space-y-8 text-center">
-        {/* 404 Animation */}
         <div className="relative">
           <div className="text-[150px] font-bold text-primary/10 leading-none">
             404
@@ -40,7 +39,6 @@ export default function NotFound() {
           </div>
         </div>
 
-        {/* Error Message */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold text-foreground">Page Not Found</h1>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
@@ -49,7 +47,6 @@ export default function NotFound() {
           </p>
         </div>
 
-        {/* Search Bar */}
         <Card>
           <CardContent className="pt-6">
             <form onSubmit={handleSearch} className="space-y-4">
@@ -70,7 +67,6 @@ export default function NotFound() {
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg" className="gap-2">
             <Link href="/">
@@ -86,7 +82,6 @@ export default function NotFound() {
           </Button>
         </div>
 
-        {/* Popular Courses */}
         <div className="pt-4">
           <p className="text-sm text-muted-foreground mb-3">
             Or explore these popular topics:

@@ -4,31 +4,23 @@ import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
 import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
 import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
 import CourseCard from '@/features/course/presentation/card/CourseCard';
-import {
-  FilterPanel,
-  CourseFiltersState,
-} from '@/features/course/presentation/FilterPanel';
+import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
 import { SearchBar } from '@/features/course/presentation/SearchBar';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types/request';
 import { StarsIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterState, setFilterState] = useState<CourseFiltersState>({
-    category: '',
-    level: '',
-    language: '',
-  });
+  const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
+    undefined
+  );
 
+  // Only fetch published courses, no filters
   const filters: CourseFilters = {
     publish: true,
-    search: searchQuery || undefined,
-    category: filterState.category || undefined,
-    level: filterState.level || undefined,
-    language: filterState.language || undefined,
   };
 
   const {
@@ -41,6 +33,29 @@ const ExplorePage = () => {
   } = useInfiniteListCourses(filters);
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
+
+  // Client-side filtering
+  const filteredCourses = useMemo(() => {
+    let result = [...flatData];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (course) =>
+          course.name.toLowerCase().includes(query) ||
+          course.topic?.toLowerCase().includes(query) ||
+          course.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply level filter
+    if (selectedLevel) {
+      result = result.filter((course) => course.level === selectedLevel);
+    }
+
+    return result;
+  }, [flatData, searchQuery, selectedLevel]);
 
   const { ref: sentinelRef, inView } = useInView({
     threshold: 0,
@@ -63,9 +78,9 @@ const ExplorePage = () => {
     setSearchQuery(query);
   };
 
-  // Handle filter changes from FilterPanel
-  const handleFilterChange = (newFilters: CourseFiltersState) => {
-    setFilterState(newFilters);
+  // Handle level filter changes
+  const handleLevelChange = (level: string | undefined) => {
+    setSelectedLevel(level);
   };
 
   if (isPending) {
@@ -80,19 +95,24 @@ const ExplorePage = () => {
     );
   }
 
-  if (flatData.length === 0) {
-    // Check if it's a search/filter result with no matches
-    const hasActiveFilters =
-      searchQuery ||
-      filterState.category ||
-      filterState.level ||
-      filterState.language;
-
-    return hasActiveFilters ? (
-      <EnhancedEmptyState type="no-search-results" />
-    ) : (
-      <EnhancedEmptyState type="no-published-courses" />
+  if (isPending) {
+    return (
+      <div className="container mx-auto max-w-5xl ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <CourseCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
     );
+  }
+
+  if (flatData.length === 0) {
+    return <EnhancedEmptyState type="no-published-courses" />;
+  }
+
+  if (filteredCourses.length === 0) {
+    return <EnhancedEmptyState type="no-search-results" />;
   }
 
   return (
@@ -117,20 +137,19 @@ const ExplorePage = () => {
           </div>
         </div>
 
-        {/* Search and Filter Section */}
         <div className="mt-8 space-y-4">
           <SearchBar
             onSearch={handleSearch}
             placeholder="Search courses by title or topic..."
           />
-          <FilterPanel
-            onFilterChange={handleFilterChange}
-            initialFilters={filterState}
+          <LevelFilterPanel
+            selectedLevel={selectedLevel}
+            onLevelChange={handleLevelChange}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {flatData.map((course) => (
+          {filteredCourses.map((course) => (
             <CourseCard course={course} key={course.id} />
           ))}
 

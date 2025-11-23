@@ -105,6 +105,7 @@ export const queryKeys = {
   user: {
     all: ['user'] as const,
     profile: () => [...queryKeys.user.all, 'profile'] as const,
+    analytics: () => [...queryKeys.user.all, 'analytics'] as const,
   },
 
   // Capstone

@@ -2,15 +2,46 @@
 
 import { useAuth } from '@/features/auth/application/AuthContext';
 import CourseGrid from '@/features/course/presentation/grid/CourseGrid';
+import { SearchBar } from '@/features/course/presentation/SearchBar';
+import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
+import { SortingPanel } from '@/features/course/presentation/SortingPanel';
+import { StatusFilterPanel } from '@/features/course/presentation/StatusFilterPanel';
 import { BookOpenIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { useState } from 'react';
 
 const CoursesPage = () => {
   const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedSort, setSelectedSort] = useState('newest');
+  const [selectedStatus, setSelectedStatus] = useState<
+    'published' | 'unpublished' | 'archived' | 'all'
+  >('all');
 
   if (!user) {
     throw redirect('/');
   }
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleLevelChange = (level: string | undefined) => {
+    setSelectedLevel(level);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSelectedSort(sort);
+  };
+
+  const handleStatusChange = (
+    status: 'published' | 'unpublished' | 'archived' | 'all'
+  ) => {
+    setSelectedStatus(status);
+  };
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
@@ -32,7 +63,35 @@ const CoursesPage = () => {
             </div>
           </div>
         </div>
-        <CourseGrid uid={user.uid} />
+
+        <div className="mt-8 space-y-4">
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search your courses..."
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <LevelFilterPanel
+              selectedLevel={selectedLevel}
+              onLevelChange={handleLevelChange}
+            />
+            <SortingPanel
+              selectedSort={selectedSort}
+              onSortChange={handleSortChange}
+            />
+            <StatusFilterPanel
+              selectedStatus={selectedStatus}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
+        </div>
+
+        <CourseGrid
+          uid={user.uid}
+          searchQuery={searchQuery}
+          level={selectedLevel}
+          sortBy={selectedSort}
+          status={selectedStatus}
+        />
       </div>
     </section>
   );

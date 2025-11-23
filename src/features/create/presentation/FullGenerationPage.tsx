@@ -3,25 +3,25 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { GenerationStatus } from '@/server/features/course/types';
-import { CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle2, Sparkles, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useFullGeneration } from '../application/useFullGeneration';
+import { useGenerationContext } from '../context/GenerationContext';
 import { FullGenerationForm } from '../presentation/FullGenerationForm';
-import { GenerationProgressDisplay } from '../presentation/GenerationProgressDisplay';
 
 export default function FullGenerationPage() {
   const router = useRouter();
   const { progress, isGenerating, startGeneration, resetGeneration } =
     useFullGeneration();
+  const { setIsMinimized } = useGenerationContext();
 
   const isCompleted = progress?.status === GenerationStatus.COMPLETED;
   const isFailed = progress?.status === GenerationStatus.FAILED;
 
-  const handleViewCourse = () => {
-    if (progress?.data?.courseId) {
-      router.push(`/create/${progress.data.courseId}`);
-    }
+  const handleViewWidget = () => {
+    setIsMinimized(false);
   };
 
   const handleCreateAnother = () => {
@@ -37,7 +37,7 @@ export default function FullGenerationPage() {
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold"> Course Generation</h1>
+              <h1 className="text-3xl font-bold">Course Generation</h1>
               <p className="text-muted-foreground">
                 Generate a complete course with AI
               </p>
@@ -46,45 +46,41 @@ export default function FullGenerationPage() {
         </div>
 
         <div className="flex flex-col justify-center gap-8">
-          <div>
-            {isGenerating ? (
-              <div className="space-y-6">
-                <GenerationProgressDisplay progress={progress} />
-
-                {isCompleted && progress?.data?.courseId && (
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button
-                      onClick={handleViewCourse}
-                      className="flex-1 gap-2"
-                      size="lg"
-                    >
-                      <CheckCircle2 className="h-4 w-4" />
-                      View Course
-                    </Button>
-                    <Button
-                      onClick={handleCreateAnother}
-                      variant="outline"
-                      className="flex-1 gap-2"
-                      size="lg"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      Create Another
-                    </Button>
+          {/* Active Generation Notice */}
+          {isGenerating && (
+            <Card className="border-primary/50 bg-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <Info className="h-5 w-5 text-primary mt-0.5" />
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1">
+                      Course generation in progress
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Your course "{progress?.data?.courseName || 'Untitled'}"
+                      is being generated. You can continue browsing the
+                      application while we work on it.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">
+                        {Math.round(progress?.progress || 0)}% Complete
+                      </Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleViewWidget}
+                      >
+                        View Progress
+                      </Button>
+                    </div>
                   </div>
-                )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-                {isFailed && (
-                  <Button
-                    onClick={handleCreateAnother}
-                    variant="outline"
-                    className="w-full gap-2"
-                    size="lg"
-                  >
-                    Try Again
-                  </Button>
-                )}
-              </div>
-            ) : (
+          <div>
+            {!isGenerating ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Course Details</CardTitle>
@@ -94,6 +90,21 @@ export default function FullGenerationPage() {
                     onSubmit={startGeneration}
                     isGenerating={isGenerating}
                   />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Start Another Generation?</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    You currently have an active generation in progress. You can
+                    create another course once the current one is completed.
+                  </p>
+                  <Button onClick={handleCreateAnother} variant="outline">
+                    Cancel Current & Start New
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -149,6 +160,7 @@ export default function FullGenerationPage() {
                   </p>
                   <p>🤖 Powered by AI (Gemini)</p>
                   <p>📊 Real-time progress tracking</p>
+                  <p>🌐 Continue browsing while generating</p>
                 </div>
               </CardContent>
             </Card>

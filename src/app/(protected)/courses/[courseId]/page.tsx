@@ -28,7 +28,6 @@ const CoursePage = () => {
           </span>
         </nav>
 
-        {/* Course Detail Content */}
         <CourseDetailPage courseId={courseId} />
       </div>
     </section>

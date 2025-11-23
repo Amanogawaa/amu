@@ -1,17 +1,15 @@
 'use client';
 
-import { CapstoneGuidelineCard } from '@/features/capstone/presentation';
 import { useGetCourse } from '@/features/course/application/useGetCourses';
+import MyLearningCourseDetailPage from '@/features/my-learning/presentation/components/MyLearningCourseDetailPage';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React from 'react';
 
-const CapstonePage = () => {
+const MyLearningCoursePage = () => {
   const params = useParams();
   const courseId = params.courseId as string;
-
-  const { data: course } = useGetCourse(courseId);
+  const { data } = useGetCourse(courseId);
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10 pt-6">
@@ -25,14 +23,14 @@ const CapstonePage = () => {
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <span className=" font-medium truncate text-foreground">
-            {course?.name}
+            {data?.name}
           </span>
         </nav>
 
-        <CapstoneGuidelineCard courseId={courseId} />
+        <MyLearningCourseDetailPage courseId={courseId} />
       </div>
     </section>
   );
 };
 
-export default CapstonePage;
+export default MyLearningCoursePage;

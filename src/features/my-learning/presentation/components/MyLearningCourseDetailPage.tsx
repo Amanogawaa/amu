@@ -4,20 +4,21 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
 import { AlertCircle } from 'lucide-react';
-import { useGetCourse } from '../../application/useGetCourses';
-import { CourseInfoCard } from '../card/CourseInfoCard';
-import { CourseContent } from './CourseContent';
-import { CourseHeader } from './CourseHeader';
-import { useProgressForCourse } from '@/features/progress/application/useProgress';
-import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
-import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
+
+import { useAuth } from '@/features/auth/application/AuthContext';
+import { CommentList } from '@/features/comments/presentation/CommentList';
+import { useGetCourse } from '@/features/course/application/useGetCourses';
+import { CourseInfoCard } from '@/features/course/presentation/card/CourseInfoCard';
+import { CourseContent } from '@/features/course/presentation/components/CourseContent';
+import { CourseHeader } from '@/features/course/presentation/components/CourseHeader';
 import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
 import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
-import { CommentList } from '@/features/comments/presentation/CommentList';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { CourseValidationStatus } from './CourseValidationStatus';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
+import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
+import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
+import { MyLearningCourseHeader } from './MyLearningCourseHeader';
 
-const CourseDetailPage = ({ courseId }: { courseId: string }) => {
+const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
   const { user } = useAuth();
   const { data: progress, isLoading: progressLoading } =
@@ -62,7 +63,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
 
   return (
     <div className="space-y-6">
-      <CourseHeader
+      <MyLearningCourseHeader
         courseId={courseId}
         name={data.name}
         subtitle={data.subtitle}
@@ -80,38 +81,34 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
       />
 
-      {user?.uid === data.uid && <CourseValidationStatus courseId={courseId} />}
-
-      {!enrollmentLoading &&
-        !enrollmentStatus?.isEnrolled &&
-        user?.uid != data.uid && (
-          <EnrollmentPrompt courseId={courseId} variant="banner" />
+      {!progressLoading &&
+        progress &&
+        (enrollmentStatus?.isEnrolled || user?.uid === data.uid) && (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-lg">Your Progress</h3>
+                  <CourseStatusBadge
+                    percentComplete={progress.percentComplete}
+                  />
+                </div>
+                <ProgressBar
+                  percent={progress.percentComplete}
+                  showLabel
+                  size="lg"
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>
+                    {progress.lessonsCompleted.length} of{' '}
+                    {progress.totalLessons} lessons completed
+                  </span>
+                  <span>{progress.percentComplete}%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
-
-      {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg">Your Progress</h3>
-                <CourseStatusBadge percentComplete={progress.percentComplete} />
-              </div>
-              <ProgressBar
-                percent={progress.percentComplete}
-                showLabel
-                size="lg"
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>
-                  {progress.lessonsCompleted.length} of {progress.totalLessons}{' '}
-                  lessons completed
-                </span>
-                <span>{progress.percentComplete}%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       <CourseContent
         description={data.description}
@@ -121,7 +118,6 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
 
       <ModuleList courseId={courseId} />
 
-      {/* Comments Section */}
       <Card>
         <CardContent className="pt-6">
           <CommentList courseId={courseId} />
@@ -131,4 +127,4 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   );
 };
 
-export default CourseDetailPage;
+export default MyLearningCourseDetailPage;

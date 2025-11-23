@@ -2,15 +2,36 @@
 
 import { useAuth } from '@/features/auth/application/AuthContext';
 import EnrolledCoursesGrid from '@/features/enrollment/presentation/EnrolledCoursesGrid';
+import { SearchBar } from '@/features/course/presentation/SearchBar';
+import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
+import { SortingPanel } from '@/features/course/presentation/SortingPanel';
 import { BookOpenIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { useState } from 'react';
 
 const MyLearningPage = () => {
   const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedSort, setSelectedSort] = useState('newest');
 
   if (!user) {
     throw redirect('/');
   }
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleLevelChange = (level: string | undefined) => {
+    setSelectedLevel(level);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSelectedSort(sort);
+  };
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
@@ -33,7 +54,28 @@ const MyLearningPage = () => {
           </div>
         </div>
 
-        <EnrolledCoursesGrid />
+        <div className="mt-8 space-y-4">
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search enrolled courses..."
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <LevelFilterPanel
+              selectedLevel={selectedLevel}
+              onLevelChange={handleLevelChange}
+            />
+            <SortingPanel
+              selectedSort={selectedSort}
+              onSortChange={handleSortChange}
+            />
+          </div>
+        </div>
+
+        <EnrolledCoursesGrid
+          searchQuery={searchQuery}
+          level={selectedLevel}
+          sortBy={selectedSort}
+        />
       </div>
     </section>
   );

@@ -46,7 +46,22 @@ class serverConnectionSingleton {
 
         if (currentUser) {
           try {
-            const token = await currentUser.getIdToken();
+            const tokenResult = await currentUser.getIdTokenResult();
+            const tokenAge =
+              Date.now() - new Date(tokenResult.authTime).getTime();
+            const shouldRefresh = tokenAge > 55 * 60 * 1000;
+
+            const token = await currentUser.getIdToken(shouldRefresh);
+
+            if (shouldRefresh) {
+              Cookies.set('auth-token', token, {
+                expires: 7,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+              });
+            }
+
             config.headers.Authorization = `Bearer ${token}`;
           } catch (error) {
             logger.error('Error getting ID token:', error);
@@ -70,16 +85,51 @@ class serverConnectionSingleton {
 
     this.instance.interceptors.response.use(
       (response) => response,
-      (error) => {
-        if (error.response?.status === 401) {
-          const hadToken = error.config?.headers?.Authorization;
-          if (hadToken) {
-            logger.error(
-              'Unauthorized access - possibly expired token or no token.'
-            );
+      async (error) => {
+        const originalRequest = error.config;
+
+        // If 401 and we haven't retried yet
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          const currentUser = auth.currentUser;
+
+          if (currentUser) {
+            try {
+              // Force refresh the token
+              const token = await currentUser.getIdToken(true);
+
+              // Update cookie
+              Cookies.set('auth-token', token, {
+                expires: 7,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+              });
+
+              // Retry the original request with new token
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return this.instance(originalRequest);
+            } catch (refreshError) {
+              logger.error('Token refresh failed:', refreshError);
+              Cookies.remove('auth-token');
+              // Optionally redirect to login
+              if (typeof window !== 'undefined') {
+                window.location.href =
+                  '/signin?redirect=' + window.location.pathname;
+              }
+            }
+          } else {
+            logger.error('Unauthorized access - no user logged in.');
+            Cookies.remove('auth-token');
+            // Optionally redirect to login
+            if (typeof window !== 'undefined') {
+              window.location.href =
+                '/signin?redirect=' + window.location.pathname;
+            }
           }
-          Cookies.remove('auth-token');
         }
+
         return Promise.reject(error);
       }
     );

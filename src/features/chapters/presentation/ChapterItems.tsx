@@ -22,7 +22,8 @@ import {
   ChevronRight,
   CheckCircle2,
 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 interface ChapterItemProps {
   chapter: {
@@ -37,16 +38,25 @@ interface ChapterItemProps {
 const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
   const router = useRouter();
   const params = useParams();
+  const pathName = usePathname();
   const courseId = params.courseId as string;
   const moduleId = params.moduleId as string;
   const selectedLessonId = params.lessonId as string | undefined;
+
+  const linkTo = useMemo(() => {
+    if (pathName.includes('/my-learning/')) {
+      return `/my-learning/${courseId}/modules/${moduleId}/lessons/`;
+    } else {
+      return `/courses/${courseId}/modules/${moduleId}/lessons/`;
+    }
+  }, [pathName, courseId, moduleId]);
 
   const { data: lessons, isLoading: lessonsLoading } = useGetLessons(
     chapter.id
   );
 
   const handleLessonClick = (lessonId: string) => {
-    const url = `/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`;
+    const url = `${linkTo}${lessonId}`;
     router.push(url);
   };
 

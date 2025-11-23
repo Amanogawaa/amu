@@ -68,7 +68,7 @@ const Navbar = ({
     signup: { title: 'Sign up', url: '/signup' },
   },
 }: NavbarProps) => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   return (
     <section className="py-4 sticky top-0 backdrop-blur-lg bg-background/30 border-b border-border/40 z-50 shadow-sm">
       <div className="container max-w-7xl mx-auto">
@@ -98,7 +98,13 @@ const Navbar = ({
           </div>
           <div className="flex items-center gap-2">
             <ModeToggle />
-            {user ? (
+            {loading ? (
+              // Show placeholder while loading to prevent layout shift
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
+                <div className="h-10 w-10 bg-muted animate-pulse rounded-full" />
+              </div>
+            ) : user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="outline" className="rounded-full py-5">
                   <a href="/create">Create</a>
@@ -158,7 +164,13 @@ const Navbar = ({
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    {user ? (
+                    {loading ? (
+                      // Show placeholder while loading
+                      <>
+                        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+                        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
+                      </>
+                    ) : user ? (
                       <>
                         <Button asChild variant="outline">
                           <a href="/create">Create</a>

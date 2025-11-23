@@ -7,6 +7,7 @@ import {
   getProfile,
   updateProfile,
   uploadProfilePicture,
+  getUserAnalytics,
 } from '@/server/features/user';
 import { toast } from 'sonner';
 
@@ -15,6 +16,15 @@ export const useUserProfile = () => {
     queryKey: queryKeys.user.profile(),
     queryFn: async () => {
       return await getProfile();
+    },
+  });
+};
+
+export const useUserAnalytics = () => {
+  return useQuery({
+    queryKey: queryKeys.user.analytics(),
+    queryFn: async () => {
+      return await getUserAnalytics();
     },
   });
 };

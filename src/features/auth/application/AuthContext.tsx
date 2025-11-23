@@ -75,19 +75,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [githubLinked, setGithubLinked] = useState(false);
 
+  const refreshToken = async (currentUser: User) => {
+    try {
+      const token = await currentUser.getIdToken(true);
+      Cookies.set('auth-token', token, {
+        expires: 7,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
+      return token;
+    } catch (err) {
+      logger.error('Error refreshing ID token:', err);
+      throw err;
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
 
       if (user) {
         try {
-          const token = await user.getIdToken();
-          Cookies.set('auth-token', token, {
-            expires: 7,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/',
-          });
+          // Get fresh token
+          await refreshToken(user);
         } catch (err) {
           logger.error('Error getting ID token:', err);
         }
@@ -99,6 +110,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return unsubscribe;
   }, []);
+
+  // Set up token refresh interval (every 50 minutes, tokens expire in 60 minutes)
+  useEffect(() => {
+    let refreshInterval: NodeJS.Timeout;
+
+    if (user) {
+      refreshInterval = setInterval(async () => {
+        try {
+          await refreshToken(user);
+          logger.info('Token refreshed successfully');
+        } catch (err) {
+          logger.error('Failed to refresh token:', err);
+        }
+      }, 50 * 60 * 1000); // 50 minutes
+    }
+
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
+  }, [user]);
 
   useEffect(() => {
     if (user) {

@@ -10,24 +10,31 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { EnrollmentWithCourse } from '@/server/features/enrollment/types';
+import { useEnrollmentCount } from '@/features/enrollment/application/useEnrollment';
+import { LikeButton } from '@/features/likes/presentation/LikeButton';
+import { Course } from '@/server/features/course/types';
 import {
   ArrowRight,
   BookOpen,
-  Calendar,
   Clock,
   GraduationCap,
   Layers,
+  Trash2,
+  User2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useAuth } from '@/features/auth/application/AuthContext';
+import { CourseValidationBadge } from '@/features/course/presentation/components/CourseValidationBadge';
 
-interface EnrolledCourseCardProps {
-  enrollment: EnrollmentWithCourse;
+interface CourseCardProps {
+  course: Course;
+  href?: string;
 }
 
-const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
-  const { course, enrolledAt, status } = enrollment;
+const MyLearningCourseCard = ({ course, href }: CourseCardProps) => {
+  const { data: enrollmentCount } = useEnrollmentCount(course.id);
+  const { user } = useAuth();
+  const isOwner = user?.uid === course.uid;
 
   const levelColors = {
     beginner:
@@ -38,30 +45,14 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
       'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize',
   };
 
-  const statusColors = {
-    active:
-      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-    completed: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
-    dropped: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
-  };
-
-  const formatEnrollmentDate = (date: Date) => {
-    const enrollDate = new Date(date);
-    return enrollDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  return (
+  const cardContent = (
     <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
             {course.name}
           </CardTitle>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2">
             <Badge
               className={
                 levelColors[course.level as keyof typeof levelColors] ||
@@ -70,6 +61,7 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             >
               {course.level}
             </Badge>
+            {isOwner && <CourseValidationBadge courseId={course.id} compact />}
           </div>
         </div>
         {course.subtitle && (
@@ -83,19 +75,6 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
         <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
           {course.description}
         </p>
-
-        <div className="mb-4">
-          <Badge
-            className={statusColors[status] || statusColors.active}
-            variant="outline"
-          >
-            {status === 'active'
-              ? '📚 Learning'
-              : status === 'completed'
-              ? '✓ Completed'
-              : 'Dropped'}
-          </Badge>
-        </div>
 
         {/* Course Info Grid */}
         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -117,11 +96,7 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
-          <Calendar className="w-4 h-4 text-primary" />
-          <span>Enrolled on {formatEnrollmentDate(enrolledAt)}</span>
-        </div>
-
+        {/* Learning Outcomes Preview */}
         {course.learning_outcomes && course.learning_outcomes.length > 0 && (
           <div className="mt-4 pt-4 border-t border-border">
             <p className="text-xs font-semibold text-foreground mb-2">
@@ -145,22 +120,48 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             )}
           </div>
         )}
+
+        {enrollmentCount !== undefined && (
+          <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
+            <User2 className="w-4 h-4 text-primary" />
+            <span>
+              {enrollmentCount} enrollee{enrollmentCount !== 1 ? 's' : ''}
+            </span>
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="pt-4 border-t border-border flex gap-2">
+        {!isOwner && (
+          <LikeButton
+            courseId={course.id}
+            showCount={true}
+            className="shrink-0"
+          />
+        )}
         <Button
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+          className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           variant="outline"
           asChild
         >
           <Link href={`/my-learning/${course.id}`}>
-            {status === 'active' ? 'Continue Learning' : 'View Course'}
+            View Course
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
       </CardFooter>
     </Card>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block h-full">
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 };
 
-export default EnrolledCourseCard;
+export default MyLearningCourseCard;

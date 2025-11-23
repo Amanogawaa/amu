@@ -1,5 +1,6 @@
 import apiRequest from '@/server/helpers/apiRequest';
 import { UserProfile } from './types';
+import type { UserAnalytics } from '@/features/user/domain/types';
 
 export async function getProfile(): Promise<UserProfile> {
   return apiRequest<null, UserProfile>('/user/profile', 'get');
@@ -30,4 +31,8 @@ export async function uploadProfilePicture(file: File): Promise<string> {
   });
 
   return response.data.photoURL;
+}
+
+export async function getUserAnalytics(): Promise<UserAnalytics> {
+  return apiRequest<null, UserAnalytics>('/user/analytics', 'get');
 }

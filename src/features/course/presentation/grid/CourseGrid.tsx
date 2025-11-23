@@ -7,13 +7,25 @@ import { CourseFilters } from '@/server/features/course/types';
 import { useInfiniteListMyCourses } from '../../application/useGetCourses';
 import CourseCard from '../card/CourseCard';
 import { useAuth } from '@/features/auth/application/AuthContext';
+import { useMemo } from 'react';
 
 interface CourseGridProps {
   uid?: string;
   filters?: CourseFilters;
+  searchQuery?: string;
+  level?: string;
+  sortBy?: string;
+  status?: 'published' | 'unpublished' | 'archived' | 'all';
 }
 
-const CourseGrid = ({ uid, filters }: CourseGridProps) => {
+const CourseGrid = ({
+  uid,
+  filters,
+  searchQuery,
+  level,
+  sortBy = 'newest',
+  status = 'all',
+}: CourseGridProps) => {
   const { user, loading: authLoading } = useAuth();
 
   const courseFilters: CourseFilters = {
@@ -25,6 +37,66 @@ const CourseGrid = ({ uid, filters }: CourseGridProps) => {
     useInfiniteListMyCourses(courseFilters, !!user && !authLoading);
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
+
+  // Filter and sort courses
+  const filteredAndSortedCourses = useMemo(() => {
+    let result = [...flatData];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (course) =>
+          course.name.toLowerCase().includes(query) ||
+          course.topic?.toLowerCase().includes(query) ||
+          course.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply level filter
+    if (level) {
+      result = result.filter((course) => course.level === level);
+    }
+
+    // Apply status filter
+    if (status === 'published') {
+      result = result.filter(
+        (course) => course.publish === true && course.archive === false
+      );
+    } else if (status === 'unpublished') {
+      result = result.filter(
+        (course) => course.publish === false && course.archive === false
+      );
+    } else if (status === 'archived') {
+      result = result.filter((course) => course.archive === true);
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'newest':
+        result.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
+      case 'oldest':
+        result.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateA - dateB;
+        });
+        break;
+      case 'name-asc':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-desc':
+        result.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+    }
+
+    return result;
+  }, [flatData, searchQuery, level, sortBy, status]);
 
   useResourceEvents({
     resourceType: 'course',
@@ -45,9 +117,13 @@ const CourseGrid = ({ uid, filters }: CourseGridProps) => {
     return <EnhancedEmptyState type="no-courses" />;
   }
 
+  if (filteredAndSortedCourses.length === 0) {
+    return <EnhancedEmptyState type="no-search-results" />;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-      {flatData.map((course) => (
+      {filteredAndSortedCourses.map((course) => (
         <CourseCard course={course} key={course.id} />
       ))}
 

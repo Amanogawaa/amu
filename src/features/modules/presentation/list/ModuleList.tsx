@@ -12,7 +12,7 @@ import {
   Trophy,
   CheckCircle2,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ModuleForm from '../form/ModuleForm';
 import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,15 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
   const { data: progress } = useProgressForCourse(courseId);
   const { user } = useAuth();
   const router = useRouter();
+  const pathName = usePathname();
+
+  const linkTo = useMemo(() => {
+    if (pathName.includes('/my-learning/')) {
+      return `/my-learning/`;
+    } else {
+      return `/courses/`;
+    }
+  }, [pathName, courseId]);
 
   useCourseRoom(courseId);
 
@@ -92,15 +101,10 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
     );
   };
 
-  // Check if a module is unlocked (previous module must be complete)
   const isModuleUnlocked = (moduleIndex: number): boolean => {
-    // Owner always has access
     if (isOwner) return true;
-
-    // First module is always unlocked for enrolled users
     if (moduleIndex === 0) return isEnrolled;
 
-    // For other modules, check if previous module is complete
     if (!sortedModules || !isEnrolled) return false;
 
     const previousModule = sortedModules[moduleIndex - 1];
@@ -192,7 +196,7 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                           className="mt-2 h-8 text-xs"
                           onClick={() =>
                             router.push(
-                              `/courses/${courseId}/modules/${module.id}`
+                              `${linkTo}/${courseId}/modules/${module.id}`
                             )
                           }
                         >
@@ -213,7 +217,6 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
               );
             })}
 
-            {/* Capstone Project - Final Item */}
             <div>
               <div
                 className={cn(
@@ -269,7 +272,7 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                       variant="default"
                       className="mt-2 h-8 text-xs"
                       onClick={() =>
-                        router.push(`/courses/${courseId}/capstone`)
+                        router.push(`${linkTo}/${courseId}/capstone`)
                       }
                     >
                       <Trophy className="h-3 w-3 mr-1" />

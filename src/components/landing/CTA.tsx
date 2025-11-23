@@ -7,7 +7,6 @@ export default function CTA() {
       id="cta"
       className="relative py-24 px-4 bg-gradient-to-br from-secondary via-secondary to-primary text-white overflow-hidden"
     >
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" />
@@ -16,7 +15,6 @@ export default function CTA() {
       </div>
 
       <div className="max-w-5xl mx-auto text-center relative z-10">
-        {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
@@ -25,7 +23,6 @@ export default function CTA() {
           Join our growing community
         </div>
 
-        {/* Main heading */}
         <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
           Ready to Code <br />
           <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
@@ -33,7 +30,6 @@ export default function CTA() {
           </span>
         </h2>
 
-        {/* Subheading */}
         <p className="text-xl md:text-2xl mb-4 text-white/90 max-w-3xl mx-auto leading-relaxed">
           Join <strong>1,000+ first-year students</strong> learning with Amu.
         </p>
@@ -41,7 +37,6 @@ export default function CTA() {
           Free forever for beginners. No credit card required.
         </p>
 
-        {/* Email form */}
         <form className="flex flex-col sm:flex-row gap-4 justify-center mb-8 max-w-2xl mx-auto">
           <div className="relative flex-1">
             <input
@@ -81,7 +76,6 @@ export default function CTA() {
           </button>
         </form>
 
-        {/* Trust indicators */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/80 mb-12">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -115,7 +109,6 @@ export default function CTA() {
           </div>
         </div>
 
-        {/* Alternative CTA */}
         <div className="pt-8 border-t border-white/20">
           <p className="text-white/90 mb-4">Or start right away</p>
           <Link
@@ -139,7 +132,6 @@ export default function CTA() {
           </Link>
         </div>
 
-        {/* Social proof */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
           <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
             <div className="text-3xl font-bold mb-1">4.9/5</div>

@@ -1,13 +1,12 @@
 'use client';
 
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useGetCourse } from '@/features/course/application/useGetCourses';
+import { LessonContent } from '@/features/lessons/presentation/LessonContent';
+import { useGetModules } from '@/features/modules/application/useGetModules';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React from 'react';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { LessonContent } from '@/features/lessons/presentation/LessonContent';
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import { useGetModules } from '@/features/modules/application/useGetModules';
 
 const LessonPage = () => {
   const params = useParams();
@@ -28,21 +27,21 @@ const LessonPage = () => {
       <div className="p-6">
         <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
           <Link
-            href="/courses"
+            href="/my-learning"
             className="hover:text-foreground transition-colors font-medium"
           >
             Courses
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <Link
-            href={`/courses/${courseId}`}
+            href={`/my-learning/${courseId}`}
             className="hover:text-foreground transition-colors font-medium truncate"
           >
             {course?.name || 'Course'}
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <Link
-            href={`/courses/${courseId}/modules/${moduleId}`}
+            href={`/my-learning/${courseId}/modules/${moduleId}`}
             className="hover:text-foreground transition-colors font-medium truncate"
           >
             {currentModule?.moduleName || 'Module'}

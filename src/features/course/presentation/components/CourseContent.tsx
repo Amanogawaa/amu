@@ -26,7 +26,6 @@ export const CourseContent = ({
         </CardContent>
       </Card>
 
-      {/* Learning Outcomes */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
@@ -48,7 +47,6 @@ export const CourseContent = ({
         </CardContent>
       </Card>
 
-      {/* Prerequisites */}
       {prerequisites && (
         <Card>
           <CardHeader>

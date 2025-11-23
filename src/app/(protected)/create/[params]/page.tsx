@@ -25,6 +25,7 @@ import { getChapters } from '@/server/features/chapters';
 import { getLessons } from '@/server/features/lessons';
 import { useQuery } from '@tanstack/react-query';
 import { useGetLessons } from '@/features/lessons/application/useGetLesson';
+import { useRouter } from 'next/navigation';
 
 const CoursePreview = dynamic(
   () =>
@@ -39,6 +40,7 @@ const CoursePreview = dynamic(
 
 const PublishPage = () => {
   const params = useParams();
+  const router = useRouter();
   const courseId = params.params as string;
 
   const {
@@ -122,12 +124,12 @@ const PublishPage = () => {
       <section className="flex flex-col min-h-screen w-full">
         <div className="container mx-auto max-w-6xl py-10 px-4">
           <div className="mb-6">
-            <Link href="/create">
+            <Button onClick={() => router.back()}>
               <Button variant="ghost" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back to Create
               </Button>
-            </Link>
+            </Button>
           </div>
           <Card className="border-destructive">
             <CardContent className="pt-6">
@@ -161,7 +163,6 @@ const PublishPage = () => {
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-6xl py-10 px-4">
-        {/* Header */}
         <div className="mb-8 space-y-4">
           <div className="flex items-center justify-between">
             <Link href="/create">
@@ -188,7 +189,6 @@ const PublishPage = () => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="mb-8">
           <PublishArchiveActions
             course={course}
@@ -203,7 +203,6 @@ const PublishPage = () => {
           />
         </div>
 
-        {/* Course Preview */}
         <CoursePreview
           course={course}
           modules={modules}
