@@ -93,14 +93,41 @@ export function CourseValidationStatus({
               )}
             </div>
           </div>
+
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium">Capstone Project</span>
+            <div className="flex items-center gap-2">
+              {validationData.details.capstoneProject ? (
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+              ) : (
+                <XCircle className="h-4 w-4 text-red-600" />
+              )}
+            </div>
+          </div>
         </div>
 
         {!validationData.isComplete && (
           <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950 rounded-lg">
-            <p className="text-sm text-amber-800 dark:text-amber-200">
-              Please add {validationData.missingComponents.join(', ')} to
-              publish this course.
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-1">
+              Missing components:
             </p>
+            <ul className="text-sm text-amber-700 dark:text-amber-300 list-disc list-inside space-y-1">
+              {validationData.missingComponents.map((component) => (
+                <li key={component} className="capitalize">
+                  {component === 'capstone project' ? (
+                    <>
+                      <span className="font-medium">{component}</span>
+                      <span className="block ml-5 text-xs mt-1">
+                        💡 Head to the Capstone section to generate your project
+                        guidelines
+                      </span>
+                    </>
+                  ) : (
+                    component
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </CardContent>

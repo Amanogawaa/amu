@@ -58,10 +58,15 @@ export function CourseValidationBadge({
         <TooltipContent>
           <div className="space-y-1">
             <p className="font-semibold text-sm">Missing components:</p>
-            <ul className="text-xs list-disc list-inside">
+            <ul className="text-xs list-disc list-inside space-y-1">
               {validationData.missingComponents.map((component) => (
                 <li key={component} className="capitalize">
                   {component}
+                  {component === 'capstone project' && (
+                    <span className="block mt-0.5 text-muted-foreground italic">
+                      💡 Visit the Capstone section to generate
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

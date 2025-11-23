@@ -115,7 +115,6 @@ export const CourseHeader = ({
   };
 
   const handleDelete = () => {
-    console.log('Delete course:', courseId);
     deleteCourse(courseId);
     setShowDeleteDialog(false);
   };
@@ -238,9 +237,10 @@ export const CourseHeader = ({
                         <DropdownMenuItem
                           variant="destructive"
                           onClick={() => setShowDeleteDialog(true)}
+                          disabled={isDeleting}
                         >
                           <Trash2Icon className="h-4 w-4 mr-2" />
-                          Delete Course
+                          {isDeleting ? 'Deleting...' : 'Delete Course'}
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </>
@@ -313,12 +313,13 @@ export const CourseHeader = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
+              disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete Course
+              {isDeleting ? 'Deleting...' : 'Delete Course'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

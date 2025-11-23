@@ -302,7 +302,11 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
 
           {/* Code Playground - Only show for courses that support it */}
           {course?.supportsCodePlayground && lesson.type === 'article' && (
-            <CodePlayground />
+            <CodePlayground
+              lessonId={lessonId}
+              courseId={courseInfo?.courseId}
+              courseLanguage={course?.language}
+            />
           )}
 
           <Card>

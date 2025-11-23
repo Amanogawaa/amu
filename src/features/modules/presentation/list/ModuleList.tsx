@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getChapters } from '@/server/features/chapters';
 import { getLessons } from '@/server/features/lessons';
 import { useMemo } from 'react';
+import { useGetCapstoneGuideline } from '@/features/capstone/application/useGetCapstoneGuideline';
 
 interface ModuleListProps {
   courseId: string;
@@ -33,6 +34,9 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
   const { data: enrollmentStatus } = useEnrollmentStatus(courseId);
   const { data: course } = useGetCourse(courseId);
   const { data: progress } = useProgressForCourse(courseId);
+  const { data: capstoneGuideline } = useGetCapstoneGuideline(courseId, {
+    enabled: !!courseId,
+  });
   const { user } = useAuth();
   const router = useRouter();
   const pathName = usePathname();
@@ -112,7 +116,9 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
   };
 
   const hasCompletedAllModules = progress?.percentComplete === 100;
-  const canAccessCapstone = isOwner || hasCompletedAllModules;
+  const hasCapstoneGuideline = !!capstoneGuideline;
+  const canAccessCapstone =
+    (isOwner || hasCompletedAllModules) && hasCapstoneGuideline;
 
   return (
     <Card>
@@ -251,16 +257,31 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                           variant={canAccessCapstone ? 'default' : 'secondary'}
                           className="text-xs"
                         >
-                          {canAccessCapstone ? 'Available' : 'Locked'}
+                          {canAccessCapstone
+                            ? 'Available'
+                            : !hasCapstoneGuideline
+                            ? 'Not Generated'
+                            : 'Locked'}
                         </Badge>
-                        {!canAccessCapstone && !isOwner && (
+                        {!hasCapstoneGuideline && isOwner && (
                           <Badge variant="outline" className="text-xs">
-                            Complete all modules to unlock
+                            Generate to unlock
                           </Badge>
                         )}
+                        {hasCapstoneGuideline &&
+                          !canAccessCapstone &&
+                          !isOwner && (
+                            <Badge variant="outline" className="text-xs">
+                              Complete all modules to unlock
+                            </Badge>
+                          )}
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {canAccessCapstone
+                        {!hasCapstoneGuideline
+                          ? isOwner
+                            ? 'Generate your capstone project to complete the course'
+                            : 'The capstone project will be available once generated'
+                          : canAccessCapstone
                           ? 'Demonstrate your mastery with a comprehensive capstone project'
                           : 'Complete all course modules to unlock the final capstone project'}
                       </p>
@@ -278,10 +299,24 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                       <Trophy className="h-3 w-3 mr-1" />
                       View Capstone Project
                     </Button>
+                  ) : !hasCapstoneGuideline && isOwner ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-2 h-8 text-xs"
+                      onClick={() =>
+                        router.push(`${linkTo}/${courseId}/capstone`)
+                      }
+                    >
+                      <Trophy className="h-3 w-3 mr-1" />
+                      Generate Capstone Project
+                    </Button>
                   ) : (
                     <div className="mt-2 flex items-center gap-2">
                       <p className="text-xs text-muted-foreground italic">
-                        {isOwner
+                        {!hasCapstoneGuideline
+                          ? 'Waiting for capstone project to be generated'
+                          : isOwner
                           ? 'You can access this as the course owner'
                           : `Progress: ${
                               progress?.percentComplete || 0

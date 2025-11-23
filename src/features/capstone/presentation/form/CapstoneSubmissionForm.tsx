@@ -19,10 +19,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateCapstoneSubmission } from '../../application/useCreateCapstoneSubmission';
 import { useUpdateCapstoneSubmission } from '../../application/useUpdateCapstoneSubmission';
+import { useUserProfile } from '@/features/user/application/useUser';
+import { GitHubConnectionRequired } from '../GitHubConnectionRequired';
 import { Loader2, Github, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAuth } from '@/features/auth/application/AuthContext';
 import type { CapstoneSubmission } from '@/server/features/capstone/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const submissionFormSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters'),
@@ -51,12 +53,12 @@ export function CapstoneSubmissionForm({
   submission,
   onSuccess,
 }: CapstoneSubmissionFormProps) {
-  const { githubLinked, linkGithub } = useAuth();
-  const [isLinking, setIsLinking] = useState(false);
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
   const createSubmission = useCreateCapstoneSubmission();
   const updateSubmission = useUpdateCapstoneSubmission();
 
   const isEditing = !!submission;
+  const hasGitHubConnected = profile?.githubUsername;
 
   const form = useForm<SubmissionFormValues>({
     resolver: zodResolver(submissionFormSchema),
@@ -66,15 +68,6 @@ export function CapstoneSubmissionForm({
       githubRepoUrl: submission?.githubRepoUrl || '',
     },
   });
-
-  const handleLinkGithub = async () => {
-    setIsLinking(true);
-    try {
-      await linkGithub();
-    } finally {
-      setIsLinking(false);
-    }
-  };
 
   const onSubmit = async (values: SubmissionFormValues) => {
     if (isEditing && submission) {
@@ -92,41 +85,23 @@ export function CapstoneSubmissionForm({
     onSuccess?.();
   };
 
-  if (!githubLinked) {
+  if (profileLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Link Your GitHub Account</CardTitle>
+          <Skeleton className="h-6 w-48" />
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert>
-            <Github className="h-4 w-4" />
-            <AlertDescription>
-              You need to link your GitHub account to submit a capstone project.
-              This allows us to verify your repository and fetch project
-              details.
-            </AlertDescription>
-          </Alert>
-          <Button
-            onClick={handleLinkGithub}
-            disabled={isLinking}
-            className="w-full"
-          >
-            {isLinking ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Linking...
-              </>
-            ) : (
-              <>
-                <Github className="mr-2 h-4 w-4" />
-                Link GitHub Account
-              </>
-            )}
-          </Button>
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-32 w-full" />
         </CardContent>
       </Card>
     );
+  }
+
+  if (!hasGitHubConnected) {
+    return <GitHubConnectionRequired />;
   }
 
   return (

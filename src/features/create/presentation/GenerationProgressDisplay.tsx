@@ -72,7 +72,7 @@ export function GenerationProgressDisplay({
   const isInProgress = progress.status === GenerationStatus.IN_PROGRESS;
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-none">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl">Generation Progress</CardTitle>

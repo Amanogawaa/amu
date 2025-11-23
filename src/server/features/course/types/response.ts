@@ -43,5 +43,6 @@ export type CourseValidationResponse = {
     chaptersCount: number;
     hasLessons: boolean;
     lessonsCount: number;
+    capstoneProject?: boolean;
   };
 };

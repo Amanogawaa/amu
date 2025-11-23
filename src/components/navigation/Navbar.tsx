@@ -60,6 +60,7 @@ const Navbar = ({
   menu = [
     { title: 'Home', url: '/' },
     { title: 'Explore', url: '/explore' },
+    { title: 'Capstone Gallery', url: '/explore/capstone' },
     { title: 'Features', url: '/features' },
     { title: 'About', url: '/about' },
   ],

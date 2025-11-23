@@ -13,25 +13,35 @@ import {
   CapstoneSubmissionFilters,
   CapstoneReviewFilters,
 } from './types';
+import normalizeCapstoneGuideline from '@/utils/transform';
 
 // ==================== CAPSTONE GUIDELINES ====================
+
+export async function generateCapstoneGuideline(
+  courseId: string
+): Promise<CapstoneGuideline> {
+  const data = await apiRequest<null, any>(
+    `/capstone/guidelines/generate/${courseId}`,
+    'post'
+  );
+  return normalizeCapstoneGuideline(data);
+}
 
 export async function getCapstoneGuidelineByCourseId(
   courseId: string
 ): Promise<CapstoneGuideline> {
-  return apiRequest<null, CapstoneGuideline>(
+  const data = await apiRequest<null, any>(
     `/capstone/guidelines/course/${courseId}`,
     'get'
   );
+  return normalizeCapstoneGuideline(data);
 }
 
 export async function getCapstoneGuidelineById(
   id: string
 ): Promise<CapstoneGuideline> {
-  return apiRequest<null, CapstoneGuideline>(
-    `/capstone/guidelines/${id}`,
-    'get'
-  );
+  const data = await apiRequest<null, any>(`/capstone/guidelines/${id}`, 'get');
+  return normalizeCapstoneGuideline(data);
 }
 
 // ==================== CAPSTONE SUBMISSIONS ====================

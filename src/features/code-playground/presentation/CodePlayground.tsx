@@ -9,24 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PlayIcon, SaveIcon, Loader2 } from 'lucide-react';
+import { PlayIcon, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  useExecuteAndSave,
-  useExecuteCode,
-  useSupportedLanguages,
-  useWorkspace,
-} from '../application/useCodePlayground';
 import {
   useGetPistonSupportedLanguages,
   usePistonExecuteCode,
 } from '../application/usePistonApi';
+
+interface PistonRuntime {
+  language: string;
+  version: string;
+  aliases: string[];
+}
 
 interface CodePlaygroundProps {
   lessonId?: string;
   courseId?: string;
   starterCode?: string;
   defaultLanguage?: string;
+  courseLanguage?: string;
 }
 
 export function CodePlayground({
@@ -34,31 +35,85 @@ export function CodePlayground({
   courseId,
   starterCode = '// Write your code here...',
   defaultLanguage = 'javascript',
+  courseLanguage,
 }: CodePlaygroundProps) {
   const [code, setCode] = useState(starterCode);
   const [language, setLanguage] = useState(defaultLanguage);
   const [output, setOutput] = useState('');
-  const { data } = useGetPistonSupportedLanguages();
 
-  const { data: languages } = useSupportedLanguages();
-  const { data: workspace } = useWorkspace(lessonId!);
-  const executeAndSave = useExecuteAndSave();
+  const { data: pistonLanguages } = useGetPistonSupportedLanguages();
   const piston = usePistonExecuteCode();
 
-  useEffect(() => {
-    if (workspace?.data) {
-      setCode(workspace.data.code);
-      setLanguage(workspace.data.language);
+  const getFilteredLanguages = () => {
+    if (!pistonLanguages?.data) {
+      return [];
     }
-  }, [workspace]);
+
+    const allLanguages = Array.from(
+      new Set(
+        pistonLanguages.data.map((runtime: PistonRuntime) => runtime.language)
+      )
+    ) as string[];
+
+    if (!courseLanguage) {
+      return allLanguages;
+    }
+
+    const courseLangLower = courseLanguage.toLowerCase();
+
+    const languageMappings: Record<string, string[]> = {
+      python: ['python'],
+      javascript: ['javascript', 'typescript'],
+      java: ['java'],
+      'c++': ['c++', 'c'],
+      c: ['c', 'c++'],
+      'c#': ['csharp', 'c#'],
+      csharp: ['csharp', 'c#'],
+      go: ['go'],
+      rust: ['rust'],
+      php: ['php'],
+      ruby: ['ruby'],
+      swift: ['swift'],
+      kotlin: ['kotlin'],
+      r: ['r'],
+      sql: ['sql'],
+      bash: ['bash'],
+    };
+
+    for (const [key, supportedLangs] of Object.entries(languageMappings)) {
+      if (courseLangLower.includes(key)) {
+        return allLanguages.filter((lang: string) =>
+          supportedLangs.some((supported) =>
+            lang.toLowerCase().includes(supported.toLowerCase())
+          )
+        );
+      }
+    }
+
+    return allLanguages;
+  };
+
+  const filteredLanguages = getFilteredLanguages();
+
+  const getLanguageVersion = (lang: string): string => {
+    if (!pistonLanguages?.data) return '';
+
+    const runtime = pistonLanguages.data.find(
+      (r: PistonRuntime) => r.language === lang
+    );
+
+    return runtime?.version || '';
+  };
 
   const handleRunCode = async () => {
     try {
       setOutput('Running code...');
 
+      const version = getLanguageVersion(language);
+
       const result = await piston.mutateAsync({
-        language: 'javascript',
-        version: '1.32.3',
+        language: language,
+        version: version,
         code,
       });
 
@@ -66,15 +121,16 @@ export function CodePlayground({
 
       if (executionResult.run.stderr) {
         setOutput(`Error:\n${executionResult.run.output}`);
-      } else if (executionResult.run.stdout) {
+      } else if (executionResult.run.output) {
         setOutput(executionResult.run.stdout);
       } else {
         setOutput('Code executed successfully (no output)');
       }
 
-      toast.success('Code executed and saved!');
+      toast.success('Code executed successfully!');
     } catch (error) {
       toast.error('Failed to execute code');
+      setOutput('Failed to execute code. Please try again.');
     }
   };
 
@@ -89,7 +145,7 @@ export function CodePlayground({
                 <SelectValue placeholder="Select language" />
               </SelectTrigger>
               <SelectContent>
-                {languages?.data?.map((lang) => (
+                {filteredLanguages?.map((lang) => (
                   <SelectItem key={lang} value={lang}>
                     {lang.charAt(0).toUpperCase() + lang.slice(1)}
                   </SelectItem>
@@ -98,10 +154,10 @@ export function CodePlayground({
             </Select>
             <Button
               onClick={handleRunCode}
-              disabled={executeAndSave.isPending}
+              disabled={piston.isPending}
               size="sm"
             >
-              {executeAndSave.isPending ? (
+              {piston.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <PlayIcon className="h-4 w-4" />
@@ -112,7 +168,6 @@ export function CodePlayground({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Editor */}
         <div className="border rounded-lg overflow-hidden">
           <Editor
             height="400px"

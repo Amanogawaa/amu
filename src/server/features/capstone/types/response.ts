@@ -6,6 +6,17 @@ export interface CapstoneGuideline {
   title: string;
   description: string;
   objectives: string[];
+  gettingStarted?: {
+    prerequisites: string[];
+    setupInstructions: string[];
+    recommendedApproach: string;
+  };
+  implementationRoadmap?: Array<{
+    phase: string;
+    duration: string;
+    tasks: string[];
+    modules: string[];
+  }>;
   requiredFeatures: string[];
   suggestedFeatures: string[];
   technicalRequirements: {
@@ -15,16 +26,26 @@ export interface CapstoneGuideline {
     apis: string[];
     database: string;
   };
+  projectStructure?: {
+    description: string;
+    example: string;
+  };
   deliverables: string[];
   evaluationCriteria: Array<{
     name: string;
     description: string;
     weight: number;
   }>;
+  commonChallenges?: string[];
   estimatedTime: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   resources: string[];
   examples: string[];
+  moduleMapping?: Array<{
+    moduleName: string;
+    skills: string[];
+    application: string;
+  }>;
   createdAt: string;
   updatedAt: string;
 }
