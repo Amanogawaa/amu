@@ -99,7 +99,6 @@ const Navbar = ({
           <div className="flex items-center gap-2">
             <ModeToggle />
             {loading ? (
-              // Show placeholder while loading to prevent layout shift
               <div className="flex items-center gap-2">
                 <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
                 <div className="h-10 w-10 bg-muted animate-pulse rounded-full" />
@@ -205,7 +204,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="bg-transparent hover:bg-transparent hover:text-accent data-[active=true]:focus:bg-transparent active:bg-transparent focus:bg-none focus:text-accent active:text-accent inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:underline"
+        className="bg-transparent hover:bg-transparent hover:text-accent data-[active=true]:focus:bg-transparent active:bg-transparent focus:bg-transparent focus:text-accent active:text-accent inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium hover:underline"
       >
         {item.title}
       </NavigationMenuLink>

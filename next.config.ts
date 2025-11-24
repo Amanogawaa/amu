@@ -12,12 +12,14 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     return [
       {
         source: '/api/:path*',
         destination: isDevelopment
-          ? 'http://localhost:3001/api/:path*'
-          : 'https://amu-api.production-domain.com/api/:path*',
+          ? 'http://localhost:3000/api/:path*'
+          : `${apiUrl}/api/:path*`,
       },
     ];
   },

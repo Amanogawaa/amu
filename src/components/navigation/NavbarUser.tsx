@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  BellIcon,
-  ChevronDownIcon,
-  LogOutIcon,
-  ShoppingBag,
-  UserCircleIcon,
-  Settings,
-  BookOpen,
-  Kanban,
-} from 'lucide-react';
+import { BookOpen, Kanban, LogOutIcon, UserCircleIcon } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -20,9 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/features/auth/application/AuthContext';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { useAuth } from '@/features/auth/application/AuthContext';
 
 interface NavigationBarUserProps {
   name: string | null;
@@ -73,51 +64,36 @@ export function NavigationBarUser({
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-border" />
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            asChild
-            className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
-          >
-            <Link href={'/account'}>
-              <UserCircleIcon className="mr-2 h-4 w-4" />
+          <DropdownMenuItem asChild>
+            <Link href={'/account'} className="group">
+              <UserCircleIcon className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
               Account
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            asChild
-            className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
-          >
-            <Link href={'/my-learning'}>
-              <BookOpen className="mr-2 h-4 w-4" />
+          <DropdownMenuItem asChild>
+            <Link href={'/my-learning'} className="group">
+              <BookOpen className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
               My Learning
             </Link>
           </DropdownMenuItem>
           {/* {isAdmin && (
-            <DropdownMenuItem
-              asChild
-              className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
-            >
+            <DropdownMenuItem asChild>
               <Link href={'/admin'}>
                 <Settings className="mr-2 h-4 w-4" />
                 Admin Panel
               </Link>
             </DropdownMenuItem>
           )} */}
-          <DropdownMenuItem
-            asChild
-            className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
-          >
-            <Link href={'/courses'}>
-              <Kanban className="mr-2 h-4 w-4" />
+          <DropdownMenuItem asChild>
+            <Link href={'/courses'} className="group">
+              <Kanban className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
               Courses
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border" />
-        <DropdownMenuItem
-          onClick={() => logout()}
-          className="text-foreground hover:text-foreground hover:bg-accent focus:bg-accent focus:text-foreground"
-        >
-          <LogOutIcon className="mr-2 h-4 w-4" />
+        <DropdownMenuItem onClick={() => logout()} className="group">
+          <LogOutIcon className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
