@@ -31,7 +31,7 @@ export default function CTA() {
         </h2>
 
         <p className="text-xl md:text-2xl mb-4 text-white/90 max-w-3xl mx-auto leading-relaxed">
-          Join <strong>1,000+ first-year students</strong> learning with Amu.
+          Join <strong>1,000+ first-year students</strong> learning with CourseCraft.
         </p>
         <p className="text-lg mb-12 text-white/80">
           Free forever for beginners. No credit card required.

@@ -131,7 +131,7 @@ export default function ProblemSolution() {
               </div>
 
               <h3 className="text-3xl font-bold text-custom-foreground mb-4">
-                Amu <span className="text-secondary">Fixes That</span>
+                CourseCraft <span className="text-secondary">Fixes That</span>
               </h3>
 
               <p className="text-lg text-gray-700 mb-6 leading-relaxed">

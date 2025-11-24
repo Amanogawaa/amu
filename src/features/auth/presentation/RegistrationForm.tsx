@@ -62,12 +62,12 @@ const RegistrationForm = ({
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-8 items-center justify-center rounded-md">
-                <Image src="/amu.png" width={64} height={64} alt="Amu Logo" />
+                <Image src="/coursecraft.png" width={64} height={64} alt="CourseCraft Logo" />
               </div>
               <h1 className="sr-only">Acme Inc.</h1>
             </Link>
             <h1 className="text-xl font-bold text-primary">
-              Welcome to Amu AI
+              Welcome to CourseCraft
             </h1>
             <p className="text-xs text-center">
               Already have an account? <Link href={'/signin'}>Sign in</Link>

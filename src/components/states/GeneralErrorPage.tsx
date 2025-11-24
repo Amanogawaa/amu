@@ -1,7 +1,7 @@
 import React from 'react';
 
 const GeneralErrorPage = () => {
-  // draw amu  then import here
+  // draw CourseCraft then import here
   return <div>GeneralErrorPage</div>;
 };
 

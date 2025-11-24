@@ -48,7 +48,7 @@ export default function HowItWorks() {
             Simple Process
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            How <span className="text-secondary">Amu</span> Works
+            How <span className="text-secondary">CourseCraft</span> Works
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             From zero to coding hero in just 4 simple steps

@@ -53,7 +53,7 @@ interface NavbarProps {
 const Navbar = ({
   logo = {
     url: '/',
-    src: '/amu.png',
+    src: '/coursecraft.png',
     alt: 'logo',
     title: 'CourseCraft',
   },

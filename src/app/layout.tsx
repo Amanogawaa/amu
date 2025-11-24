@@ -31,8 +31,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Amu AI',
-  description: 'Your personal AI assistant for all things Amu',
+  title: 'CourseCraft',
+  description: 'Your personal AI assistant for all things CourseCraft',
 };
 
 export default function RootLayout({

@@ -40,7 +40,7 @@ export default function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-block px-4 py-2 mb-4 bg-secondary/10 rounded-full text-sm font-medium text-primary">
-            Why Choose Amu
+            Why Choose CourseCraft
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-custom-foreground mb-4">
             Built for{' '}

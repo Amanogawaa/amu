@@ -40,7 +40,7 @@ interface GenerationContextType extends GenerationState {
   navigateToCourse: () => void;
 }
 
-const STORAGE_KEY = 'amu_active_generation';
+const STORAGE_KEY = 'coursecraft_active_generation';
 const GENERATION_TIMEOUT = 10 * 60 * 1500;
 
 const GenerationContext = createContext<GenerationContextType | null>(null);
