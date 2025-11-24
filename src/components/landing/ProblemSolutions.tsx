@@ -139,8 +139,7 @@ export default function ProblemSolution() {
                 <strong className="text-primary">
                   "Python for absolute beginners"
                 </strong>
-                <br />→ Get a full course with simple lessons, exercises, and a
-                chat buddy.
+                <br />→ Get a full course with simple lessons, optional quizzes, and reflection prompts—no extra tools needed.
               </p>
 
               <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white">
@@ -168,10 +167,10 @@ export default function ProblemSolution() {
                     <span className="text-secondary">→</span>
                     <div>
                       <div className="text-primary font-semibold">
-                        Exercise: Print your name
+                        Optional quiz: print your name
                       </div>
                       <div className="text-gray-500 text-xs mt-1">
-                        Hands-on practice with instant feedback
+                        Quick self-check you can skip if you just want to explore
                       </div>
                     </div>
                   </div>
@@ -180,10 +179,10 @@ export default function ProblemSolution() {
                     <span className="text-secondary">→</span>
                     <div>
                       <div className="text-primary font-semibold">
-                        Chat: "What does print() do?"
+                        Reflection prompt
                       </div>
                       <div className="text-gray-500 text-xs mt-1">
-                        Get answers in real-time
+                        Capture takeaways and questions to review later
                       </div>
                     </div>
                   </div>

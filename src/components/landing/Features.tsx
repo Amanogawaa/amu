@@ -1,30 +1,30 @@
 const features = [
   {
-    title: 'Personalized Courses',
-    desc: 'Pick a topic & level → get a full course in seconds.',
-    icon: '🎯',
-    gradient: 'from-blue-500/10 to-secondary/10',
+    title: 'Prompt-based generator',
+    desc: 'Describe the skill you want to learn and CourseCraft drafts modules, lessons, and practice tasks automatically.',
+    icon: '⚡',
+    gradient: 'from-secondary/10 to-secondary/5',
     borderColor: 'border-secondary/30',
   },
   {
-    title: 'Real-Time Chat Help',
-    desc: 'Stuck? Ask questions and get clear, beginner-friendly answers.',
-    icon: '💬',
-    gradient: 'from-purple-500/10 to-primary/10',
+    title: 'Modular planning canvas',
+    desc: 'Reorder sections, add context, and keep pacing notes without digging through multiple docs.',
+    icon: '🗂️',
+    gradient: 'from-primary/10 to-secondary/10',
     borderColor: 'border-primary/30',
   },
   {
-    title: 'Interactive Exercises',
-    desc: 'Practice with hands-on coding right in your browser.',
+    title: 'Vanilla practice editor',
+    desc: 'Teach with HTML, CSS, and JavaScript snippets directly in the lesson—perfect for lightweight demos.',
     icon: '💻',
     gradient: 'from-green-500/10 to-secondary/10',
     borderColor: 'border-secondary/30',
   },
   {
-    title: 'Progress Tracking',
-    desc: 'Smart suggestions based on how you learn and grow.',
-    icon: '📈',
-    gradient: 'from-orange-500/10 to-primary/10',
+    title: 'Capstone board',
+    desc: 'Collect submissions, screenshots, and reflections in one gallery so progress is always visible.',
+    icon: '📌',
+    gradient: 'from-orange-400/10 to-primary/10',
     borderColor: 'border-primary/30',
   },
 ];
@@ -73,21 +73,8 @@ export default function Features() {
                 </h3>
                 <p className="text-gray-600 leading-relaxed">{f.desc}</p>
 
-                <div className="mt-4 flex items-center text-secondary opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-2">
-                  <span className="text-sm font-medium mr-2">Learn more</span>
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                <div className="mt-4 text-sm font-medium text-muted-foreground">
+                  Built for real coursework—not marketing promises.
                 </div>
               </div>
 
@@ -96,25 +83,6 @@ export default function Features() {
               />
             </div>
           ))}
-        </div>
-
-        <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-8 px-8 py-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-1">1,000+</div>
-              <div className="text-sm text-gray-600">Active Students</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200" />
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-1">50+</div>
-              <div className="text-sm text-gray-600">Course Topics</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200" />
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-1">24/7</div>
-              <div className="text-sm text-gray-600">AI Support</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

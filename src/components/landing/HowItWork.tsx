@@ -1,137 +1,103 @@
 const steps = [
   {
     step: '1',
-    title: 'Choose Your Topic',
-    desc: 'Python, JavaScript, Web Dev, and more',
+    title: 'Choose your topic',
+    desc: 'Pick the subject you want to explore or teach.',
     icon: '🎯',
-    detail: 'Select from 50+ topics',
+    detail: 'Use the same prompts written for the CSP411 thesis runs.',
   },
   {
     step: '2',
-    title: 'Set Your Level',
-    desc: 'Absolute beginner to intermediate',
-    icon: '📊',
-    detail: 'Personalized difficulty',
+    title: 'Describe the goals',
+    desc: 'Add learner level, timeline, and desired outcomes.',
+    icon: '📝',
+    detail: 'CourseCraft drafts a structured outline instantly.',
   },
   {
     step: '3',
-    title: 'Get Your Course',
-    desc: 'Generated in seconds, just for you',
-    icon: '⚡',
-    detail: 'AI-powered curriculum',
+    title: 'Refine modules',
+    desc: 'Reorder lessons, insert optional quizzes, and jot inline notes.',
+    icon: '🗂️',
+    detail: 'Everything lives in one editing canvas.',
   },
   {
     step: '4',
-    title: 'Learn & Grow',
-    desc: 'With exercises, projects, and 24/7 help',
+    title: 'Share & iterate',
+    desc: 'Publish to learners, gather capstones, and tweak pacing.',
     icon: '🚀',
-    detail: 'Track your progress',
+    detail: 'Adjust based on real submissions and reflections.',
+  },
+];
+
+const cards = [
+  {
+    icon: '💬',
+    title: 'Inline reminders',
+    desc: 'Store hints, timing notes, or demo scripts beside each activity.',
+  },
+  {
+    icon: '🧩',
+    title: 'Optional quizzes',
+    desc: 'Short checks that students can take or skip—perfect for self-review.',
+  },
+  {
+    icon: '📸',
+    title: 'Capstone gallery',
+    desc: 'Finished work sits in one place with screenshots and notes.',
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section
-      id="how-it-works"
-      className="relative py-24 px-4 bg-gradient-to-br from-primary via-primary to-custom-foreground text-white overflow-hidden"
-    >
-      {/* Animated background patterns */}
-      <div className="absolute inset-0 overflow-hidden opacity-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-secondary rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary rounded-full blur-3xl animate-pulse delay-1000" />
-      </div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section header */}
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 mb-4 bg-secondary/20 rounded-full text-sm font-medium">
-            Simple Process
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            How <span className="text-secondary">CourseCraft</span> Works
+    <section id="how-it-works" className="bg-white px-4 py-24 text-custom-foreground">
+      <div className="mx-auto max-w-7xl space-y-16">
+        <div className="space-y-4 text-center">
+          <span className="inline-flex items-center justify-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1 text-sm font-medium text-primary">
+            Simple process
+          </span>
+          <h2 className="text-4xl font-bold sm:text-5xl">
+            How <span className="text-primary">CourseCraft</span> Works
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            From zero to coding hero in just 4 simple steps
+          <p className="text-lg text-muted-foreground">
+            The same loop used to build the thesis project—grounded, repeatable, and honest.
           </p>
         </div>
 
-        {/* Steps */}
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
-          {steps.map((s, i) => (
-            <div key={i} className="relative">
-              {/* Connecting line */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-secondary to-secondary/20" />
-              )}
-
-              <div className="relative text-center group">
-                {/* Number badge with animation */}
-                <div className="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
-                  <div className="absolute inset-0 bg-white/10 rounded-2xl animate-pulse" />
-                  <span className="relative text-4xl font-bold">{s.icon}</span>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary font-bold text-sm shadow-lg">
-                    {s.step}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-bold mb-2 group-hover:text-secondary transition-colors">
-                  {s.title}
-                </h3>
-                <p className="text-gray-300 mb-2 leading-relaxed">{s.desc}</p>
-                <p className="text-sm text-secondary/80 font-medium">
-                  {s.detail}
-                </p>
-
-                {/* Hover effect */}
-                <div className="absolute inset-0 border-2 border-secondary/0 group-hover:border-secondary/30 rounded-2xl transition-all duration-300 -z-10 scale-105" />
+        <div className="grid gap-6 md:grid-cols-4">
+          {steps.map((step) => (
+            <div
+              key={step.title}
+              className="rounded-3xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+            >
+              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/10 text-2xl">
+                {step.icon}
+              </div>
+              <p className="text-xs uppercase tracking-[0.3em] text-primary">
+                Step {step.step}
+              </p>
+              <h3 className="mt-2 text-xl font-semibold text-foreground">{step.title}</h3>
+              <p className="text-sm text-muted-foreground">{step.desc}</p>
+              <div className="mt-4 rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-primary">
+                {step.detail}
               </div>
             </div>
           ))}
         </div>
 
-        {/* CTA section */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white/10 backdrop-blur-sm px-8 py-6 rounded-2xl border border-white/20">
-            <div className="text-left">
-              <div className="text-2xl font-bold mb-1">
-                Ready in 30 seconds ⚡
-              </div>
-              <div className="text-gray-300">
-                No installation, no setup, just start learning
-              </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {cards.map((card) => (
+            <div
+              key={card.title}
+              className="rounded-3xl border border-border bg-card p-6 text-center shadow-sm"
+            >
+              <div className="mb-3 text-3xl">{card.icon}</div>
+              <h4 className="text-lg font-semibold text-foreground">{card.title}</h4>
+              <p className="text-sm text-muted-foreground">{card.desc}</p>
             </div>
-            <button className="whitespace-nowrap bg-secondary hover:bg-white hover:text-primary text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
-              Try it Free →
-            </button>
-          </div>
-        </div>
-
-        {/* Additional features showcase */}
-        <div className="mt-16 grid md:grid-cols-3 gap-6 text-center">
-          <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <div className="text-3xl mb-3">💡</div>
-            <div className="font-semibold mb-1">Smart Hints</div>
-            <div className="text-sm text-gray-300">
-              Get unstuck with context-aware tips
-            </div>
-          </div>
-          <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <div className="text-3xl mb-3">🎓</div>
-            <div className="font-semibold mb-1">Real Projects</div>
-            <div className="text-sm text-gray-300">
-              Build actual apps, not just theory
-            </div>
-          </div>
-          <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <div className="text-3xl mb-3">🏆</div>
-            <div className="font-semibold mb-1">Track Progress</div>
-            <div className="text-sm text-gray-300">
-              See your growth with milestones
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
+

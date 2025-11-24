@@ -1,130 +1,91 @@
 import Link from 'next/link';
 
+const highlights = [
+  'Prompt → full outline',
+  'Drag modules into order',
+  'Share capstones with one link',
+];
+
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-20 px-4 bg-gradient-to-br from-white via-secondary/5 to-primary/5 overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-background via-background/40 to-secondary/10 px-4 pb-24 pt-28">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-10 left-1/4 h-64 w-64 rounded-full bg-secondary/20 blur-3xl" />
+        <div className="absolute bottom-10 right-1/5 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
       </div>
 
-      <div className="max-w-7xl mx-auto text-center relative z-10">
-        <h1 className="text-5xl md:text-7xl font-bold text-custom-foreground mb-6 animate-fade-in leading-tight">
-          Learn to Code{' '}
-          <span className="bg-gradient-to-r  from-secondary  to-primary bg-clip-text text-transparent">
-            Your Way
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 lg:flex-row lg:items-center">
+        <div className="flex-1 space-y-6 text-center lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1 text-sm font-semibold text-primary">
+            CSP411 Solo Thesis · CourseCraft
           </span>
-        </h1>
+          <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl md:text-6xl">
+            Draft a complete course in minutes, then refine every lesson your way.
+          </h1>
+          <p className="text-lg text-muted-foreground sm:text-xl">
+            CourseCraft keeps prompts, outlines, practice steps, and capstone submissions in
+            one workspace. It&apos;s built for student creators who want structure without a
+            huge production team.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/create"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-base font-semibold text-primary-foreground shadow-lg transition hover:-translate-y-0.5 hover:bg-primary/90"
+            >
+              Generate a course
+            </Link>
+            <Link
+              href="/about"
+              className="inline-flex items-center justify-center rounded-full border border-border px-8 py-3 text-base font-semibold text-foreground transition hover:bg-foreground/5"
+            >
+              Learn the story
+            </Link>
+          </div>
 
-        <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-12 animate-slide-up leading-relaxed">
-          CourseCraft generates{' '}
-          <strong className="text-primary">
-            personalized programming courses
-          </strong>{' '}
-          for beginners — no jargon, no overwhelm. Just clear lessons,
-          interactive exercises, and real-time help.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up">
-          <Link
-            href="/signup"
-            className="group bg-gradient-to-r from-secondary to-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-          >
-            <span className="flex items-center justify-center gap-2">
-              Start Learning for Free
-              <svg
-                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="grid gap-3 sm:grid-cols-3">
+            {highlights.map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-medium text-muted-foreground shadow-sm"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </span>
-          </Link>
-          <button className="group border-2 border-primary text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105">
-            <span className="flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-              </svg>
-              Watch Demo
-            </span>
-          </button>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-secondary"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>No credit card required</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-secondary"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Free forever for beginners</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-secondary"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Start in 30 seconds</span>
+                {item}
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="mt-16 animate-fade-in">
-          <div className="relative max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-xl p-6 border border-secondary/20">
-                  <div className="text-4xl mb-3">📚</div>
-                  <div className="h-2 bg-secondary/20 rounded mb-2" />
-                  <div className="h-2 bg-secondary/20 rounded w-3/4" />
-                </div>
-                <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-6 border border-primary/20">
-                  <div className="text-4xl mb-3">💻</div>
-                  <div className="h-2 bg-primary/20 rounded mb-2" />
-                  <div className="h-2 bg-primary/20 rounded w-2/3" />
-                </div>
-                <div className="bg-gradient-to-br from-secondary/10 to-primary/5 rounded-xl p-6 border border-secondary/20">
-                  <div className="text-4xl mb-3">💬</div>
-                  <div className="h-2 bg-secondary/20 rounded mb-2" />
-                  <div className="h-2 bg-secondary/20 rounded w-4/5" />
-                </div>
+        <div className="flex-1">
+          <div className="rounded-3xl border border-border/60 bg-card/80 p-6 shadow-2xl backdrop-blur">
+            <div className="mb-5 flex items-center justify-between text-xs text-muted-foreground">
+              <span>Course preview</span>
+              <span>Auto-saved</span>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-primary">Outline</p>
+                <p className="text-lg font-semibold text-foreground">
+                  Build Your First Web Dashboard
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Generated for: beginner · 4 modules · capstone ready
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
+                <p className="text-xs font-semibold text-primary">Module 02 · Layouts</p>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <li>• Lesson: CSS grid with live preview prompt</li>
+                  <li>• Practice: Customize the navigation shell</li>
+                  <li>• Checkpoint: Upload a screenshot for feedback</li>
+                </ul>
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
+                <p className="text-xs font-semibold text-primary">Capstone marker</p>
+                <p className="text-sm text-muted-foreground">
+                  Students submit final dashboards with notes and screenshots. Everything is
+                  stored in the same thread so you can review quickly.
+                </p>
               </div>
             </div>
-            <div className="absolute -top-4 -left-4 w-24 h-24 bg-secondary/20 rounded-full blur-2xl -z-10" />
-            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10" />
           </div>
         </div>
       </div>
