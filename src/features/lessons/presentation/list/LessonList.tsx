@@ -11,8 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { CheckCircle2Icon } from 'lucide-react';
-import { useGetLessons } from '../../application/useGetLessons';
 import Link from 'next/link';
+import { useGetLessons } from '../../application/useGetLesson';
 
 interface LessonListProps {
   chapterId: string;

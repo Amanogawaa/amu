@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import { useAuth } from '@/features/auth/application/AuthContext';
 import {

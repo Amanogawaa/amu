@@ -1,6 +1,6 @@
-'use client';
+"use client"
 
-import LoginForm from '@/features/auth/presentation/LoginForm';
+import LoginForm from "@/features/auth/presentation/LoginForm";
 
 const LoginPage = () => {
   return (

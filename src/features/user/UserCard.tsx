@@ -9,15 +9,40 @@ import {
   Shield,
   Ban,
 } from 'lucide-react';
-import { UserProfile } from 'firebase/auth';
+type UserRole = 'superadmin' | 'admin' | 'user' | string;
+
+interface UserMeResponse {
+  role: UserRole;
+}
+
+interface ManagedUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  date_joined: string;
+}
+
+interface ManagedUserProfile {
+  user: ManagedUser;
+  phone_number?: string | null;
+  is_blocked: boolean;
+  blocked_at?: string | null;
+  blocked_by_email?: string | null;
+}
 
 interface UserProfileCardProps {
-  userProfile: UserProfile;
+  userProfile: ManagedUserProfile;
   userMe: UserMeResponse;
 }
 
 export function UserProfileCard({ userProfile, userMe }: UserProfileCardProps) {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string | null) => {
+    if (!dateString) {
+      return 'N/A';
+    }
+
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',

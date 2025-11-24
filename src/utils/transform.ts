@@ -1,4 +1,4 @@
-import { CapstoneGuideline } from '@/server/features/capstone/types';
+import type { CapstoneGuideline } from '@/server/features/capstone/types';
 
 export default function normalizeCapstoneGuideline(
   data: any
