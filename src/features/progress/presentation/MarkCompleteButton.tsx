@@ -11,6 +11,8 @@ interface MarkCompleteButtonProps {
   initialCompleted?: boolean;
   totalLessons?: number;
   onProgressUpdate?: (completed: boolean) => void;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export function MarkCompleteButton({
@@ -19,6 +21,8 @@ export function MarkCompleteButton({
   initialCompleted = false,
   totalLessons,
   onProgressUpdate,
+  disabled = false,
+  disabledReason,
 }: MarkCompleteButtonProps) {
   const [isCompleted, setIsCompleted] = useState(initialCompleted);
   const markProgress = useMarkLessonProgress();
@@ -51,23 +55,26 @@ export function MarkCompleteButton({
   };
 
   return (
-    <Button
-      onClick={handleToggle}
-      disabled={markProgress.isPending}
-      variant={isCompleted ? 'default' : 'outline'}
-      className="gap-2"
-    >
-      {isCompleted ? (
-        <>
-          <CheckCircle2 className="h-4 w-4" />
-          Completed
-        </>
-      ) : (
-        <>
-          <Circle className="h-4 w-4" />
-          Mark as Complete
-        </>
-      )}
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button
+        onClick={handleToggle}
+        disabled={markProgress.isPending || disabled}
+        variant={isCompleted ? 'default' : 'outline'}
+        className="gap-2 w-fit"
+      >
+        {isCompleted ? (
+          <>
+            <CheckCircle2 className="h-4 w-4" />
+            Completed
+          </>
+        ) : (
+          <>
+            <Circle className="h-4 w-4" />
+            Mark as Complete
+          </>
+        )}
+      </Button>
+
+    </div>
   );
 }

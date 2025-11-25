@@ -1,6 +1,7 @@
 'use client';
 
 import { Menu, Plus } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -21,6 +22,7 @@ import { useAuth } from '@/features/auth/application/AuthContext';
 import { NavigationBarUser } from './NavbarUser';
 import Image from 'next/image';
 import { ModeToggle } from '../ThemeToggle';
+import { cn } from '@/lib/utils';
 
 interface MenuItem {
   title: string;
@@ -48,6 +50,7 @@ interface NavbarProps {
       url: string;
     };
   };
+  smartHide?: boolean;
 }
 
 const Navbar = ({
@@ -67,10 +70,45 @@ const Navbar = ({
     login: { title: 'Login', url: '/signin' },
     signup: { title: 'Sign up', url: '/signup' },
   },
+  smartHide = false,
 }: NavbarProps) => {
   const { user, signOut, loading } = useAuth();
+  const [isHidden, setIsHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    if (!smartHide) {
+      return;
+    }
+
+    const handleScroll = () => {
+      const current = window.scrollY;
+      const delta = current - lastScrollY.current;
+
+      if (current < 80) {
+        setIsHidden(false);
+      } else if (delta > 5) {
+        setIsHidden(true);
+      } else if (delta < -5) {
+        setIsHidden(false);
+      }
+
+      lastScrollY.current = current;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [smartHide]);
+
   return (
-    <section className="py-4 sticky top-0 backdrop-blur-lg bg-background/30 border-b border-border/40 z-50 shadow-sm">
+    <section
+      className={cn(
+        'py-4 sticky top-0 backdrop-blur-lg bg-background/30 border-b border-border/40 z-50 shadow-sm',
+        smartHide &&
+          'transition-transform duration-300 ease-out will-change-transform',
+        smartHide && (isHidden ? '-translate-y-full' : 'translate-y-0')
+      )}
+    >
       <div className="container max-w-7xl mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">

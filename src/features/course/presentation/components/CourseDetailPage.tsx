@@ -2,19 +2,18 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/features/auth/application/AuthContext';
+import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
+import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
 import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
+import { useProgressForCourse } from '@/features/progress/application/useProgress';
+import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
+import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
 import { AlertCircle } from 'lucide-react';
 import { useGetCourse } from '../../application/useGetCourses';
 import { CourseInfoCard } from '../card/CourseInfoCard';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
-import { useProgressForCourse } from '@/features/progress/application/useProgress';
-import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
-import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
-import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
-import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
-import { CommentList } from '@/features/comments/presentation/CommentList';
-import { useAuth } from '@/features/auth/application/AuthContext';
 import { CourseValidationStatus } from './CourseValidationStatus';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
@@ -120,13 +119,6 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
       />
 
       <ModuleList courseId={courseId} />
-
-      {/* Comments Section */}
-      <Card>
-        <CardContent className="pt-6">
-          <CommentList courseId={courseId} />
-        </CardContent>
-      </Card>
     </div>
   );
 };

@@ -99,6 +99,8 @@ export const queryKeys = {
     all: ['quiz'] as const,
     lesson: (lessonId: string) =>
       [...queryKeys.quiz.all, 'lesson', lessonId] as const,
+    attempts: (quizId: string) =>
+      [...queryKeys.quiz.all, 'attempts', quizId] as const,
   },
 
   // User

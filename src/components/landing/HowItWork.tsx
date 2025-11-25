@@ -37,7 +37,7 @@ const cards = [
   },
   {
     icon: '🧩',
-    title: 'Optional quizzes',
+    title: 'Generated quizzes',
     desc: 'Short checks that students can take or skip—perfect for self-review.',
   },
   {

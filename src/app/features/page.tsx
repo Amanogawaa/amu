@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navigation/Navbar';
+import Footer from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import {
   BarChart3,
@@ -228,6 +229,7 @@ export default function FeaturesPage() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

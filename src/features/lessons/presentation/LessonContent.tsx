@@ -12,12 +12,16 @@ import { useLessonCourse } from '@/features/lessons/application/useLessonCourse'
 import { useCourseLessonCount } from '@/features/progress/application/useCourseLessonCount';
 import { useProgressForCourse } from '@/features/progress/application/useProgress';
 import { MarkCompleteButton } from '@/features/progress/presentation/MarkCompleteButton';
-import { useQuizForLesson } from '@/features/quiz/application/useQuiz';
+import {
+  useQuizForLesson,
+  useUserAttempts,
+} from '@/features/quiz/application/useQuiz';
 import {
   AlertCircle,
   BookOpen,
   ExternalLink,
   FileText,
+  Info,
   Video,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -80,6 +84,9 @@ interface LessonContentProps {
 export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const { data: lesson, isLoading, isError } = useGetLesson(lessonId);
   const { data: quiz, isLoading: quizLoading } = useQuizForLesson(lessonId);
+  const { data: attempts } = useUserAttempts(quiz?.id || '', {
+    enabled: !!quiz?.id && lesson?.type === 'quiz',
+  });
   const { data: courseInfo } = useLessonCourse(lessonId);
   const { data: course, isLoading: courseLoading } = useGetCourse(
     courseInfo?.courseId || ''
@@ -95,6 +102,18 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const isOwner = user?.uid === course?.uid;
   const isEnrolled = enrollmentStatus?.isEnrolled || false;
   const hasAccess = isOwner || isEnrolled;
+
+  const hasPassedQuiz =
+    lesson?.type === 'quiz' && quiz
+      ? attempts?.some((attempt) => attempt.passed) || false
+      : true; 
+
+  const quizDisabledReason =
+    lesson?.type === 'quiz' && quiz && !hasPassedQuiz
+      ? attempts && attempts.length > 0
+        ? 'You must pass the quiz before marking this lesson as complete'
+        : 'You must complete and pass the quiz before marking this lesson as complete'
+      : undefined;
 
   if (isLoading) {
     return (
@@ -136,7 +155,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-5xl w-full">
       {/* Lesson Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-primary">
@@ -164,6 +183,8 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
                 initialCompleted={
                   progress?.lessonsCompleted?.includes(lessonId) || false
                 }
+                disabled={!hasPassedQuiz}
+                disabledReason={quizDisabledReason}
               />
             </div>
           )}
@@ -245,7 +266,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
                 className="prose prose-slate dark:prose-invert max-w-none 
                   prose-pre:p-0 prose-pre:bg-transparent prose-pre:rounded-xl prose-pre:overflow-x-auto
                   prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-                  prose-img:rounded-lg prose-img:shadow-md"
+                  prose-img:rounded-lg prose-img:shadow-md "
               >
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm, remarkBreaks]}
@@ -300,13 +321,33 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
             </CardContent>
           )}
 
-          {/* Code Playground - Only show for courses that support it */}
           {course?.supportsCodePlayground && lesson.type === 'article' && (
-            <CodePlayground
-              lessonId={lessonId}
-              courseId={courseInfo?.courseId}
-              courseLanguage={course?.language}
-            />
+            <>
+              <Card className="bg-blue-500/5 border-blue-500/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 space-y-1">
+                      <p className="font-semibold text-blue-900 dark:text-blue-100">
+                        Code Playground Limitations
+                      </p>
+                      <p className="text-sm text-blue-800 dark:text-blue-200">
+                        The code playground supports vanilla programming languages
+                        (Python, JavaScript, Java, C++, etc.) but does not support
+                        web development frameworks like React, Next.js, Vue, or
+                        backend frameworks. It's designed for learning core
+                        programming concepts and algorithms.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <CodePlayground
+                lessonId={lessonId}
+                courseId={courseInfo?.courseId}
+                courseLanguage={course?.language}
+              />
+            </>
           )}
 
           <Card>

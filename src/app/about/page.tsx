@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/navigation/Navbar';
+import Footer from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import { Brain, HeartHandshake, Lightbulb, Target, Wand2 } from 'lucide-react';
 
@@ -133,11 +134,12 @@ export default function AboutPage() {
             <HeartHandshake className="mx-auto h-10 w-10" />
             <h2 className="text-3xl font-semibold text-custom_foreground">Created by a student for students</h2>
             <p className="text-lg text-muted-foreground">
-              CourseCraft started inside the Gordon College as Dominic Molino&apos;s thesis project. Every feature reflects that studio mindset—building tools that make quality education accessible for first-time coders.
+              CourseCraft started inside the Gordon College as someone&apos;s thesis project. Every feature reflects that studio mindset—building tools that make quality education accessible for first-time coders and for those who want to learn something specific.
             </p>
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

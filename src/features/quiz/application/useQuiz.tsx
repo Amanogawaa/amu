@@ -44,6 +44,9 @@ export function useSubmitQuiz(quizId: string, lessonId: string) {
       queryClient.invalidateQueries({
         queryKey: queryKeys.quiz.lesson(lessonId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.quiz.attempts(quizId),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.quiz.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.progress.all });
     },
@@ -54,14 +57,21 @@ export function useSubmitQuiz(quizId: string, lessonId: string) {
   });
 }
 
-export function useUserAttempts(quizId: string) {
+interface UseUserAttemptsOptions {
+  enabled?: boolean;
+}
+
+export function useUserAttempts(
+  quizId: string,
+  options?: UseUserAttemptsOptions
+) {
   return useQuery({
-    queryKey: [...queryKeys.quiz.all, 'attempts', quizId],
+    queryKey: queryKeys.quiz.attempts(quizId),
     queryFn: async () => {
       const response = await getUserAttempts(quizId);
       return response.data;
     },
-    enabled: !!quizId,
+    enabled: !!quizId && (options?.enabled ?? true),
   });
 }
 

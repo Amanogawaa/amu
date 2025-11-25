@@ -76,8 +76,21 @@ export const QuizPlayer = ({ quiz, lessonId }: QuizPlayerProps) => {
     Object.keys(answers).length === quiz.questions.length;
   const progress = (Object.keys(answers).length / quiz.questions.length) * 100;
 
+  const handleRetry = () => {
+    setAnswers({});
+    setCurrentQuestion(0);
+    setShowResults(false);
+    submitQuizMutation.reset();
+  };
+
   if (showResults && submitQuizMutation.data) {
-    return <QuizResults attempt={submitQuizMutation.data.data} quiz={quiz} />;
+    return (
+      <QuizResults
+        attempt={submitQuizMutation.data.data}
+        quiz={quiz}
+        onRetry={handleRetry}
+      />
+    );
   }
 
   const question = quiz.questions[currentQuestion];

@@ -2,17 +2,17 @@
 
 import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
 import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CapstoneGallery } from '@/features/capstone/presentation';
 import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
 import CourseCard from '@/features/course/presentation/card/CourseCard';
 import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
 import { SearchBar } from '@/features/course/presentation/SearchBar';
 import { useResourceEvents } from '@/hooks/use-socket-events';
 import { CourseFilters } from '@/server/features/course/types/request';
-import { StarsIcon, Sparkles } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { Sparkles, StarsIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CapstoneGallery } from '@/features/capstone/presentation';
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +20,6 @@ const ExplorePage = () => {
     undefined
   );
 
-  // Only fetch published courses, no filters
   const filters: CourseFilters = {
     publish: true,
   };
@@ -36,11 +35,9 @@ const ExplorePage = () => {
 
   const flatData = data?.pages.flatMap((page) => page.results) || [];
 
-  // Client-side filtering
   const filteredCourses = useMemo(() => {
     let result = [...flatData];
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -51,7 +48,6 @@ const ExplorePage = () => {
       );
     }
 
-    // Apply level filter
     if (selectedLevel) {
       result = result.filter((course) => course.level === selectedLevel);
     }
@@ -75,12 +71,10 @@ const ExplorePage = () => {
     queryKey: ['courses'],
   });
 
-  // Handle search callback from SearchBar
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
 
-  // Handle level filter changes
   const handleLevelChange = (level: string | undefined) => {
     setSelectedLevel(level);
   };
@@ -118,6 +112,7 @@ const ExplorePage = () => {
   }
 
   return (
+    <>
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-5xl">
         {/* Header */}
@@ -194,13 +189,13 @@ const ExplorePage = () => {
             )}
           </TabsContent>
 
-          {/* Capstone Tab */}
           <TabsContent value="capstone" className="mt-6">
             <CapstoneGallery limit={12} />
           </TabsContent>
         </Tabs>
       </div>
     </section>
+    </>
   );
 };
 
