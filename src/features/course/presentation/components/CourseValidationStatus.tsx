@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useValidateCourse } from '@/features/create/application/usePublishCourse';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { useValidateCourse } from "@/features/create/application/usePublishCourse";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle2, XCircle, Loader2, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 interface CourseValidationStatusProps {
   courseId: string;
@@ -49,6 +50,15 @@ export function CourseValidationStatus({
             </Badge>
           )}
         </CardTitle>
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Complete Your Course</AlertTitle>
+          <AlertDescription>
+            To publish this course, you need to generate all modules, chapters,
+            and lessons. Use the full generation feature to complete your course
+            content.
+          </AlertDescription>
+        </Alert>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="space-y-2">
@@ -114,7 +124,7 @@ export function CourseValidationStatus({
             <ul className="text-sm text-amber-700 dark:text-amber-300 list-disc list-inside space-y-1">
               {validationData.missingComponents.map((component) => (
                 <li key={component} className="capitalize">
-                  {component === 'capstone project' ? (
+                  {component === "capstone project" ? (
                     <>
                       <span className="font-medium">{component}</span>
                       <span className="block ml-5 text-xs mt-1">

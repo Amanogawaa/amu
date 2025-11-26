@@ -17,7 +17,7 @@ export type CourseFilters = {
   level?: string;
   uid?: string;
   publish?: boolean;
-  archive?: boolean;
+  draft?: boolean;
   search?: string;
   language?: string;
   limit?: number;

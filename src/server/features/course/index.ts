@@ -31,8 +31,8 @@ export async function listCourses(
       params.append('publish', filters.publish.toString());
     }
 
-    if (filters.archive !== undefined) {
-      params.append('archive', filters.archive.toString());
+    if (filters.draft !== undefined) {
+      params.append('draft', filters.draft.toString());
     }
   }
 
@@ -64,8 +64,8 @@ export async function listMyCourses(
       params.append('publish', filters.publish.toString());
     }
 
-    if (filters.archive !== undefined) {
-      params.append('archive', filters.archive.toString());
+    if (filters.draft !== undefined) {
+      params.append('draft', filters.draft.toString());
     }
   }
 
@@ -112,20 +112,20 @@ export async function unpublishCourse(
   );
 }
 
-export async function archiveCourse(
+export async function moveCourseToDraft(
   courseId: string
 ): Promise<{ data: Course; message: string }> {
   return apiRequest<null, { data: Course; message: string }>(
-    `/courses/${courseId}/archive`,
+    `/courses/${courseId}/draft`,
     'patch'
   );
 }
 
-export async function unarchiveCourse(
+export async function restoreCourseFromDraft(
   courseId: string
 ): Promise<{ data: Course; message: string }> {
   return apiRequest<null, { data: Course; message: string }>(
-    `/courses/${courseId}/unarchive`,
+    `/courses/${courseId}/undraft`,
     'patch'
   );
 }

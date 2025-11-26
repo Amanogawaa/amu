@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
-import { AlertCircle } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ModuleList } from "@/features/modules/presentation/list/ModuleList";
+import { AlertCircle } from "lucide-react";
 
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { CommentList } from '@/features/comments/presentation/CommentList';
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import { CourseInfoCard } from '@/features/course/presentation/card/CourseInfoCard';
-import { CourseContent } from '@/features/course/presentation/components/CourseContent';
-import { CourseHeader } from '@/features/course/presentation/components/CourseHeader';
-import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
-import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
-import { useProgressForCourse } from '@/features/progress/application/useProgress';
-import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
-import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
-import { MyLearningCourseHeader } from './MyLearningCourseHeader';
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { CommentList } from "@/features/comments/presentation/CommentList";
+import { useGetCourse } from "@/features/course/application/useGetCourses";
+import { CourseInfoCard } from "@/features/course/presentation/card/CourseInfoCard";
+import { CourseContent } from "@/features/course/presentation/components/CourseContent";
+import { CourseHeader } from "@/features/course/presentation/components/CourseHeader";
+import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
+import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
+import { useProgressForCourse } from "@/features/progress/application/useProgress";
+import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
+import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
+import { MyLearningCourseHeader } from "./MyLearningCourseHeader";
 
 const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -71,7 +71,7 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
         ownerId={data.uid}
         isPublished={data.publish}
-        isArchived={data.archive}
+        isDrafted={data.draft}
       />
 
       <CourseInfoCard
@@ -100,7 +100,7 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>
-                    {progress.lessonsCompleted.length} of{' '}
+                    {progress.lessonsCompleted.length} of{" "}
                     {progress.totalLessons} lessons completed
                   </span>
                   <span>{progress.percentComplete}%</span>

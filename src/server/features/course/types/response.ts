@@ -20,7 +20,7 @@ export type Course = {
   commentsCount?: number;
   isEnrolled?: boolean;
   publish: boolean;
-  archive: boolean;
+  draft: boolean;
   subtitle: string;
   created_at: Date;
   updated_at: Date;

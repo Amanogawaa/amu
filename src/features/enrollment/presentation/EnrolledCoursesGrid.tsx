@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
-import { useUserEnrollments } from '../application/useEnrollment';
-import EnrolledCourseCard from '@/features/enrollment/presentation/EnrolledCourseCard';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { useMemo } from 'react';
+import CourseCardSkeleton from "@/components/states/CourseCardSkeleton";
+import { EnhancedEmptyState } from "@/components/states/EnhancedEmptyState";
+import { useUserEnrollments } from "../application/useEnrollment";
+import EnrolledCourseCard from "@/features/enrollment/presentation/EnrolledCourseCard";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { useMemo } from "react";
 
 interface EnrolledCoursesGridProps {
   searchQuery?: string;
@@ -16,7 +16,7 @@ interface EnrolledCoursesGridProps {
 const EnrolledCoursesGrid = ({
   searchQuery,
   level,
-  sortBy = 'newest',
+  sortBy = "newest",
 }: EnrolledCoursesGridProps) => {
   const { user, loading: authLoading } = useAuth();
   const {
@@ -25,13 +25,11 @@ const EnrolledCoursesGrid = ({
     isError,
   } = useUserEnrollments(undefined, !!user && !authLoading);
 
-  // Filter and sort enrollments
   const filteredAndSortedEnrollments = useMemo(() => {
     if (!enrollments) return [];
 
     let result = [...enrollments];
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -42,31 +40,29 @@ const EnrolledCoursesGrid = ({
       );
     }
 
-    // Apply level filter
     if (level) {
       result = result.filter((enrollment) => enrollment.course.level === level);
     }
 
-    // Apply sorting
     switch (sortBy) {
-      case 'newest':
+      case "newest":
         result.sort((a, b) => {
           const dateA = a.enrolledAt ? new Date(a.enrolledAt).getTime() : 0;
           const dateB = b.enrolledAt ? new Date(b.enrolledAt).getTime() : 0;
           return dateB - dateA;
         });
         break;
-      case 'oldest':
+      case "oldest":
         result.sort((a, b) => {
           const dateA = a.enrolledAt ? new Date(a.enrolledAt).getTime() : 0;
           const dateB = b.enrolledAt ? new Date(b.enrolledAt).getTime() : 0;
           return dateA - dateB;
         });
         break;
-      case 'name-asc':
+      case "name-asc":
         result.sort((a, b) => a.course.name.localeCompare(b.course.name));
         break;
-      case 'name-desc':
+      case "name-desc":
         result.sort((a, b) => b.course.name.localeCompare(a.course.name));
         break;
     }

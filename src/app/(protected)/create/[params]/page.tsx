@@ -1,35 +1,36 @@
-'use client';
+"use client";
 
-import { redirect, useParams } from 'next/navigation';
-import React from 'react';
-import dynamic from 'next/dynamic';
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import { useGetModules } from '@/features/modules/application/useGetModules';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { CapstoneGuidelineCard } from "@/features/capstone/presentation/card/CapstoneGuidelineCard";
+import { useGetCourse } from "@/features/course/application/useGetCourses";
+import { CourseValidationStatus } from "@/features/course/presentation/components/CourseValidationStatus";
 import {
-  useValidateCourse,
+  useDraftCourse,
+  useUndraftCourse,
+} from "@/features/create/application/useDraftCourse";
+import {
   usePublishCourse,
-} from '@/features/create/application/usePublishCourse';
-import {
-  useArchiveCourse,
-  useUnarchiveCourse,
-} from '@/features/create/application/useArchiveCourse';
-import { CoursePreviewSkeleton } from '@/features/create/presentation/CoursePreview';
-import { PublishArchiveActions } from '@/features/create/presentation/PublishArchiveActions';
-import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Chapter } from '@/server/features/chapters/types';
-import { Lesson } from '@/server/features/lessons/types';
-import { getChapters } from '@/server/features/chapters';
-import { getLessons } from '@/server/features/lessons';
-import { useQuery } from '@tanstack/react-query';
-import { useGetLessons } from '@/features/lessons/application/useGetLesson';
-import { useRouter } from 'next/navigation';
+  useValidateCourse,
+} from "@/features/create/application/usePublishCourse";
+import { CoursePreviewSkeleton } from "@/features/create/presentation/CoursePreview";
+import { PublishDraftActions } from "@/features/create/presentation/PublishDraftActions";
+import { useGetLessons } from "@/features/lessons/application/useGetLesson";
+import { useGetModules } from "@/features/modules/application/useGetModules";
+import { getChapters } from "@/server/features/chapters";
+import { Chapter } from "@/server/features/chapters/types";
+import { getLessons } from "@/server/features/lessons";
+import { Lesson } from "@/server/features/lessons/types";
+import { useQuery } from "@tanstack/react-query";
+import { AlertCircle, ArrowLeft } from "lucide-react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { redirect, useParams, useRouter } from "next/navigation";
 
 const CoursePreview = dynamic(
   () =>
-    import('@/features/create/presentation/CoursePreview').then((mod) => ({
+    import("@/features/create/presentation/CoursePreview").then((mod) => ({
       default: mod.CoursePreview,
     })),
   {
@@ -43,6 +44,8 @@ const PublishPage = () => {
   const router = useRouter();
   const courseId = params.params as string;
 
+  const { user } = useAuth();
+
   const {
     data: course,
     isLoading: isCourseLoading,
@@ -55,7 +58,7 @@ const PublishPage = () => {
     useValidateCourse(courseId);
 
   const { data: allChapters = [], isLoading: isChaptersLoading } = useQuery({
-    queryKey: ['all-chapters', courseId, modules],
+    queryKey: ["all-chapters", courseId, modules],
     queryFn: async () => {
       if (modules.length === 0) return [];
 
@@ -69,7 +72,7 @@ const PublishPage = () => {
   });
 
   const { data: allLessons = [], isLoading: isLessonsLoading } = useQuery({
-    queryKey: ['all-lessons', courseId, allChapters],
+    queryKey: ["all-lessons", courseId, allChapters],
     queryFn: async () => {
       if (allChapters.length === 0) return [];
 
@@ -83,16 +86,16 @@ const PublishPage = () => {
   });
 
   const { data: lessons } = useGetLessons(
-    allChapters.length > 0 ? allChapters[0].id : ''
+    allChapters.length > 0 ? allChapters[0].id : ""
   );
 
   const { mutate: publishCourse, isPending: isPublishing } = usePublishCourse();
-  const { mutate: archiveCourse, isPending: isArchiving } = useArchiveCourse();
-  const { mutate: unarchiveCourse, isPending: isUnarchiving } =
-    useUnarchiveCourse();
+  const { mutate: moveToDraft, isPending: isDrafting } = useDraftCourse();
+  const { mutate: restoreFromDraft, isPending: isUndrafting } =
+    useUndraftCourse();
 
   if (!courseId) {
-    redirect('/create');
+    redirect("/create");
   }
 
   const isLoading =
@@ -152,28 +155,23 @@ const PublishPage = () => {
     publishCourse(courseId);
   };
 
-  const handleArchive = () => {
-    archiveCourse(courseId);
+  const handleDraft = () => {
+    moveToDraft(courseId);
   };
 
-  const handleUnarchive = () => {
-    unarchiveCourse(courseId);
+  const handleUndraft = () => {
+    restoreFromDraft(courseId);
   };
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
-      <div className="container mx-auto max-w-6xl py-10 px-4">
+      <div className="container mx-auto max-w-6xl py-10 px-4 space-y-6">
         <div className="mb-8 space-y-4">
           <div className="flex items-center justify-between">
             <Link href="/create">
               <Button variant="ghost" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back to Create
-              </Button>
-            </Link>
-            <Link href={`/courses/${courseId}`}>
-              <Button variant="outline" className="gap-2">
-                Preview Course
               </Button>
             </Link>
           </div>
@@ -184,24 +182,35 @@ const PublishPage = () => {
             </h1>
             <p className="text-muted-foreground mt-2 text-base md:text-lg">
               Review your course content and choose to publish it publicly or
-              archive it for later.
+              save it as a draft for later.
             </p>
           </div>
         </div>
 
-        <div className="mb-8">
-          <PublishArchiveActions
-            course={course}
-            validation={validationData?.data}
-            isValidating={isValidating}
-            onPublish={handlePublish}
-            onArchive={handleArchive}
-            onUnarchive={handleUnarchive}
-            isPublishing={isPublishing}
-            isArchiving={isArchiving}
-            isUnarchiving={isUnarchiving}
-          />
-        </div>
+        <PublishDraftActions
+          course={course}
+          validation={validationData?.data}
+          isValidating={isValidating}
+          onPublish={handlePublish}
+          onDraft={handleDraft}
+          onUndraft={handleUndraft}
+          isPublishing={isPublishing}
+          isDrafting={isDrafting}
+          isUndrafting={isUndrafting}
+        />
+
+        {user?.uid === course.uid && (
+          <div className="space-y-6">
+            <CourseValidationStatus courseId={courseId} />
+            {/* <ManualGenerationPanel
+              courseId={courseId}
+              modules={modules}
+              chapters={allChapters}
+              lessons={allLessons}
+              missingComponents={validationData?.data?.missingComponents}
+            /> */}
+          </div>
+        )}
 
         <CoursePreview
           course={course}
@@ -209,6 +218,8 @@ const PublishPage = () => {
           chapters={allChapters}
           lessons={allLessons}
         />
+
+        <CapstoneGuidelineCard courseId={courseId} />
       </div>
     </section>
   );

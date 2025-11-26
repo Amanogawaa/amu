@@ -1,47 +1,49 @@
+import { FolderTree, LayoutList, MessageSquare, NotebookPen, Puzzle, Rocket, Target } from "lucide-react";
+
 const steps = [
   {
     step: '1',
     title: 'Choose your topic',
     desc: 'Pick the subject you want to explore or teach.',
-    icon: '🎯',
+    icon: <Target className="h-5 w-5" />,
     detail: 'Use the same prompts written for the CSP411 thesis runs.',
   },
   {
     step: '2',
     title: 'Describe the goals',
     desc: 'Add learner level, timeline, and desired outcomes.',
-    icon: '📝',
+    icon: <NotebookPen className="w-5 h-5"/>,
     detail: 'CourseCraft drafts a structured outline instantly.',
   },
   {
     step: '3',
     title: 'Refine modules',
     desc: 'Reorder lessons, insert optional quizzes, and jot inline notes.',
-    icon: '🗂️',
+    icon: <FolderTree className="w-5 h-5"/>,
     detail: 'Everything lives in one editing canvas.',
   },
   {
     step: '4',
     title: 'Share & iterate',
     desc: 'Publish to learners, gather capstones, and tweak pacing.',
-    icon: '🚀',
+    icon: <Rocket className="w-5 h-5"/>,
     detail: 'Adjust based on real submissions and reflections.',
   },
 ];
 
 const cards = [
   {
-    icon: '💬',
+    icon: <MessageSquare className="w-5 h-5"/>,
     title: 'Inline reminders',
     desc: 'Store hints, timing notes, or demo scripts beside each activity.',
   },
   {
-    icon: '🧩',
+    icon: <Puzzle className="w-5 h-5"/>,
     title: 'Generated quizzes',
     desc: 'Short checks that students can take or skip—perfect for self-review.',
   },
   {
-    icon: '📸',
+    icon: <LayoutList className="w-5 h-5"/>,
     title: 'Capstone gallery',
     desc: 'Finished work sits in one place with screenshots and notes.',
   },
@@ -90,7 +92,7 @@ export default function HowItWorks() {
               key={card.title}
               className="rounded-3xl border border-border bg-card p-6 text-center shadow-sm"
             >
-              <div className="mb-3 text-3xl">{card.icon}</div>
+              <div className="mb-3 text-3xl flex items-center justify-center">{card.icon}</div>
               <h4 className="text-lg font-semibold text-foreground">{card.title}</h4>
               <p className="text-sm text-muted-foreground">{card.desc}</p>
             </div>

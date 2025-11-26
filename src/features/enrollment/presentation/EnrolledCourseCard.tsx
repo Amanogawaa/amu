@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { EnrollmentWithCourse } from '@/server/features/enrollment/types';
+} from "@/components/ui/card";
+import { EnrollmentWithCourse } from "@/server/features/enrollment/types";
 import {
   ArrowRight,
   BookOpen,
@@ -18,9 +18,9 @@ import {
   Clock,
   GraduationCap,
   Layers,
-} from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface EnrolledCourseCardProps {
   enrollment: EnrollmentWithCourse;
@@ -31,26 +31,26 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
 
   const levelColors = {
     beginner:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize',
+      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize",
     intermediate:
-      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize',
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize",
     advance:
-      'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize',
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize",
   };
 
   const statusColors = {
     active:
-      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-    completed: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
-    dropped: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    completed: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+    dropped: "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400",
   };
 
   const formatEnrollmentDate = (date: Date) => {
     const enrollDate = new Date(date);
-    return enrollDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    return enrollDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -89,11 +89,11 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             className={statusColors[status] || statusColors.active}
             variant="outline"
           >
-            {status === 'active'
-              ? '📚 Learning'
-              : status === 'completed'
-              ? '✓ Completed'
-              : 'Dropped'}
+            {status === "active"
+              ? "📚 Learning"
+              : status === "completed"
+              ? "✓ Completed"
+              : "Dropped"}
           </Badge>
         </div>
 
@@ -153,8 +153,9 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
           variant="outline"
           asChild
         >
+          {course.draft === true}
           <Link href={`/my-learning/${course.id}`}>
-            {status === 'active' ? 'Continue Learning' : 'View Course'}
+            {status === "active" ? "Continue Learning" : "View Course"}
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>

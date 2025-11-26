@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/features/auth/application/AuthContext';
-import CourseGrid from '@/features/course/presentation/grid/CourseGrid';
-import { SearchBar } from '@/features/course/presentation/SearchBar';
-import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
-import { SortingPanel } from '@/features/course/presentation/SortingPanel';
-import { StatusFilterPanel } from '@/features/course/presentation/StatusFilterPanel';
-import { BookOpenIcon } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import { useState } from 'react';
+import { useAuth } from "@/features/auth/application/AuthContext";
+import CourseGrid from "@/features/course/presentation/grid/CourseGrid";
+import { SearchBar } from "@/features/course/presentation/SearchBar";
+import { LevelFilterPanel } from "@/features/course/presentation/LevelFilterPanel";
+import { SortingPanel } from "@/features/course/presentation/SortingPanel";
+import { StatusFilterPanel } from "@/features/course/presentation/StatusFilterPanel";
+import { BookOpenIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import { useState } from "react";
 
 const CoursesPage = () => {
   const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
     undefined
   );
-  const [selectedSort, setSelectedSort] = useState('newest');
+  const [selectedSort, setSelectedSort] = useState("newest");
   const [selectedStatus, setSelectedStatus] = useState<
-    'published' | 'unpublished' | 'archived' | 'all'
-  >('all');
+    "published" | "unpublished" | "drafted" | "all"
+  >("all");
 
   if (!user) {
-    throw redirect('/');
+    throw redirect("/");
   }
 
   const handleSearch = (query: string) => {
@@ -38,7 +38,7 @@ const CoursesPage = () => {
   };
 
   const handleStatusChange = (
-    status: 'published' | 'unpublished' | 'archived' | 'all'
+    status: "published" | "unpublished" | "drafted" | "all"
   ) => {
     setSelectedStatus(status);
   };

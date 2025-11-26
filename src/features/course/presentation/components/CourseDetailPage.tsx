@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { useEnrollmentStatus } from '@/features/enrollment/application/useEnrollment';
-import { EnrollmentPrompt } from '@/features/enrollment/presentation/EnrollmentPrompt';
-import { ModuleList } from '@/features/modules/presentation/list/ModuleList';
-import { useProgressForCourse } from '@/features/progress/application/useProgress';
-import { CourseStatusBadge } from '@/features/progress/presentation/CourseStatusBadge';
-import { ProgressBar } from '@/features/progress/presentation/ProgressBar';
-import { AlertCircle } from 'lucide-react';
-import { useGetCourse } from '../../application/useGetCourses';
-import { CourseInfoCard } from '../card/CourseInfoCard';
-import { CourseContent } from './CourseContent';
-import { CourseHeader } from './CourseHeader';
-import { CourseValidationStatus } from './CourseValidationStatus';
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
+import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
+import { ModuleList } from "@/features/modules/presentation/list/ModuleList";
+import { useProgressForCourse } from "@/features/progress/application/useProgress";
+import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
+import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
+import { AlertCircle } from "lucide-react";
+import { useGetCourse } from "../../application/useGetCourses";
+import { CourseInfoCard } from "../card/CourseInfoCard";
+import { CourseContent } from "./CourseContent";
+import { CourseHeader } from "./CourseHeader";
+import { CourseValidationStatus } from "./CourseValidationStatus";
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -69,7 +69,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
         ownerId={data.uid}
         isPublished={data.publish}
-        isArchived={data.archive}
+        isDraft={data.draft}
       />
 
       <CourseInfoCard
@@ -78,8 +78,6 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         language={data.language}
         level={data.level}
       />
-
-      {user?.uid === data.uid && <CourseValidationStatus courseId={courseId} />}
 
       {!enrollmentLoading &&
         !enrollmentStatus?.isEnrolled &&
@@ -102,7 +100,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
               />
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>
-                  {progress.lessonsCompleted.length} of {progress.totalLessons}{' '}
+                  {progress.lessonsCompleted.length} of {progress.totalLessons}{" "}
                   lessons completed
                 </span>
                 <span>{progress.percentComplete}%</span>

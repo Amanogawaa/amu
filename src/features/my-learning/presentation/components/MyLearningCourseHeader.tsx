@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -9,9 +9,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +19,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/features/auth/application/AuthContext';
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/features/auth/application/AuthContext";
 import {
   useEnrollCourse,
   useEnrollmentStatus,
   useUnenrollCourse,
-} from '@/features/enrollment/application/useEnrollment';
-import { LikeButton } from '@/features/likes/presentation/LikeButton';
+} from "@/features/enrollment/application/useEnrollment";
+import { LikeButton } from "@/features/likes/presentation/LikeButton";
 import {
   ArchiveIcon,
   BookOpenIcon,
@@ -37,8 +37,8 @@ import {
   Trash2Icon,
   UserCheckIcon,
   UserPlusIcon,
-} from 'lucide-react';
-import { useState } from 'react';
+} from "lucide-react";
+import { useState } from "react";
 
 interface CourseHeaderProps {
   courseId: string;
@@ -48,7 +48,7 @@ interface CourseHeaderProps {
   level: string;
   ownerId: string;
   isPublished?: boolean;
-  isArchived?: boolean;
+  isDrafted?: boolean;
 }
 
 export const MyLearningCourseHeader = ({
@@ -59,7 +59,7 @@ export const MyLearningCourseHeader = ({
   level,
   ownerId,
   isPublished = false,
-  isArchived = false,
+  isDrafted = false,
 }: CourseHeaderProps) => {
   const { user } = useAuth();
   const isOwner = user?.uid === ownerId;
@@ -86,14 +86,14 @@ export const MyLearningCourseHeader = ({
     if (!level) return;
 
     switch (level.toLowerCase()) {
-      case 'beginner':
-        return 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20';
-      case 'intermediate':
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20';
-      case 'advanced':
-        return 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20';
+      case "beginner":
+        return "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20";
+      case "intermediate":
+        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20";
+      case "advanced":
+        return "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20";
       default:
-        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20';
+        return "bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20";
     }
   };
 
@@ -167,8 +167,8 @@ export const MyLearningCourseHeader = ({
                         >
                           <LogOutIcon className="h-4 w-4 mr-2" />
                           {isUnenrolling
-                            ? 'Unenrolling...'
-                            : 'Unenroll from Course'}
+                            ? "Unenrolling..."
+                            : "Unenroll from Course"}
                         </DropdownMenuItem>
                       ) : (
                         <DropdownMenuItem
@@ -176,7 +176,7 @@ export const MyLearningCourseHeader = ({
                           disabled={isEnrolling}
                         >
                           <UserPlusIcon className="h-4 w-4 mr-2" />
-                          {isEnrolling ? 'Enrolling...' : 'Enroll in Course'}
+                          {isEnrolling ? "Enrolling..." : "Enroll in Course"}
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuGroup>

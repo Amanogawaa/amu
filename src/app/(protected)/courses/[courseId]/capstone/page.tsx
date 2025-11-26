@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { CapstoneGuidelineCard } from '@/features/capstone/presentation';
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import { ChevronRight, Users, Upload } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import React from 'react';
+import { CapstoneGuidelineCard } from "@/features/capstone/presentation";
+import { useGetCourse } from "@/features/course/application/useGetCourses";
+import { ChevronRight, Users, Upload } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import React from "react";
 
 interface CapstonePageProps {
   params: Promise<{
@@ -42,12 +42,6 @@ const CapstonePage = ({ params }: CapstonePageProps) => {
               </p>
             </div>
             <div className="flex gap-2">
-              <Button asChild>
-                <Link href={`/courses/${courseId}/capstone/submit`}>
-                  <Upload className="mr-2 h-4 w-4" />
-                  Submit Your Project
-                </Link>
-              </Button>
               <Button asChild variant="outline">
                 <Link href={`/courses/${courseId}/capstone/gallery`}>
                   <Users className="mr-2 h-4 w-4" />

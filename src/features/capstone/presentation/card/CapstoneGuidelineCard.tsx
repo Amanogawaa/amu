@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { useGetCapstoneGuideline } from '../../application/useGetCapstoneGuideline';
-import { useGenerateCapstone } from '../../application/useGenerateCapstone';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { useGetCapstoneGuideline } from "../../application/useGetCapstoneGuideline";
+import { useGenerateCapstone } from "../../application/useGenerateCapstone";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BookOpen,
   CheckCircle2,
@@ -19,9 +19,9 @@ import {
   MapPin,
   AlertTriangle,
   FolderTree,
-} from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import normalizeCapstoneGuideline from '@/utils/transform';
+} from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import normalizeCapstoneGuideline from "@/utils/transform";
 
 interface CapstoneGuidelineCardProps {
   courseId: string;
@@ -52,10 +52,9 @@ export function CapstoneGuidelineCard({
     );
   }
 
-  // No capstone exists - show generate prompt
   if (error || !data) {
     const is404 =
-      error?.message?.includes('404') || error?.message?.includes('not found');
+      error?.message?.includes("404") || error?.message?.includes("not found");
 
     if (is404) {
       return (
@@ -63,11 +62,11 @@ export function CapstoneGuidelineCard({
           <CardHeader>
             <CardTitle className="text-2xl font-bold flex items-center gap-2">
               <Target className="h-6 w-6 text-primary" />
-              Capstone Project
+              Final Project
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <Alert>
+            {/* <Alert>
               <Sparkles className="h-4 w-4" />
               <AlertTitle>🎓 Ready to Create Your Capstone Project?</AlertTitle>
               <AlertDescription className="space-y-2">
@@ -80,7 +79,7 @@ export function CapstoneGuidelineCard({
                   💡 This step is required before you can publish the course.
                 </p>
               </AlertDescription>
-            </Alert>
+            </Alert> */}
 
             <div className="space-y-4">
               <div className="text-sm text-muted-foreground space-y-2">
@@ -125,7 +124,7 @@ export function CapstoneGuidelineCard({
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          {error?.message || 'Failed to load capstone guidelines'}
+          {error?.message || "Failed to load capstone guidelines"}
         </AlertDescription>
       </Alert>
     );
@@ -140,15 +139,12 @@ export function CapstoneGuidelineCard({
           <div>
             <CardTitle className="text-2xl font-bold flex items-center gap-2">
               <Target className="h-6 w-6 text-primary" />
-              Capstone Project Guidelines
+              Final Project Guidelines
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Complete this project to demonstrate your mastery
             </p>
           </div>
-          <Badge variant="outline" className="shrink-0">
-            Capstone
-          </Badge>
         </div>
       </CardHeader>
 

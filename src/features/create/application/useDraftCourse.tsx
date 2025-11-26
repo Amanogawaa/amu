@@ -3,16 +3,19 @@
 import { queryKeys } from '@/lib/queryKeys';
 import { showErrorToast } from '@/lib/errorHandling';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { archiveCourse, unarchiveCourse } from '@/server/features/course';
+import {
+  moveCourseToDraft,
+  restoreCourseFromDraft,
+} from '@/server/features/course';
 import { toast } from 'sonner';
 
-export function useArchiveCourse() {
+export function useDraftCourse() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (courseId: string) => archiveCourse(courseId),
+    mutationFn: (courseId: string) => moveCourseToDraft(courseId),
     onSuccess: (data, courseId) => {
-      toast.success('Course archived successfully!');
+      toast.success('Course saved as draft successfully!');
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.detail(courseId),
       });
@@ -22,18 +25,18 @@ export function useArchiveCourse() {
       });
     },
     onError: (error: any) => {
-      showErrorToast(error, 'Failed to archive course');
+      showErrorToast(error, 'Failed to move course to draft');
     },
   });
 }
 
-export function useUnarchiveCourse() {
+export function useUndraftCourse() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (courseId: string) => unarchiveCourse(courseId),
+    mutationFn: (courseId: string) => restoreCourseFromDraft(courseId),
     onSuccess: (data, courseId) => {
-      toast.success('Course unarchived successfully!');
+      toast.success('Course restored from draft!');
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.detail(courseId),
       });
@@ -43,7 +46,7 @@ export function useUnarchiveCourse() {
       });
     },
     onError: (error: any) => {
-      showErrorToast(error, 'Failed to unarchive course');
+      showErrorToast(error, 'Failed to restore course from draft');
     },
   });
 }

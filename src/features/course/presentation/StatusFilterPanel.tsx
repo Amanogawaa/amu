@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Filter } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Filter } from "lucide-react";
 
 interface StatusFilterPanelProps {
-  selectedStatus?: 'published' | 'unpublished' | 'archived' | 'all';
+  selectedStatus?: "published" | "unpublished" | "drafted" | "all";
   onStatusChange: (
-    status: 'published' | 'unpublished' | 'archived' | 'all'
+    status: "published" | "unpublished" | "drafted" | "all"
   ) => void;
 }
 
 const statuses = [
-  { value: 'all', label: 'All Courses' },
-  { value: 'published', label: 'Published' },
-  { value: 'unpublished', label: 'Unpublished' },
-  { value: 'archived', label: 'Archived' },
+  { value: "all", label: "All Courses" },
+  { value: "published", label: "Published" },
+  { value: "unpublished", label: "Unpublished" },
+  { value: "drafted", label: "Drafted" },
 ];
 
 export function StatusFilterPanel({
-  selectedStatus = 'all',
+  selectedStatus = "all",
   onStatusChange,
 }: StatusFilterPanelProps) {
   return (
@@ -35,7 +35,7 @@ export function StatusFilterPanel({
           {statuses.map((status) => (
             <Badge
               key={status.value}
-              variant={selectedStatus === status.value ? 'default' : 'outline'}
+              variant={selectedStatus === status.value ? "default" : "outline"}
               className="cursor-pointer"
               onClick={() => onStatusChange(status.value as any)}
             >

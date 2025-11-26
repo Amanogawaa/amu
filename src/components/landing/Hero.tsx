@@ -16,9 +16,7 @@ export default function Hero() {
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 lg:flex-row lg:items-center">
         <div className="flex-1 space-y-6 text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1 text-sm font-semibold text-primary">
-            CSP411 Solo Thesis · CourseCraft
-          </span>
+        
           <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl md:text-6xl">
             Draft a complete course in minutes, then refine every lesson your way.
           </h1>
@@ -42,16 +40,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            {highlights.map((item) => (
-              <div
-                key={item}
-                className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-medium text-muted-foreground shadow-sm"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
+         
         </div>
 
         <div className="flex-1">

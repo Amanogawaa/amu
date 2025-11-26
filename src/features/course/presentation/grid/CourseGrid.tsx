@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
-import { useResourceEvents } from '@/hooks/use-socket-events';
-import { CourseFilters } from '@/server/features/course/types';
-import { useInfiniteListMyCourses } from '../../application/useGetCourses';
-import CourseCard from '../card/CourseCard';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { useMemo } from 'react';
+import CourseCardSkeleton from "@/components/states/CourseCardSkeleton";
+import { EnhancedEmptyState } from "@/components/states/EnhancedEmptyState";
+import { useResourceEvents } from "@/hooks/use-socket-events";
+import { CourseFilters } from "@/server/features/course/types";
+import { useInfiniteListMyCourses } from "../../application/useGetCourses";
+import CourseCard from "../card/CourseCard";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { useMemo } from "react";
 
 interface CourseGridProps {
   uid?: string;
@@ -15,7 +15,7 @@ interface CourseGridProps {
   searchQuery?: string;
   level?: string;
   sortBy?: string;
-  status?: 'published' | 'unpublished' | 'archived' | 'all';
+  status?: "published" | "unpublished" | "drafted" | "all";
 }
 
 const CourseGrid = ({
@@ -23,8 +23,8 @@ const CourseGrid = ({
   filters,
   searchQuery,
   level,
-  sortBy = 'newest',
-  status = 'all',
+  sortBy = "newest",
+  status = "all",
 }: CourseGridProps) => {
   const { user, loading: authLoading } = useAuth();
 
@@ -59,38 +59,38 @@ const CourseGrid = ({
     }
 
     // Apply status filter
-    if (status === 'published') {
+    if (status === "published") {
       result = result.filter(
-        (course) => course.publish === true && course.archive === false
+        (course) => course.publish === true && course.draft === false
       );
-    } else if (status === 'unpublished') {
+    } else if (status === "unpublished") {
       result = result.filter(
-        (course) => course.publish === false && course.archive === false
+        (course) => course.publish === false && course.draft === false
       );
-    } else if (status === 'archived') {
-      result = result.filter((course) => course.archive === true);
+    } else if (status === "drafted") {
+      result = result.filter((course) => course.draft === true);
     }
 
     // Apply sorting
     switch (sortBy) {
-      case 'newest':
+      case "newest":
         result.sort((a, b) => {
           const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
           const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
           return dateB - dateA;
         });
         break;
-      case 'oldest':
+      case "oldest":
         result.sort((a, b) => {
           const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
           const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
           return dateA - dateB;
         });
         break;
-      case 'name-asc':
+      case "name-asc":
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name-desc':
+      case "name-desc":
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
     }
@@ -99,8 +99,8 @@ const CourseGrid = ({
   }, [flatData, searchQuery, level, sortBy, status]);
 
   useResourceEvents({
-    resourceType: 'course',
-    queryKey: ['courses'],
+    resourceType: "course",
+    queryKey: ["courses"],
   });
 
   if (authLoading || isPending) {

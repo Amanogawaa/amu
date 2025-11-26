@@ -1,5 +1,36 @@
-'use client';
+"use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import {
+  usePublishCourse,
+  useUnpublishCourse,
+} from "@/features/create/application/usePublishCourse";
+import {
+  useEnrollCourse,
+  useEnrollmentStatus,
+  useUnenrollCourse,
+} from "@/features/enrollment/application/useEnrollment";
+import { LikeButton } from "@/features/likes/presentation/LikeButton";
 import {
   ArchiveIcon,
   BookOpenIcon,
@@ -10,44 +41,13 @@ import {
   Trash2Icon,
   UserCheckIcon,
   UserPlusIcon,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+} from "lucide-react";
+import { useState } from "react";
+import useDeleteCourse from "../../application/useDeleteCourse";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import {
-  useEnrollCourse,
-  useUnenrollCourse,
-  useEnrollmentStatus,
-} from '@/features/enrollment/application/useEnrollment';
-import {
-  usePublishCourse,
-  useUnpublishCourse,
-} from '@/features/create/application/usePublishCourse';
-import {
-  useArchiveCourse,
-  useUnarchiveCourse,
-} from '@/features/create/application/useArchiveCourse';
-import { useState } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { LikeButton } from '@/features/likes/presentation/LikeButton';
-import useDeleteCourse from '../../application/useDeleteCourse';
+  useDraftCourse,
+  useUndraftCourse,
+} from "@/features/create/application/useDraftCourse";
 
 interface CourseHeaderProps {
   courseId: string;
@@ -57,7 +57,7 @@ interface CourseHeaderProps {
   level: string;
   ownerId: string;
   isPublished?: boolean;
-  isArchived?: boolean;
+  isDrafted?: boolean;
 }
 
 export const CourseHeader = ({
@@ -68,7 +68,7 @@ export const CourseHeader = ({
   level,
   ownerId,
   isPublished = false,
-  isArchived = false,
+  isDrafted = false,
 }: CourseHeaderProps) => {
   const { user } = useAuth();
   const isOwner = user?.uid === ownerId;
@@ -80,8 +80,8 @@ export const CourseHeader = ({
 
   const { mutate: publish, isPending: isPublishing } = usePublishCourse();
   const { mutate: unpublish, isPending: isUnpublishing } = useUnpublishCourse();
-  const { mutate: archive, isPending: isArchiving } = useArchiveCourse();
-  const { mutate: unarchive, isPending: isUnarchiving } = useUnarchiveCourse();
+  const { mutate: draft, isPending: isArchiving } = useDraftCourse();
+  const { mutate: undraft, isPending: isUnarchiving } = useUndraftCourse();
   const { mutate: deleteCourse, isPending: isDeleting } = useDeleteCourse();
 
   const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
@@ -107,11 +107,11 @@ export const CourseHeader = ({
   };
 
   const handleArchive = () => {
-    archive(courseId);
+    draft(courseId);
   };
 
   const handleUnarchive = () => {
-    unarchive(courseId);
+    undraft(courseId);
   };
 
   const handleDelete = () => {
@@ -123,14 +123,14 @@ export const CourseHeader = ({
     if (!level) return;
 
     switch (level.toLowerCase()) {
-      case 'beginner':
-        return 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20';
-      case 'intermediate':
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20';
-      case 'advanced':
-        return 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20';
+      case "beginner":
+        return "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20";
+      case "intermediate":
+        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20";
+      case "advanced":
+        return "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20";
       default:
-        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20';
+        return "bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20";
     }
   };
 
@@ -196,7 +196,7 @@ export const CourseHeader = ({
                             disabled={isPublishing}
                           >
                             <SendIcon className="h-4 w-4 mr-2" />
-                            {isPublishing ? 'Publishing...' : 'Publish Course'}
+                            {isPublishing ? "Publishing..." : "Publish Course"}
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
@@ -205,18 +205,18 @@ export const CourseHeader = ({
                           >
                             <SendIcon className="h-4 w-4 mr-2" />
                             {isUnpublishing
-                              ? 'Unpublishing...'
-                              : 'Unpublish Course'}
+                              ? "Unpublishing..."
+                              : "Unpublish Course"}
                           </DropdownMenuItem>
                         )}
 
-                        {!isArchived ? (
+                        {!isDrafted ? (
                           <DropdownMenuItem
                             onClick={handleArchive}
                             disabled={isArchiving}
                           >
                             <ArchiveIcon className="h-4 w-4 mr-2" />
-                            {isArchiving ? 'Archiving...' : 'Archive Course'}
+                            {isArchiving ? "Drafting..." : "Draft Course"}
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
@@ -225,8 +225,8 @@ export const CourseHeader = ({
                           >
                             <ArchiveIcon className="h-4 w-4 mr-2" />
                             {isUnarchiving
-                              ? 'Unarchiving...'
-                              : 'Unarchive Course'}
+                              ? "Unarchiving..."
+                              : "Unarchive Course"}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuGroup>
@@ -240,7 +240,7 @@ export const CourseHeader = ({
                           disabled={isDeleting}
                         >
                           <Trash2Icon className="h-4 w-4 mr-2" />
-                          {isDeleting ? 'Deleting...' : 'Delete Course'}
+                          {isDeleting ? "Deleting..." : "Delete Course"}
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </>
@@ -259,8 +259,8 @@ export const CourseHeader = ({
                           >
                             <LogOutIcon className="h-4 w-4 mr-2" />
                             {isUnenrolling
-                              ? 'Unenrolling...'
-                              : 'Unenroll from Course'}
+                              ? "Unenrolling..."
+                              : "Unenroll from Course"}
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
@@ -268,7 +268,7 @@ export const CourseHeader = ({
                             disabled={isEnrolling}
                           >
                             <UserPlusIcon className="h-4 w-4 mr-2" />
-                            {isEnrolling ? 'Enrolling...' : 'Enroll in Course'}
+                            {isEnrolling ? "Enrolling..." : "Enroll in Course"}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuGroup>
@@ -319,7 +319,7 @@ export const CourseHeader = ({
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete Course'}
+              {isDeleting ? "Deleting..." : "Delete Course"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

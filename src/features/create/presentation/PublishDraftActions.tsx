@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,52 +10,53 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Card, CardContent } from '@/components/ui/card';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Upload,
+  Course,
+  CourseValidationResponse,
+} from "@/server/features/course/types";
+import {
   Archive,
   ArchiveRestore,
-  AlertCircle,
   CheckCircle2,
   Loader2,
-} from 'lucide-react';
-import { useState } from 'react';
-import { Course } from '@/server/features/course/types';
-import { CourseValidationResponse } from '@/server/features/course/types';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+  Upload,
+} from "lucide-react";
+import { useState } from "react";
 
 interface PublishArchiveActionsProps {
   course: Course;
   validation?: CourseValidationResponse;
   isValidating: boolean;
   onPublish: () => void;
-  onArchive: () => void;
-  onUnarchive: () => void;
+  onDraft: () => void;
+  onUndraft: () => void;
   isPublishing: boolean;
-  isArchiving: boolean;
-  isUnarchiving: boolean;
+  isDrafting: boolean;
+  isUndrafting: boolean;
 }
 
-export function PublishArchiveActions({
+export function PublishDraftActions({
   course,
   validation,
   isValidating,
   onPublish,
-  onArchive,
-  onUnarchive,
+  onDraft,
+  onUndraft,
   isPublishing,
-  isArchiving,
-  isUnarchiving,
+  isDrafting,
+  isUndrafting,
 }: PublishArchiveActionsProps) {
   const [showPublishDialog, setShowPublishDialog] = useState(false);
-  const [showArchiveDialog, setShowArchiveDialog] = useState(false);
-  const [showUnarchiveDialog, setShowUnarchiveDialog] = useState(false);
+  const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [showUndraftDialog, setShowUndraftDialog] = useState(false);
 
-  const canPublish = validation?.isComplete && !course.archive;
+  const canPublish = validation?.isComplete && !course.draft;
   const isPublished = course.publish;
-  const isArchived = course.archive;
+  const isDrafted = course.draft;
 
   const handlePublishClick = () => {
     if (canPublish) {
@@ -63,12 +64,12 @@ export function PublishArchiveActions({
     }
   };
 
-  const handleArchiveClick = () => {
-    setShowArchiveDialog(true);
+  const handleDraftClick = () => {
+    setShowDraftDialog(true);
   };
 
-  const handleUnarchiveClick = () => {
-    setShowUnarchiveDialog(true);
+  const handleUndraftClick = () => {
+    setShowUndraftDialog(true);
   };
 
   const handleConfirmPublish = () => {
@@ -76,19 +77,18 @@ export function PublishArchiveActions({
     setShowPublishDialog(false);
   };
 
-  const handleConfirmArchive = () => {
-    onArchive();
-    setShowArchiveDialog(false);
+  const handleConfirmDraft = () => {
+    onDraft();
+    setShowDraftDialog(false);
   };
 
-  const handleConfirmUnarchive = () => {
-    onUnarchive();
-    setShowUnarchiveDialog(false);
+  const handleConfirmUndraft = () => {
+    onUndraft();
+    setShowUndraftDialog(false);
   };
 
   return (
     <div className="space-y-4">
-      {/* Status Card */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -101,7 +101,7 @@ export function PublishArchiveActions({
                     Published
                   </Badge>
                 )}
-                {!isPublished && !isArchived && (
+                {!isPublished && !isDrafted && (
                   <Badge
                     variant="outline"
                     className="text-yellow-700 dark:text-yellow-400"
@@ -109,55 +109,33 @@ export function PublishArchiveActions({
                     Draft
                   </Badge>
                 )}
-                {isArchived && (
+                {isDrafted && (
                   <Badge className="bg-gray-500/10 text-gray-700 dark:text-gray-400">
                     <Archive className="h-3 w-3 mr-1" />
-                    Archived
+                    Draft (Hidden)
                   </Badge>
                 )}
               </div>
-
-              {/* Validation Status */}
-              {!isValidating && validation && !isArchived && (
-                <div className="mt-3">
-                  {validation.isComplete ? (
-                    <div className="flex items-start gap-2 text-sm text-green-600 dark:text-green-400">
-                      <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <span>Course is complete and ready to publish</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400">
-                      <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">Course incomplete</p>
-                        <p className="text-xs mt-1">
-                          Missing: {validation.missingComponents.join(', ')}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              {isArchived ? (
+              {isDrafted ? (
                 <Button
-                  onClick={handleUnarchiveClick}
-                  disabled={isUnarchiving}
+                  onClick={handleUndraftClick}
+                  disabled={isUndrafting}
                   variant="default"
                   className="w-full sm:w-auto"
                 >
-                  {isUnarchiving ? (
+                  {isUndrafting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Unarchiving...
+                      Restoring...
                     </>
                   ) : (
                     <>
                       <ArchiveRestore className="h-4 w-4 mr-2" />
-                      Unarchive Course
+                      Restore from Draft
                     </>
                   )}
                 </Button>
@@ -166,7 +144,7 @@ export function PublishArchiveActions({
                   <Button
                     onClick={handlePublishClick}
                     disabled={!canPublish || isPublishing || isPublished}
-                    variant={isPublished ? 'outline' : 'default'}
+                    variant={isPublished ? "outline" : "default"}
                     className="w-full sm:w-auto"
                   >
                     {isPublishing ? (
@@ -188,20 +166,20 @@ export function PublishArchiveActions({
                   </Button>
 
                   <Button
-                    onClick={handleArchiveClick}
-                    disabled={isArchiving}
+                    onClick={handleDraftClick}
+                    disabled={isDrafting}
                     variant="outline"
                     className="w-full sm:w-auto"
                   >
-                    {isArchiving ? (
+                    {isDrafting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Archiving...
+                        Saving to Draft...
                       </>
                     ) : (
                       <>
                         <Archive className="h-4 w-4 mr-2" />
-                        Archive
+                        Move to Draft
                       </>
                     )}
                   </Button>
@@ -212,26 +190,13 @@ export function PublishArchiveActions({
         </CardContent>
       </Card>
 
-      {/* Info Alert */}
-      {!isArchived && validation && !validation.isComplete && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Complete Your Course</AlertTitle>
-          <AlertDescription>
-            To publish this course, you need to generate all modules, chapters,
-            and lessons. Use the full generation feature to complete your course
-            content.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {isArchived && (
+      {isDrafted && (
         <Alert>
           <Archive className="h-4 w-4" />
-          <AlertTitle>Archived Course</AlertTitle>
+          <AlertTitle>Draft Only</AlertTitle>
           <AlertDescription>
-            This course is archived and only visible to you. Unarchive it to
-            make changes or publish it.
+            This course is hidden from learners and only visible to you. Restore
+            it from draft to continue editing or publish it.
           </AlertDescription>
         </Alert>
       )}
@@ -255,44 +220,39 @@ export function PublishArchiveActions({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Archive Confirmation Dialog */}
-      <AlertDialog open={showArchiveDialog} onOpenChange={setShowArchiveDialog}>
+      {/* Draft Confirmation Dialog */}
+      <AlertDialog open={showDraftDialog} onOpenChange={setShowDraftDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Archive Course</AlertDialogTitle>
+            <AlertDialogTitle>Move to Draft</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to archive "{course.name}"? Archived courses
-              are only visible to you and cannot be published. You can unarchive
-              it later.
+              Are you sure you want to move "{course.name}" back to draft? Draft
+              courses stay private to you until you publish them again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmArchive}>
-              Archive Course
+            <AlertDialogAction onClick={handleConfirmDraft}>
+              Save as Draft
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Unarchive Confirmation Dialog */}
-      <AlertDialog
-        open={showUnarchiveDialog}
-        onOpenChange={setShowUnarchiveDialog}
-      >
+      {/* Undraft Confirmation Dialog */}
+      <AlertDialog open={showUndraftDialog} onOpenChange={setShowUndraftDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unarchive Course</AlertDialogTitle>
+            <AlertDialogTitle>Restore from Draft</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to unarchive "{course.name}"? This will
-              restore the course to draft status, allowing you to edit and
-              publish it.
+              Are you sure you want to restore "{course.name}" from draft? It
+              will return to editable draft status so you can publish it again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmUnarchive}>
-              Unarchive Course
+            <AlertDialogAction onClick={handleConfirmUndraft}>
+              Restore Draft
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
