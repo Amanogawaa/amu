@@ -28,6 +28,8 @@ import {
 import Link from 'next/link';
 import { CapstoneReviewForm } from '@/features/capstone/presentation';
 import { CapstoneReviewList } from '@/features/capstone/presentation';
+import { ScreenshotManager } from '@/features/capstone/presentation/ScreenshotManager';
+import { GitHubRepoViewer } from '@/features/github/presentation';
 import { useRouter } from 'next/navigation';
 import { useDeleteCapstoneReview } from '@/features/capstone/application/useDeleteCapstoneReview';
 import { useDeleteCapstoneSubmission } from '@/features/capstone/application/useDeleteCapstoneSubmission';
@@ -195,6 +197,31 @@ export default function CapstoneSubmissionPage({
             </CardContent>
           </Card>
 
+          {/* Screenshots */}
+          <ScreenshotManager
+            submissionId={submissionId}
+            screenshots={submission.screenshots || []}
+            canEdit={isOwner}
+          />
+
+          {/* GitHub Repository Viewer */}
+          {/* <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Github className="h-5 w-5" />
+                Repository Code
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[600px]">
+                <GitHubRepoViewer
+                  owner={submission.githubRepoOwner}
+                  repo={submission.githubRepoName}
+                />
+              </div>
+            </CardContent>
+          </Card> */}
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -305,7 +332,6 @@ export default function CapstoneSubmissionPage({
             </CardContent>
           </Card>
 
-          {/* Repository Info */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Repository</CardTitle>
@@ -376,11 +402,7 @@ export default function CapstoneSubmissionPage({
                 <CardTitle className="text-lg">Manage</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {/* <Button variant="outline" className="w-full" asChild>
-                  <Link href={`/capstone/submissions/${submissionId}/edit`}>
-                    Edit Submission
-                  </Link>
-                </Button> */}
+             
                 <Button
                   variant="outline"
                   onClick={handleDeleteSubmission}

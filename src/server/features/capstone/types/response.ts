@@ -56,16 +56,19 @@ export interface CapstoneReview {
   reviewerId: string;
   reviewerName?: string;
   reviewerEmail?: string;
-  rating: number;
+  parentReviewId?: string;
+  rating?: number;
   feedback: string;
-  highlights: string[];
-  suggestions: string[];
+  highlights?: string[]; 
+  suggestions?: string[]; 
   criteriaScores?: Array<{
     criteriaName: string;
     score: number;
     comment?: string;
   }>;
   helpfulCount: number;
+  replyCount: number; 
+  images: string[]; 
   createdAt: string;
   updatedAt: string;
   deleted: boolean;

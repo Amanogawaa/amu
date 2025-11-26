@@ -118,6 +118,13 @@ export async function getCapstoneReviews(
     if (filters.capstoneSubmissionId)
       params.append('capstoneSubmissionId', filters.capstoneSubmissionId);
     if (filters.reviewerId) params.append('reviewerId', filters.reviewerId);
+    if (filters.parentReviewId !== undefined) {
+      if (filters.parentReviewId === null) {
+        params.append('parentReviewId', '');
+      } else {
+        params.append('parentReviewId', filters.parentReviewId);
+      }
+    }
     if (filters.limit) params.append('limit', filters.limit.toString());
     if (filters.offset) params.append('offset', filters.offset.toString());
   }
@@ -169,5 +176,83 @@ export async function getCapstoneLikeStatus(
   return apiRequest<null, CapstoneLikeToggleResponse>(
     `/capstone/submissions/${id}/like-status`,
     'get'
+  );
+}
+
+// ==================== CAPSTONE SCREENSHOTS ====================
+
+export interface UploadScreenshotResponse {
+  data: { screenshotUrl: string };
+  message: string;
+}
+
+export async function uploadCapstoneScreenshot(
+  submissionId: string,
+  file: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await apiRequest<FormData, UploadScreenshotResponse>(
+    `/capstone/submissions/${submissionId}/screenshots`,
+    'post',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return response.data.screenshotUrl;
+}
+
+export async function deleteCapstoneScreenshot(
+  submissionId: string,
+  screenshotUrl: string
+): Promise<{message: string}> {
+  return apiRequest<{ screenshotUrl: string }, { message: string }>(
+    `/capstone/submissions/${submissionId}/screenshots`,
+    'delete',
+    { screenshotUrl }
+  );
+}
+
+// ==================== CAPSTONE REVIEW IMAGES ====================
+
+export interface UploadReviewImageResponse {
+  data: { imageUrl: string };
+  message: string;
+}
+
+export async function uploadCapstoneReviewImage(
+  reviewId: string,
+  file: File
+): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await apiRequest<FormData, UploadReviewImageResponse>(
+    `/capstone/reviews/${reviewId}/images`,
+    'post',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return response.data.imageUrl;
+}
+
+export async function deleteCapstoneReviewImage(
+  reviewId: string,
+  imageUrl: string
+): Promise<{ message: string }> {
+  return apiRequest<{ imageUrl: string }, { message: string }>(
+    `/capstone/reviews/${reviewId}/images`,
+    'delete',
+    { imageUrl }
   );
 }

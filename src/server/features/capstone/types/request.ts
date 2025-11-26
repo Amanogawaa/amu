@@ -21,6 +21,7 @@ export interface CapstoneSubmission {
   reviewCount: number;
   likeCount: number;
   averageRating?: number;
+  screenshots: string[]; 
 }
 
 export interface CreateCapstoneSubmissionPayload {
@@ -39,10 +40,11 @@ export interface UpdateCapstoneSubmissionPayload {
 
 export interface CreateCapstoneReviewPayload {
   capstoneSubmissionId: string;
-  rating: number;
+  parentReviewId?: string; 
+  rating?: number; 
   feedback: string;
-  highlights: string[];
-  suggestions: string[];
+  highlights?: string[]; 
+  suggestions?: string[]; 
   criteriaScores?: Array<{
     criteriaName: string;
     score: number;
@@ -73,6 +75,7 @@ export interface CapstoneSubmissionFilters {
 export interface CapstoneReviewFilters {
   capstoneSubmissionId?: string;
   reviewerId?: string;
+  parentReviewId?: string | null; 
   limit?: number;
   offset?: number;
 }

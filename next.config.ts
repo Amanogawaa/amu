@@ -13,14 +13,20 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
     return [
       {
         source: '/api/:path*',
         destination: isDevelopment
-          ? 'http://localhost:3000/api/:path*'
+          ? 'http://localhost:8080/api/:path*'
           : `${apiUrl}/api/:path*`,
+      },
+      {
+        source: '/uploads/:path*',
+        destination: isDevelopment
+          ? 'http://localhost:8080/uploads/:path*'
+          : `${apiUrl}/uploads/:path*`,
       },
     ];
   },
@@ -86,6 +92,19 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
+        pathname: '/**',
+      },
+      // Allow localhost for development
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
         pathname: '/**',
       },
     ],
