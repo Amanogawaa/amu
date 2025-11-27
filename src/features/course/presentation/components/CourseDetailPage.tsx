@@ -69,7 +69,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
         ownerId={data.uid}
         isPublished={data.publish}
-        isDraft={data.draft}
+        isDrafted={data.draft}
       />
 
       <CourseInfoCard
