@@ -36,7 +36,7 @@ export function ModuleChapterSidebar({ ...props }: ModuleChapterSidebarProps) {
   const completedLessons = progress?.lessonsCompleted || [];
 
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} className='bg-transparent'>
       <SidebarHeader className="border-b p-4">
         <div className="space-y-1">
           <div className="text-xs text-muted-foreground uppercase tracking-wider">

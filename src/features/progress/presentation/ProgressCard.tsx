@@ -25,7 +25,7 @@ export function ProgressCard({
   );
 
   return (
-    <Link href={`/courses/${progress.courseId}`}>
+    <Link href={`/my-learning/${progress.courseId}`}>
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">

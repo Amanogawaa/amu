@@ -26,12 +26,17 @@ const QuizResults = dynamic(
   }
 );
 
-interface QuizPlayerProps {
+export interface QuizPlayerProps {
   quiz: Quiz;
   lessonId: string;
+  onQuizPassed?: () => void;
 }
 
-export const QuizPlayer = ({ quiz, lessonId }: QuizPlayerProps) => {
+export const QuizPlayer = ({
+  quiz,
+  lessonId,
+  onQuizPassed,
+}: QuizPlayerProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
@@ -53,8 +58,11 @@ export const QuizPlayer = ({ quiz, lessonId }: QuizPlayerProps) => {
     await submitQuizMutation.mutateAsync(
       { answers: formattedAnswers },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           setShowResults(true);
+          if (response.data.passed) {
+            onQuizPassed?.();
+          }
         },
       }
     );

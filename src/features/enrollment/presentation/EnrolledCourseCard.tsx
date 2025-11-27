@@ -10,17 +10,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { cn } from "@/lib/utils";
 import { EnrollmentWithCourse } from "@/server/features/enrollment/types";
 import {
+  AlertTriangle,
   ArrowRight,
   BookOpen,
   Calendar,
   Clock,
   GraduationCap,
   Layers,
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 interface EnrolledCourseCardProps {
   enrollment: EnrollmentWithCourse;
@@ -28,6 +31,9 @@ interface EnrolledCourseCardProps {
 
 const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
   const { course, enrolledAt, status } = enrollment;
+  const isDrafted = course?.draft === true;
+  const { user } = useAuth();
+  const isOwner = user?.uid === course.uid;
 
   const levelColors = {
     beginner:
@@ -55,7 +61,7 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
   };
 
   return (
-    <Card className="group h-full flex flex-col transition-all duration-300 hover:border-primary/50">
+    <Card className="group h-full flex flex-col transition-all relative duration-300 hover:border-primary/50">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
@@ -79,7 +85,7 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
         )}
       </CardHeader>
 
-      <CardContent className="flex-1 pb-3">
+      <CardContent className={cn("flex-1 pb-3", isDrafted && "pb-20")}>
         <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
           {course.description}
         </p>
@@ -145,20 +151,56 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             )}
           </div>
         )}
+
+        {isDrafted && !isOwner && (
+          <div className="absolute inset-x-4 bottom-4 flex gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 text-sm text-amber-900 shadow-lg shadow-amber-500/20 backdrop-blur-md dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-50">
+            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">Temporarily unavailable</p>
+              <p className="text-xs text-amber-800/80 dark:text-amber-100/80">
+                The creator moved this course back to draft while making updates. We'll notify you once it returns.
+              </p>
+            </div>
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="pt-4 border-t border-border flex gap-2">
-        <Button
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-          variant="outline"
-          asChild
-        >
-          {course.draft === true}
-          <Link href={`/my-learning/${course.id}`}>
-            {status === "active" ? "Continue Learning" : "View Course"}
-            <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </Button>
+        {isDrafted ? (
+          isOwner ? (
+            <Button
+              className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+              variant="outline"
+              asChild
+            >
+              <Link href={`/my-learning/${course.id}`}>
+                {status === "active" ? "Continue Learning" : "View Course"}
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              className="w-full"
+              variant="outline"
+              disabled
+              title="The creator moved this course to draft, so it is temporarily unavailable."
+            >
+              Course unavailable
+              <Lock className="ml-2 w-4 h-4" />
+            </Button>
+          )
+        ) : (
+          <Button
+            className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+            variant="outline"
+            asChild
+          >
+            <Link href={`/my-learning/${course.id}`}>
+              {status === "active" ? "Continue Learning" : "View Course"}
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

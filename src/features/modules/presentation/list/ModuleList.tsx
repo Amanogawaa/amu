@@ -196,18 +196,18 @@ export const ModuleList = ({ courseId }: ModuleListProps) => {
                         </div>
                       </div>
                       {canAccessModule ? (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="mt-2 h-8 text-xs"
-                          onClick={() =>
-                            router.push(
-                              `${linkTo}/${courseId}/modules/${module.id}`
-                            )
-                          }
-                        >
-                          {moduleComplete ? 'Review Module' : 'View Module'}
-                        </Button>
+                     <Button
+                     size="default" // or "lg" for even larger
+                     variant="default" // Changes from ghost to solid with background
+                     className="mt-4 h-10 text-sm font-medium"
+                     onClick={() =>
+                       router.push(
+                         `${linkTo}/${courseId}/modules/${module.id}`
+                       )
+                     }
+                   >
+                     {moduleComplete ? 'Review Module' : 'View Module'}
+                   </Button>
                       ) : (
                         <p className="mt-2 text-xs text-muted-foreground italic">
                           {!hasAccess

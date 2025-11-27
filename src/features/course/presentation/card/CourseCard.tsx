@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useAuth } from '@/features/auth/application/AuthContext';
 import { useEnrollmentCount } from '@/features/enrollment/application/useEnrollment';
 import { LikeButton } from '@/features/likes/presentation/LikeButton';
 import { Course } from '@/server/features/course/types';
@@ -19,11 +20,9 @@ import {
   Clock,
   GraduationCap,
   Layers,
-  Trash2,
-  User2,
+  User2
 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/features/auth/application/AuthContext';
 import { CourseValidationBadge } from '../components/CourseValidationBadge';
 
 interface CourseCardProps {

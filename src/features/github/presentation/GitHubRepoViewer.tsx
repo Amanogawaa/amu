@@ -83,8 +83,8 @@ export function GitHubRepoViewer({
 
   if (treeError) {
     return (
-      <Card className={className}>
-        <CardContent className="pt-6">
+      <Card className="border-none">
+        <CardContent className="">
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <AlertCircle className="h-12 w-12 text-destructive mb-4" />
             <h3 className="text-lg font-semibold mb-2">Error Loading Repository</h3>
@@ -187,7 +187,7 @@ export function GitHubRepoViewer({
           {fileLoading ? (
             <GitHubCodeViewerSkeleton />
           ) : fileError ? (
-            <CardContent className="pt-6">
+            <CardContent className="border-none">
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">

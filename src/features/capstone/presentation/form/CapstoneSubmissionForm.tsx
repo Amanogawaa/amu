@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -22,7 +23,10 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useCreateCapstoneSubmission } from '../../application/useCreateCapstoneSubmission';
 import { useUpdateCapstoneSubmission } from '../../application/useUpdateCapstoneSubmission';
+import { useGetCapstoneSubmission } from '../../application/useGetCapstoneSubmission';
 import { GitHubConnectionRequired } from '../GitHubConnectionRequired';
+import { ScreenshotManager } from '../ScreenshotManager';
+import Link from 'next/link';
 
 const submissionFormSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters'),
@@ -56,6 +60,25 @@ export function CapstoneSubmissionForm({
   const updateSubmission = useUpdateCapstoneSubmission();
 
   const isEditing = !!submission;
+  const [submissionId, setSubmissionId] = useState<string | null>(
+    submission?.id || null
+  );
+
+  const { data: submissionData } = useGetCapstoneSubmission(
+    submissionId || '',
+    { enabled: !!submissionId }
+  );
+
+  const currentScreenshots =
+    submissionData?.data.screenshots ||
+    submission?.screenshots ||
+    [];
+
+  useEffect(() => {
+    if (submission) {
+      setSubmissionId(submission.id);
+    }
+  }, [submission]);
 
   const githubProvider = user?.providerData.find(
     (p: any) => p.providerId === 'github.com'
@@ -79,11 +102,13 @@ export function CapstoneSubmissionForm({
         payload: values,
       });
     } else {
-      await createSubmission.mutateAsync({
+      const response = await createSubmission.mutateAsync({
         courseId,
         guidelineId,
         ...values,
       });
+      // Set submission ID from response so screenshot manager can be shown
+      setSubmissionId(response.data.id);
     }
     onSuccess?.();
   };
@@ -108,126 +133,139 @@ export function CapstoneSubmissionForm({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {isEditing ? 'Edit Submission' : 'Submit Your Capstone Project'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="My Awesome Project"
-                      {...field}
-                      disabled={
-                        createSubmission.isPending || updateSubmission.isPending
-                      }
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Give your project a clear, descriptive title
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe what your project does, the technologies you used, and any challenges you overcame..."
-                      className="min-h-[120px]"
-                      {...field}
-                      disabled={
-                        createSubmission.isPending || updateSubmission.isPending
-                      }
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Provide a detailed description of your project (minimum 50
-                    characters)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="githubRepoUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>GitHub Repository URL</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2">
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {isEditing ? 'Edit Submission' : 'Submit Your Capstone Project'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Title</FormLabel>
+                    <FormControl>
                       <Input
-                        placeholder="https://github.com/username/repo"
+                        placeholder="My Awesome Project"
                         {...field}
                         disabled={
-                          createSubmission.isPending ||
-                          updateSubmission.isPending
+                          createSubmission.isPending || updateSubmission.isPending
                         }
                       />
-                      {field.value && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          asChild
-                        >
-                          <a
-                            href={field.value}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormDescription>
-                    Link to your public GitHub repository
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex gap-3">
-              <Button
-                type="submit"
-                disabled={
-                  createSubmission.isPending || updateSubmission.isPending
-                }
-                className="flex-1"
-              >
-                {createSubmission.isPending || updateSubmission.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {isEditing ? 'Updating...' : 'Submitting...'}
-                  </>
-                ) : (
-                  <>{isEditing ? 'Update Submission' : 'Submit Project'}</>
+                    </FormControl>
+                    <FormDescription>
+                      Give your project a clear, descriptive title
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe what your project does, the technologies you used, and any challenges you overcame..."
+                        className="min-h-[120px]"
+                        {...field}
+                        disabled={
+                          createSubmission.isPending || updateSubmission.isPending
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Provide a detailed description of your project (minimum 50
+                      characters)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="githubRepoUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>GitHub Repository URL</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="https://github.com/username/repo"
+                          {...field}
+                          disabled={
+                            createSubmission.isPending ||
+                            updateSubmission.isPending
+                          }
+                        />
+                        {field.value && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            asChild
+                          >
+                            <a
+                              href={field.value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormDescription>
+                      Link to your public GitHub repository
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-3">
+                <Button
+                  type="submit"
+                  disabled={
+                    createSubmission.isPending || updateSubmission.isPending
+                  }
+                  className="flex-1"
+                >
+                  {createSubmission.isPending || updateSubmission.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEditing ? 'Updating...' : 'Submitting...'}
+                    </>
+                  ) : (
+                    <>{isEditing ? 'Update Submission' : 'Submit Project'}</>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      {submissionId && (
+        <>
+          <ScreenshotManager
+            submissionId={submissionId}
+            screenshots={currentScreenshots}
+            canEdit={true} />
+
+          <Link href={`/capstone/submissions/${submissionId}`}>View Submission</Link>
+        </>
+      )}
+    </div>
   );
 }

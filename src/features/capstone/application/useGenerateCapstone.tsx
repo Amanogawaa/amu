@@ -13,6 +13,9 @@ export function useGenerateCapstone() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.capstone.guidelineByCourse(courseId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.validation(courseId),
+      });
     },
     onError: (error: any) => {
       const errorMessage =

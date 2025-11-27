@@ -4,14 +4,25 @@ import { BookMarked, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { AnalyticsStatsCards } from './AnalyticsStatsCards';
 import { CoursePerformanceList } from './CoursePerformanceList';
+import { CapstoneAnalyticsSection } from './CapstoneAnalyticsSection';
 import type { UserAnalytics } from '../domain/types';
+import type { CapstoneSubmission } from '@/server/features/capstone/types';
 
 interface AnalyticsTabProps {
   analytics: UserAnalytics | undefined;
   isLoading: boolean;
+  capstoneSubmissions?: CapstoneSubmission[];
+  capstoneTotal?: number;
+  isCapstoneLoading?: boolean;
 }
 
-export function AnalyticsTab({ analytics, isLoading }: AnalyticsTabProps) {
+export function AnalyticsTab({
+  analytics,
+  isLoading,
+  capstoneSubmissions,
+  capstoneTotal,
+  isCapstoneLoading,
+}: AnalyticsTabProps) {
   if (!isLoading && (!analytics || analytics.totalCoursesCreated === 0)) {
     return (
       <Card>
@@ -61,6 +72,12 @@ export function AnalyticsTab({ analytics, isLoading }: AnalyticsTabProps) {
 
       {/* Course Performance */}
       <CoursePerformanceList analytics={analytics} isLoading={isLoading} />
+
+      <CapstoneAnalyticsSection
+        submissions={capstoneSubmissions}
+        total={capstoneTotal}
+        isLoading={isCapstoneLoading}
+      />
     </>
   );
 }

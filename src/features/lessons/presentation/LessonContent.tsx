@@ -16,6 +16,7 @@ import {
   useQuizForLesson,
   useUserAttempts,
 } from '@/features/quiz/application/useQuiz';
+import type { QuizPlayerProps } from '@/features/quiz/presentation/QuizPlayer';
 import {
   AlertCircle,
   BookOpen,
@@ -24,6 +25,7 @@ import {
   Info,
   Video,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -58,7 +60,7 @@ const TranscriptViewer = dynamic(
   }
 );
 
-const QuizPlayer = dynamic(
+const QuizPlayer = dynamic<QuizPlayerProps>(
   () =>
     import('@/features/quiz/presentation/QuizPlayer').then((mod) => ({
       default: mod.QuizPlayer,
@@ -98,15 +100,45 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   const { data: enrollmentStatus, isLoading: enrollmentLoading } =
     useEnrollmentStatus(courseInfo?.courseId || '', !!courseInfo?.courseId);
   const { user } = useAuth();
+  const [hasLocalQuizPass, setHasLocalQuizPass] = useState(false);
 
   const isOwner = user?.uid === course?.uid;
   const isEnrolled = enrollmentStatus?.isEnrolled || false;
   const hasAccess = isOwner || isEnrolled;
 
-  const hasPassedQuiz =
-    lesson?.type === 'quiz' && quiz
-      ? attempts?.some((attempt) => attempt.passed) || false
-      : true; 
+  useEffect(() => {
+    setHasLocalQuizPass(false);
+  }, [lessonId]);
+
+  // For quiz lessons, check if user has passed the quiz
+  // For non-quiz lessons, they don't need to pass a quiz
+  const hasRemoteQuizPass = (() => {
+    // If it's not a quiz lesson, no quiz requirement
+    if (lesson?.type !== 'quiz') {
+      return true;
+    }
+    
+    // If it's a quiz lesson but no quiz exists yet, can't mark complete
+    if (!quiz) {
+      return false;
+    }
+    
+    // If attempts are still loading, don't allow completion yet
+    if (attempts === undefined) {
+      return false;
+    }
+    
+    // Check if user has at least one passed attempt
+    return attempts.some((attempt) => attempt.passed);
+  })();
+
+  useEffect(() => {
+    if (hasRemoteQuizPass) {
+      setHasLocalQuizPass(true);
+    }
+  }, [hasRemoteQuizPass]);
+
+  const hasPassedQuiz = hasLocalQuizPass || hasRemoteQuizPass;
 
   const quizDisabledReason =
     lesson?.type === 'quiz' && quiz && !hasPassedQuiz
@@ -241,7 +273,11 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
                   </CardContent>
                 </Card>
               ) : quiz ? (
-                <QuizPlayer quiz={quiz} lessonId={lessonId} />
+                <QuizPlayer
+                  quiz={quiz}
+                  lessonId={lessonId}
+                  onQuizPassed={() => setHasLocalQuizPass(true)}
+                />
               ) : (
                 <Card className="border-yellow-500/20 bg-yellow-500/5">
                   <CardContent className="pt-6">

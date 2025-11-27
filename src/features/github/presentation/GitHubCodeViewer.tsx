@@ -97,8 +97,8 @@ export function GitHubCodeViewer({
   };
 
   return (
-    <Card className={cn('flex flex-col h-full', className)}>
-      <CardHeader className="pb-3">
+    <Card className={cn('flex flex-col h-full border-none', className)}>
+      <CardHeader >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <CardTitle className="text-sm font-mono truncate">{path}</CardTitle>

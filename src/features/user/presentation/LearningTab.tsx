@@ -72,10 +72,24 @@ export function LearningTab({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold">My Enrolled Courses</h2>
-        <div className="flex flex-wrap gap-3">
-          <div className="flex gap-2">
+      <div className="space-y-6 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              My Learning
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              Stay on top of your enrolled courses and progress
+            </p>
+          </div>
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
+            <BookOpen className="h-4 w-4" />
+            {progressWithCourses?.length || 0} Enrolled
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant={filterBy === 'all' ? 'default' : 'outline'}
               size="sm"
@@ -103,7 +117,7 @@ export function LearningTab({
             value={sortBy}
             onValueChange={(value) => setSortBy(value as SortOption)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Sort by..." />
             </SelectTrigger>
             <SelectContent>

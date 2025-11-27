@@ -6,12 +6,13 @@ import {
   useProgressSummary,
 } from '@/features/progress/application/useProgress';
 import { useProgressWithCourseDetails } from '@/features/progress/application/useProgressWithCourseDetails';
-import { User2Icon, BookOpen, TrendingUp } from 'lucide-react';
+import { User2Icon, BookOpen, TrendingUp, FolderGit2 } from 'lucide-react';
 import React from 'react';
 import {
   useUserProfile,
   useUserAnalytics,
 } from '@/features/user/application/useUser';
+import { useCapstoneSubmissions } from '@/features/capstone/application/useCapstoneSubmissions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProfileHeader } from '@/features/user/presentation/ProfileHeader';
 import { UserProfileForm } from '@/features/user/presentation/UserProfileForm';
@@ -29,6 +30,13 @@ const AccountPage = () => {
   const { data: allProgress, isLoading: isProgressLoading } = useAllProgress();
   const { data: progressWithCourses, isLoading: isEnrichingProgress } =
     useProgressWithCourseDetails(allProgress);
+  const {
+    data: capstoneSubmissionsData,
+    isLoading: isCapstoneLoading,
+  } = useCapstoneSubmissions(
+    user?.uid ? { userId: user.uid } : undefined,
+    { enabled: Boolean(user?.uid) }
+  );
 
   const isLearningLoading = isProgressLoading || isEnrichingProgress;
 
@@ -77,6 +85,10 @@ const AccountPage = () => {
               <TrendingUp className="h-4 w-4" />
               Analytics
             </TabsTrigger>
+            {/* <TabsTrigger value="capstone" className="flex items-center gap-2">
+              <FolderGit2 className="h-4 w-4" />
+              Capstone
+            </TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">
@@ -97,6 +109,9 @@ const AccountPage = () => {
             <AnalyticsTab
               analytics={userAnalytics}
               isLoading={isAnalyticsLoading}
+              capstoneSubmissions={capstoneSubmissionsData?.data.submissions}
+              capstoneTotal={capstoneSubmissionsData?.data.total}
+              isCapstoneLoading={isCapstoneLoading}
             />
           </TabsContent>
         </Tabs>

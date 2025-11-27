@@ -106,14 +106,33 @@ export default function CapstoneSubmissionPage({
 
   return (
     <div className="container max-w-6xl mx-auto py-8">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Button variant="ghost" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Gallery
         </Button>
+        {isOwner && (
+                <Button
+                  variant="outline"
+                  onClick={handleDeleteSubmission}
+                  className="w-fit text-red-600 hover:text-red-700"
+                >
+                  Delete Submission
+                </Button>
+          // <div className="space-y-6">
+          //   {/* Actions for Owner */}
+          //   <Card>
+          //     <CardHeader>
+          //       <CardTitle className="text-lg">Manage</CardTitle>
+          //     </CardHeader>
+          //     <CardContent className="space-y-2">
+          //     </CardContent>
+          //   </Card>
+          // </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1  gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
@@ -205,7 +224,7 @@ export default function CapstoneSubmissionPage({
           />
 
           {/* GitHub Repository Viewer */}
-          {/* <Card>
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Github className="h-5 w-5" />
@@ -214,13 +233,13 @@ export default function CapstoneSubmissionPage({
             </CardHeader>
             <CardContent>
               <div className="h-[600px]">
-                <GitHubRepoViewer
+                <GitHubRepoViewer className='border-none'
                   owner={submission.githubRepoOwner}
                   repo={submission.githubRepoName}
                 />
               </div>
             </CardContent>
-          </Card> */}
+          </Card>
 
           <Card>
             <CardHeader>
@@ -250,170 +269,7 @@ export default function CapstoneSubmissionPage({
           </Card>
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Repository Stats</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Code className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Language</span>
-                </div>
-                <Badge variant="secondary">
-                  {submission.repoMetadata?.language || 'N/A'}
-                </Badge>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Star className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Stars</span>
-                </div>
-                <span className="font-semibold">
-                  {submission.repoMetadata?.stars || 0}
-                </span>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <GitFork className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Forks</span>
-                </div>
-                <span className="font-semibold">
-                  {submission.repoMetadata?.forks || 0}
-                </span>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Views</span>
-                </div>
-                <span className="font-semibold">{submission.viewCount}</span>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <Heart className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Likes</span>
-                </div>
-                <span className="font-semibold">{submission.likeCount}</span>
-              </div>
-
-              {submission.averageRating !== undefined && (
-                <>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span className="text-muted-foreground">
-                        Average Rating
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="font-semibold">
-                        {submission.averageRating.toFixed(1)}
-                      </span>
-                      <span className="text-sm text-muted-foreground">/5</span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Repository</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Owner</p>
-                <a
-                  href={`https://github.com/${submission.githubRepoOwner}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium hover:text-primary inline-flex items-center gap-1"
-                >
-                  {submission.githubRepoOwner}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
-
-              <Separator />
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Repository Name
-                </p>
-                <a
-                  href={submission.githubRepoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium hover:text-primary inline-flex items-center gap-1"
-                >
-                  {submission.githubRepoName}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
-
-              <Separator />
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Last Updated
-                </p>
-                <p className="text-sm font-medium">
-                  {submission.repoMetadata?.lastUpdated
-                    ? formatDate(submission.repoMetadata.lastUpdated)
-                    : 'N/A'}
-                </p>
-              </div>
-
-              <Separator />
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Visibility</p>
-                <Badge
-                  variant={
-                    submission.repoMetadata?.isPrivate ? 'secondary' : 'default'
-                  }
-                >
-                  {submission.repoMetadata?.isPrivate ? 'Private' : 'Public'}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Actions for Owner */}
-          {isOwner && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Manage</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-             
-                <Button
-                  variant="outline"
-                  onClick={handleDeleteSubmission}
-                  className="w-full text-red-600 hover:text-red-700"
-                >
-                  Delete Submission
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+       
       </div>
     </div>
   );

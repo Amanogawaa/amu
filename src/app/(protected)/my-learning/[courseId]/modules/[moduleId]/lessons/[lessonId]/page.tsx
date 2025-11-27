@@ -24,7 +24,7 @@ const LessonPage = () => {
         <SidebarTrigger />
       </div>
 
-      <div className="p-6">
+      <div className="p-6 max-w-4xl w-full">
         <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
           <Link
             href="/my-learning"
