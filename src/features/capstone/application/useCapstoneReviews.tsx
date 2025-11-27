@@ -14,10 +14,16 @@ export function useCapstoneReviews(
   filters?: CapstoneReviewFilters,
   options?: UseCapstoneReviewsOptions
 ) {
+  // Ensure query is enabled only if capstoneSubmissionId is provided
+  const isEnabled =
+    options?.enabled !== false &&
+    (filters?.capstoneSubmissionId !== undefined &&
+      filters?.capstoneSubmissionId !== '');
+
   return useQuery<CapstoneReviewsListResponse>({
     queryKey: queryKeys.capstone.reviews.list(filters),
     queryFn: () => getCapstoneReviews(filters),
-    enabled: options?.enabled !== false,
+    enabled: isEnabled,
     staleTime: 2 * 60 * 1000,
   });
 }

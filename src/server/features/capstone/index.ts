@@ -118,10 +118,12 @@ export async function getCapstoneReviews(
     if (filters.capstoneSubmissionId)
       params.append('capstoneSubmissionId', filters.capstoneSubmissionId);
     if (filters.reviewerId) params.append('reviewerId', filters.reviewerId);
+    // Handle parentReviewId: null means top-level reviews, undefined means don't filter
     if (filters.parentReviewId !== undefined) {
       if (filters.parentReviewId === null) {
+        // Send empty string to indicate we want null parent reviews
         params.append('parentReviewId', '');
-      } else {
+      } else if (filters.parentReviewId) {
         params.append('parentReviewId', filters.parentReviewId);
       }
     }
