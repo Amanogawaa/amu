@@ -15,18 +15,8 @@ import { useAuth } from '@/features/auth/application/AuthContext';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-interface NavigationBarUserProps {
-  name: string | null;
-  email: string | null;
-  logout: () => void;
-}
-
-export function NavigationBarUser({
-  name,
-  email,
-  logout,
-}: NavigationBarUserProps) {
-  const { user } = useAuth();
+export function NavigationBarUser() {
+  const { user, signOut } = useAuth();
 
   return (
     <DropdownMenu>
@@ -35,11 +25,11 @@ export function NavigationBarUser({
           <span className="sr-only">User Avatar</span>
           <AvatarImage
             src={user?.photoURL || '/profile_1.png'}
-            alt={name || 'User'}
+            alt={user?.displayName || 'User'}
           />
           <AvatarFallback>
-            {name?.charAt(0).toUpperCase() ||
-              email?.charAt(0).toUpperCase() ||
+            {user?.displayName?.charAt(0).toUpperCase() ||
+              user?.email?.charAt(0).toUpperCase() ||
               'U'}
           </AvatarFallback>
         </Avatar>
@@ -54,10 +44,10 @@ export function NavigationBarUser({
           <div className="flex items-center gap-2 px-4 py-1.5 text-left text-sm">
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium w-[20ch] text-foreground">
-                {name}
+                {user?.displayName || 'User'}
               </span>
               <span className="truncate text-xs text-muted-foreground">
-                {email}
+                {user?.email}
               </span>
             </div>
           </div>
@@ -76,14 +66,7 @@ export function NavigationBarUser({
               My Learning
             </Link>
           </DropdownMenuItem>
-          {/* {isAdmin && (
-            <DropdownMenuItem asChild>
-              <Link href={'/admin'}>
-                <Settings className="mr-2 h-4 w-4" />
-                Admin Panel
-              </Link>
-            </DropdownMenuItem>
-          )} */}
+
           <DropdownMenuItem asChild>
             <Link href={'/courses'} className="group">
               <Kanban className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
@@ -92,7 +75,7 @@ export function NavigationBarUser({
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border" />
-        <DropdownMenuItem onClick={() => logout()} className="group">
+        <DropdownMenuItem onClick={() => signOut()} className="group">
           <LogOutIcon className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
           Logout
         </DropdownMenuItem>

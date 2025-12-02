@@ -1,23 +1,47 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useAuth } from '../application/AuthContext';
-import { cn } from '@/lib/utils';
 import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
+import { Button } from '@/components/ui/button';
 import {
   Form,
-  FormItem,
-  FormField,
   FormControl,
+  FormField,
+  FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
-import Link from 'next/link';
-import { GalleryVerticalEnd, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { logger } from '@/lib/loggers';
+import { cn } from '@/lib/utils';
+import {
+  Calendar,
+  Eye,
+  EyeClosed,
+  GraduationCap,
+  Lock,
+  Mail,
+  User,
+  User2,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '../application/AuthContext';
 
 const RegistrationForm = ({
   className,
@@ -25,21 +49,44 @@ const RegistrationForm = ({
 }: React.ComponentPropsWithoutRef<'div'>) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showTermsDialog, setShowTermsDialog] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<any>(null);
   const { loading, signUp, user, signInWithGoogle } = useAuth();
 
   const form = useForm({
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
+      program: '',
+      yearLevel: '',
     },
   });
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
       const redirect = searchParams.get('redirect') || '/';
       router.push(redirect);
     }
-  }, [user, router, searchParams]);
+  }, [user, loading, router, searchParams]);
+
+  const handleSignUp = () => {
+    if (!pendingFormData) return;
+
+    signUp(pendingFormData.email, pendingFormData.password, {
+      firstName: pendingFormData.firstName,
+      lastName: pendingFormData.lastName,
+      program: pendingFormData.program,
+      yearLevel: pendingFormData.yearLevel,
+    });
+
+    setShowTermsDialog(false);
+    setAgreedToTerms(false);
+    setPendingFormData(null);
+  };
 
   if (loading) {
     return <GeneralLoadingPage />;
@@ -52,7 +99,21 @@ const RegistrationForm = ({
           method="post"
           onSubmit={(e) => {
             e.preventDefault();
-            signUp(form.getValues('email'), form.getValues('password'));
+            const formData = form.getValues();
+
+            // Validate form
+            if (
+              !formData.firstName ||
+              !formData.lastName ||
+              !formData.email ||
+              !formData.password
+            ) {
+              return;
+            }
+
+            // Store form data and show terms dialog
+            setPendingFormData(formData);
+            setShowTermsDialog(true);
           }}
           className="flex flex-col gap-6"
         >
@@ -62,7 +123,12 @@ const RegistrationForm = ({
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-8 items-center justify-center rounded-md">
-                <Image src="/coursecraft.png" width={64} height={64} alt="CourseCraft Logo" />
+                <Image
+                  src="/coursecraft.png"
+                  width={64}
+                  height={64}
+                  alt="CourseCraft Logo"
+                />
               </div>
               <h1 className="sr-only">Acme Inc.</h1>
             </Link>
@@ -73,7 +139,124 @@ const RegistrationForm = ({
               Already have an account? <Link href={'/signin'}>Sign in</Link>
             </p>
           </div>
-          <div className="relative grid gap-2">
+          <div className="relative grid gap-4 ">
+            <div className="grid gap-2 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          type="text"
+                          placeholder="Juan"
+                          required
+                          {...field}
+                          className={cn(
+                            'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          )}
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          type="text"
+                          placeholder="Dela Cruz"
+                          required
+                          {...field}
+                          className={cn(
+                            'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          )}
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="program"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Program</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger
+                            className={cn(
+                              'rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                            )}
+                          >
+                            <SelectValue placeholder="Select program" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Computer Science">
+                              Computer Science
+                            </SelectItem>
+                            <SelectItem value="Information Technology">
+                              Information Technology
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="yearLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Year Level</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger
+                            className={cn(
+                              'rounded-lg border  w-full border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                            )}
+                          >
+                            <SelectValue placeholder="Select year level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1st Year">1st Year</SelectItem>
+                            <SelectItem value="2nd Year">2nd Year</SelectItem>
+                            <SelectItem value="3rd Year">3rd Year</SelectItem>
+                            <SelectItem value="4th Year">4th Year</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -81,15 +264,18 @@ const RegistrationForm = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="user@gmail.com"
-                      required
-                      {...field}
-                      className={cn(
-                        'rounded-lg border border-secondary p-5 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
-                      )}
-                    />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="email"
+                        placeholder="user@gmail.com"
+                        required
+                        {...field}
+                        className={cn(
+                          'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                        )}
+                      />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
@@ -101,15 +287,26 @@ const RegistrationForm = ({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      {...field}
-                      className={cn(
-                        'rounded-lg border border-secondary p-5 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
-                      )}
-                    />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="••••••••"
+                        required
+                        {...field}
+                        type={showPassword ? 'text' : 'password'}
+                        className={cn(
+                          'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                        )}
+                      />
+                      <Button
+                        type="button"
+                        className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
+                        variant={'ghost'}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeClosed /> : <Eye />}
+                      </Button>
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
@@ -131,12 +328,6 @@ const RegistrationForm = ({
         </span>
       </div>
       <div className="flex flex-col gap-4">
-        {/* <Button variant="outline" className="w-full" onClick={() => handleOAuthSignIn('facebook')}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
-                </svg>
-                Login with Facebook
-              </Button> */}
         <Button
           variant="outline"
           className="w-full rounded-lg p-5 "
@@ -159,6 +350,166 @@ const RegistrationForm = ({
           Sign up with Google
         </Button>
       </div>
+      <div className="text-center text-xs text-muted-foreground">
+        By signing up, you agree to our{' '}
+        <Link
+          href="/terms"
+          target="_blank"
+          className="underline hover:text-primary"
+        >
+          Terms & Conditions
+        </Link>{' '}
+        and{' '}
+        <Link
+          href="/privacy"
+          target="_blank"
+          className="underline hover:text-primary"
+        >
+          Privacy Policy
+        </Link>
+      </div>
+
+      {/* Terms and Conditions Dialog */}
+      <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              Terms and Conditions
+            </DialogTitle>
+            <DialogDescription>
+              Please read and agree to our terms and conditions before creating
+              your account.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4 text-sm">
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                1. Acceptance of Terms
+              </h3>
+              <p className="text-muted-foreground">
+                By accessing and using CourseCraft, you accept and agree to be
+                bound by the terms and provision of this agreement. If you do
+                not agree to these terms, please do not use this service.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                2. Use of Service
+              </h3>
+              <p className="text-muted-foreground">
+                CourseCraft provides an AI-powered learning management system.
+                You agree to use this service for lawful purposes only and in a
+                way that does not infringe the rights of others or restrict
+                their use and enjoyment of the service.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">3. User Accounts</h3>
+              <p className="text-muted-foreground">
+                You are responsible for maintaining the confidentiality of your
+                account credentials and for all activities that occur under your
+                account. You agree to notify us immediately of any unauthorized
+                use of your account.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                4. Intellectual Property
+              </h3>
+              <p className="text-muted-foreground">
+                All content, features, and functionality of CourseCraft are and
+                will remain the exclusive property of CourseCraft and its
+                licensors. You may not reproduce, distribute, or create
+                derivative works without our express written permission.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">5. Privacy</h3>
+              <p className="text-muted-foreground">
+                Your use of CourseCraft is also governed by our Privacy Policy.
+                Please review our Privacy Policy to understand our practices
+                regarding your personal information.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                6. User-Generated Content
+              </h3>
+              <p className="text-muted-foreground">
+                You retain all rights to the content you create and upload to
+                CourseCraft. By uploading content, you grant us a license to
+                use, display, and distribute your content within the platform.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                7. Limitation of Liability
+              </h3>
+              <p className="text-muted-foreground">
+                CourseCraft shall not be liable for any indirect, incidental,
+                special, consequential, or punitive damages resulting from your
+                use of or inability to use the service.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-semibold text-base mb-2">
+                8. Changes to Terms
+              </h3>
+              <p className="text-muted-foreground">
+                We reserve the right to modify these terms at any time. We will
+                notify users of any material changes. Your continued use of the
+                service after such modifications constitutes your acceptance of
+                the updated terms.
+              </p>
+            </section>
+          </div>
+
+          <div className="flex items-center space-x-2 py-4 border-t">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={(checked: boolean) => setAgreedToTerms(checked)}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I have read and agree to the Terms and Conditions and Privacy
+              Policy
+            </label>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowTermsDialog(false);
+                setAgreedToTerms(false);
+                setPendingFormData(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSignUp}
+              disabled={!agreedToTerms}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Accept
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

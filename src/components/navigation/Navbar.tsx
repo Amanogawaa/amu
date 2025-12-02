@@ -1,15 +1,11 @@
 'use client';
 
-import { Menu, Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import {
   Sheet,
@@ -19,12 +15,13 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useAuth } from '@/features/auth/application/AuthContext';
-import { NavigationBarUser } from './NavbarUser';
-import Image from 'next/image';
-import { ModeToggle } from '../ThemeToggle';
 import { cn } from '@/lib/utils';
+import { Menu } from 'lucide-react';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { NavigationBarUser } from './NavbarUser';
 
-interface MenuItem {
+export interface MenuItem {
   title: string;
   url: string;
   description?: string;
@@ -62,9 +59,9 @@ const Navbar = ({
   },
   menu = [
     { title: 'Home', url: '/' },
-    { title: 'Explore', url: '/explore' },
-    { title: 'Features', url: '/features' },
     { title: 'About', url: '/about' },
+    { title: 'Features', url: '/features' },
+    { title: 'Glossary', url: '/glossary' },
   ],
   auth = {
     login: { title: 'Login', url: '/signin' },
@@ -72,7 +69,7 @@ const Navbar = ({
   },
   smartHide = false,
 }: NavbarProps) => {
-  const { user, signOut, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [isHidden, setIsHidden] = useState(false);
   const lastScrollY = useRef(0);
 
@@ -135,38 +132,15 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* <ModeToggle /> */}
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
-                <div className="h-10 w-10 bg-muted animate-pulse rounded-full" />
-              </div>
-            ) : user ? (
-              <div className="hidden md:flex items-center gap-2">
-                <Button asChild variant="outline" className="rounded-full py-5">
-                  <a href="/create">Create</a>
-                  {/* <Plus size={45} /> */}
-                </Button>
-                <NavigationBarUser
-                  name={user.displayName ?? user.uid}
-                  email={user.email}
-                  logout={signOut}
-                />
-              </div>
-            ) : (
-              <>
-                <Button asChild variant="outline" size="sm">
-                  <a href={auth.login.url}>{auth.login.title}</a>
-                </Button>
-                <Button asChild size="sm">
-                  <a href={auth.signup.url}>{auth.signup.title}</a>
-                </Button>
-              </>
-            )}
+            <Button type="button" asChild variant="outline" size="sm">
+              <a href={auth.login.url}>{auth.login.title}</a>
+            </Button>
+            <Button type="button" asChild size="sm">
+              <a href={auth.signup.url}>{auth.signup.title}</a>
+            </Button>
           </div>
         </nav>
 
-        {/* Mobile Menu */}
         <div className="block lg:hidden px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}

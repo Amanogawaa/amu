@@ -5,7 +5,15 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value;
   const { pathname } = request.nextUrl;
 
-  const publicRoutes = ['/signin', '/signup', '/explore', '/about', '/features'];
+  const publicRoutes = [
+    '/signin',
+    '/signup',
+    '/about',
+    '/features',
+    '/privacy',
+    '/terms',
+    '/glossary',
+  ];
   const isPublicRoute = publicRoutes.some((route) =>
     pathname.startsWith(route)
   );
@@ -14,12 +22,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (
-    (pathname.startsWith('/signin') || pathname.startsWith('/signup')) &&
-    token
-  ) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  // Remove the redirect for signin/signup when user has token
+  // Let the client-side handle this instead
+  // if (
+  //   (pathname.startsWith('/signin') || pathname.startsWith('/signup')) &&
+  //   token
+  // ) {
+  //   return NextResponse.redirect(new URL('/', request.url));
+  // }
 
   if (!isPublicRoute && !token) {
     const url = new URL('/signin', request.url);

@@ -11,17 +11,20 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../application/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { logger } from '@/lib/loggers';
+import { Eye, EyeClosed, Lock, User2, UserCircle } from 'lucide-react';
+import { Value } from '@radix-ui/react-select';
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const { loading, signIn, signInWithGoogle, user } = useAuth();
 
@@ -33,11 +36,11 @@ const LoginForm = ({
   });
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
       const redirect = searchParams.get('redirect') || '/';
       router.push(redirect);
     }
-  }, [user, router, searchParams]);
+  }, [user, loading, router, searchParams]);
 
   if (loading) {
     return <GeneralLoadingPage />;
@@ -60,7 +63,12 @@ const LoginForm = ({
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-8 items-center justify-center rounded-md">
-                <Image src="/coursecraft.png" width={64} height={64} alt="CourseCraft Logo" />
+                <Image
+                  src="/coursecraft.png"
+                  width={64}
+                  height={64}
+                  alt="CourseCraft Logo"
+                />
               </div>
               <span className="sr-only">Acme Inc.</span>
             </Link>
@@ -79,15 +87,18 @@ const LoginForm = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="user@gmail.com"
-                      required
-                      {...field}
-                      className={cn(
-                        'rounded-lg border border-secondary p-5 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
-                      )}
-                    />
+                    <div className="relative">
+                      <User2 className="w-5 h-5 absolute text-secondary left-3 top-1/2 -translate-y-1/2 p-0" />
+                      <Input
+                        type="email"
+                        placeholder="user@gmail.com"
+                        required
+                        {...field}
+                        className={cn(
+                          'rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                        )}
+                      />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
@@ -99,15 +110,26 @@ const LoginForm = ({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      {...field}
-                      className={cn(
-                        'rounded-lg border border-secondary p-5 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
-                      )}
-                    />
+                    <div className="relative">
+                      <Lock className="w-5 h-5 absolute text-secondary  left-3 top-1/2 -translate-y-1/2 p-0" />
+                      <Input
+                        placeholder="••••••••"
+                        required
+                        {...field}
+                        type={showPassword ? 'text' : 'password'}
+                        className={cn(
+                          'rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                        )}
+                      />
+                      <Button
+                        type="button"
+                        className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
+                        variant={'ghost'}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeClosed /> : <Eye />}
+                      </Button>
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
@@ -129,12 +151,6 @@ const LoginForm = ({
         </span>
       </div>
       <div className="flex flex-col gap-4">
-        {/* <Button variant="outline" className="w-full" onClick={() => handleOAuthSignIn('facebook')}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
-                </svg>
-                Login with Facebook
-              </Button> */}
         <Button
           variant="outline"
           className="w-full rounded-lg p-5 "
@@ -156,6 +172,24 @@ const LoginForm = ({
           </svg>
           Sign in with Google
         </Button>
+      </div>
+      <div className="text-center text-xs text-muted-foreground">
+        By signing in, you agree to our{' '}
+        <Link
+          href="/terms"
+          target="_blank"
+          className="underline hover:text-primary"
+        >
+          Terms & Conditions
+        </Link>{' '}
+        and{' '}
+        <Link
+          href="/privacy"
+          target="_blank"
+          className="underline hover:text-primary"
+        >
+          Privacy Policy
+        </Link>
       </div>
     </div>
   );

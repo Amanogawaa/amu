@@ -16,17 +16,27 @@ import {
   linkWithPopup,
   unlink,
 } from 'firebase/auth';
-import { auth } from '@/utils/firebase';
+import { auth, db } from '@/utils/firebase';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { logger } from '@/lib/loggers';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    additionalData?: {
+      firstName?: string;
+      lastName?: string;
+      program?: string;
+      yearLevel?: string;
+    }
+  ) => Promise<void>;
   linkGithub: () => Promise<void>;
   unlinkGithub: () => Promise<void>;
   githubLinked: boolean;
@@ -97,7 +107,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (user) {
         try {
-          // Get fresh token
           await refreshToken(user);
         } catch (err) {
           logger.error('Error getting ID token:', err);
@@ -111,7 +120,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
-  // Set up token refresh interval (every 50 minutes, tokens expire in 60 minutes)
   useEffect(() => {
     let refreshInterval: NodeJS.Timeout;
 
@@ -123,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch (err) {
           logger.error('Failed to refresh token:', err);
         }
-      }, 50 * 60 * 1000); // 50 minutes
+      }, 50 * 60 * 1000);
     }
 
     return () => {
@@ -159,10 +167,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    additionalData?: {
+      firstName?: string;
+      lastName?: string;
+      program?: string;
+      yearLevel?: string;
+    }
+  ) => {
     try {
       setError(null);
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = userCredential.user;
+
+      // Update display name if firstName and lastName are provided
+      if (additionalData?.firstName && additionalData?.lastName) {
+        await updateProfile(user, {
+          displayName: `${additionalData.firstName} ${additionalData.lastName}`,
+        });
+      }
+
+      // Store additional user data in Firestore
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        email: user.email,
+        firstName: additionalData?.firstName || '',
+        lastName: additionalData?.lastName || '',
+        displayName:
+          additionalData?.firstName && additionalData?.lastName
+            ? `${additionalData.firstName} ${additionalData.lastName}`
+            : '',
+        program: additionalData?.program || '',
+        yearLevel: additionalData?.yearLevel || '',
+        photoURL: user.photoURL || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      logger.info('User profile created successfully');
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -175,6 +225,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
+
+      // Check if user document exists, if not create it
+      const userDocRef = doc(db, 'users', result.user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // Create user document for new Google sign-in users
+        const nameParts = result.user.displayName?.split(' ') || [];
+        await setDoc(userDocRef, {
+          uid: result.user.uid,
+          email: result.user.email,
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          displayName: result.user.displayName || '',
+          program: '',
+          yearLevel: '',
+          photoURL: result.user.photoURL || '',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        logger.info('Google user profile created successfully');
+      }
+
       return result;
     } catch (err) {
       const authError = err as AuthError;

@@ -23,7 +23,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Sparkles, Wand2 } from 'lucide-react';
+import {
+  Loader2,
+  Sparkles,
+  Wand2,
+  BookOpen,
+  Tag,
+  GraduationCap,
+  Globe,
+  Clock,
+  Layers,
+  FileText,
+} from 'lucide-react';
 import { FullGenerationRequest } from '@/server/features/course/types';
 import { logger } from '@/lib/loggers';
 
@@ -83,13 +94,16 @@ export function FullGenerationForm({
             <FormItem>
               <FormLabel>Course Topic *</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="e.g., Full Stack Web Development"
-                  type="text"
-                  disabled={isGenerating}
-                  className="rounded-lg border border-secondary p-5 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
-                />
+                <div className="relative">
+                  <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    placeholder="e.g., Full Stack Web Development"
+                    type="text"
+                    disabled={isGenerating}
+                    className="rounded-lg border border-secondary p-5 pl-10 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
+                  />
+                </div>
               </FormControl>
               <FormDescription>
                 What is the main topic of your course?
@@ -112,12 +126,15 @@ export function FullGenerationForm({
                 disabled={isGenerating}
               >
                 <FormControl>
-                  <SelectTrigger
-                    disabled
-                    className="w-full rounded-lg border border-secondary p-5 focus:border-secondary focus:outline-none focus-visible:ring-0"
-                  >
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
+                  <div className="relative">
+                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <SelectTrigger
+                      disabled
+                      className="w-full rounded-lg border border-secondary p-5 pl-10 focus:border-secondary focus:outline-none focus-visible:ring-0"
+                    >
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </div>
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="Programming">Programming</SelectItem>
@@ -149,9 +166,12 @@ export function FullGenerationForm({
                   disabled={isGenerating}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full rounded-lg border border-secondary p-5 focus:border-secondary focus:outline-none focus-visible:ring-0">
-                      <SelectValue placeholder="Select difficulty" />
-                    </SelectTrigger>
+                    <div className="relative">
+                      <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                      <SelectTrigger className="w-full rounded-lg border border-secondary p-5 pl-10 focus:border-secondary focus:outline-none focus-visible:ring-0">
+                        <SelectValue placeholder="Select difficulty" />
+                      </SelectTrigger>
+                    </div>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="beginner">Beginner</SelectItem>
@@ -177,12 +197,15 @@ export function FullGenerationForm({
                   disabled={isGenerating}
                 >
                   <FormControl>
-                    <SelectTrigger
-                      disabled
-                      className="w-full rounded-lg border border-secondary p-5 focus:border-secondary focus:outline-none focus-visible:ring-0"
-                    >
-                      <SelectValue placeholder="Select language" />
-                    </SelectTrigger>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                      <SelectTrigger
+                        disabled
+                        className="w-full rounded-lg border border-secondary p-5 pl-10 focus:border-secondary focus:outline-none focus-visible:ring-0"
+                      >
+                        <SelectValue placeholder="Select language" />
+                      </SelectTrigger>
+                    </div>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="English">English</SelectItem>
@@ -207,13 +230,16 @@ export function FullGenerationForm({
               <FormItem>
                 <FormLabel>Duration *</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="e.g., 20 hours"
-                    type="text"
-                    disabled={isGenerating}
-                    className="rounded-lg"
-                  />
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      {...field}
+                      placeholder="e.g., 20 hours"
+                      type="text"
+                      disabled={isGenerating}
+                      className="rounded-lg border border-secondary p-5 pl-10 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
+                    />
+                  </div>
                 </FormControl>
                 <FormDescription>Total course duration</FormDescription>
                 <FormMessage />
@@ -229,19 +255,22 @@ export function FullGenerationForm({
               <FormItem>
                 <FormLabel>Number of Modules *</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    type="number"
-                    min={1}
-                    max={10}
-                    disabled={isGenerating}
-                    className="rounded-lg border border-secondary p-5 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value === '' ? '' : parseInt(value, 10));
-                    }}
-                  />
+                  <div className="relative">
+                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      {...field}
+                      value={field.value || ''}
+                      type="number"
+                      min={1}
+                      max={10}
+                      disabled={isGenerating}
+                      className="rounded-lg border border-secondary p-5 pl-10 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === '' ? '' : parseInt(value, 10));
+                      }}
+                    />
+                  </div>
                 </FormControl>
                 <FormDescription>1-10 modules</FormDescription>
                 <FormMessage />
@@ -258,12 +287,15 @@ export function FullGenerationForm({
             <FormItem>
               <FormLabel>Additional Instructions (Optional)</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="e.g., Focus on practical projects, include real-world examples..."
-                  disabled={isGenerating}
-                  className="rounded-lg min-h-[100px]"
-                />
+                <div className="relative">
+                  <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Textarea
+                    {...field}
+                    placeholder="e.g., Focus on practical projects, include real-world examples..."
+                    disabled={isGenerating}
+                    className="rounded-lg min-h-[100px] pl-10"
+                  />
+                </div>
               </FormControl>
               <FormDescription>
                 Provide specific instructions for AI generation

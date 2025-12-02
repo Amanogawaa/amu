@@ -30,7 +30,7 @@ export const CourseInfoCard = ({
     },
     {
       icon: BookIcon,
-      label: 'Modules',
+      label: `${noOfModules === 1 ? 'Module' : 'Modules'}`,
       value: `${noOfModules === undefined ? 'N/A' : noOfModules} ${
         noOfModules === 1 ? 'Module' : 'Modules'
       }`,
