@@ -67,17 +67,17 @@ export function AnalyticsTab({
         )}
       </div>
 
-      {/* Stats Cards */}
       <AnalyticsStatsCards analytics={analytics} isLoading={isLoading} />
 
-      {/* Course Performance */}
       <CoursePerformanceList analytics={analytics} isLoading={isLoading} />
 
-      <CapstoneAnalyticsSection
-        submissions={capstoneSubmissions}
-        total={capstoneTotal}
-        isLoading={isCapstoneLoading}
-      />
+      {capstoneSubmissions && (
+        <CapstoneAnalyticsSection
+          submissions={capstoneSubmissions}
+          total={capstoneTotal}
+          isLoading={isCapstoneLoading}
+        />
+      )}
     </>
   );
 }

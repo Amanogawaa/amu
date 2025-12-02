@@ -8,9 +8,14 @@ import type { UserProfile } from '../domain/types';
 interface ProfileHeaderProps {
   user: User | null;
   userProfile: UserProfile | undefined;
+  isPublicView?: boolean;
 }
 
-export function ProfileHeader({ user, userProfile }: ProfileHeaderProps) {
+export function ProfileHeader({
+  user,
+  userProfile,
+  isPublicView = false,
+}: ProfileHeaderProps) {
   return (
     <Card className="mt-8">
       <CardContent className="pt-6">
@@ -18,14 +23,21 @@ export function ProfileHeader({ user, userProfile }: ProfileHeaderProps) {
           <div className="flex flex-col items-center gap-3">
             <Avatar className="h-32 w-32 border-4 border-primary/20">
               <AvatarImage
-                src={user?.photoURL || '/profile_1'}
-                alt={user?.displayName || 'User profile'}
+                src={userProfile?.photoURL || user?.photoURL || '/profile_1'}
+                alt={
+                  userProfile?.firstName || user?.displayName || 'User profile'
+                }
               />
               <AvatarFallback className="text-3xl">
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
+                {userProfile?.email?.charAt(0).toUpperCase() ||
+                  user?.email?.charAt(0).toUpperCase() ||
+                  'U'}
               </AvatarFallback>
             </Avatar>
-            <ProfilePictureSelector currentPhotoURL={user?.photoURL} />
+            {/* Only show profile picture selector if it's not a public view */}
+            {!isPublicView && (
+              <ProfilePictureSelector currentPhotoURL={user?.photoURL} />
+            )}
           </div>
           <div className="flex-1 text-center md:text-left space-y-4">
             <div>
@@ -34,15 +46,22 @@ export function ProfileHeader({ user, userProfile }: ProfileHeaderProps) {
                   ? `${userProfile.firstName || ''} ${
                       userProfile.lastName || ''
                     }`.trim()
-                  : user?.displayName || user?.uid}
+                  : user?.displayName || user?.uid || 'Anonymous User'}
               </h2>
-              <p className="text-muted-foreground mt-1">{user?.email}</p>
+              {/* Only show email if it's not a public view */}
+              {!isPublicView && (
+                <p className="text-muted-foreground mt-1">
+                  {user?.email || userProfile?.email}
+                </p>
+              )}
             </div>
 
-            {/* GitHub Connect Button */}
-            <div className="flex justify-center md:justify-start">
-              <GitHubConnectButton />
-            </div>
+            {/* GitHub Connect Button - only show on own profile */}
+            {!isPublicView && (
+              <div className="flex justify-center md:justify-start">
+                <GitHubConnectButton />
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

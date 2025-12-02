@@ -8,6 +8,8 @@ import {
   updateProfile,
   uploadProfilePicture,
   getUserAnalytics,
+  getPublicProfiles,
+  getPublicUserAnalytics,
 } from '@/server/features/user';
 import { toast } from 'sonner';
 
@@ -20,12 +22,31 @@ export const useUserProfile = () => {
   });
 };
 
+export const usePublicProfile = (userId: string) => {
+  return useQuery({
+    queryKey: queryKeys.user.publicProfile(userId),
+    queryFn: async () => {
+      return await getPublicProfiles(userId);
+    },
+  });
+};
+
 export const useUserAnalytics = () => {
   return useQuery({
     queryKey: queryKeys.user.analytics(),
     queryFn: async () => {
       return await getUserAnalytics();
     },
+  });
+};
+
+export const usePublicUserAnalytics = (userId: string) => {
+  return useQuery({
+    queryKey: [...queryKeys.user.analytics(), 'public', userId],
+    queryFn: async () => {
+      return await getPublicUserAnalytics(userId);
+    },
+    enabled: !!userId,
   });
 };
 

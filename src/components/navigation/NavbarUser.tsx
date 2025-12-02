@@ -1,6 +1,13 @@
 'use client';
 
-import { BookOpen, Kanban, LogOutIcon, UserCircleIcon } from 'lucide-react';
+import {
+  BookOpen,
+  GraduationCap,
+  Kanban,
+  LogOutIcon,
+  Menu,
+  UserCircleIcon,
+} from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -13,30 +20,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/features/auth/application/AuthContext';
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export function NavigationBarUser() {
   const { user, signOut } = useAuth();
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-accent hover:text-accent-foreground transition duration-300 rounded-full text-foreground">
-        <Avatar className="h-10 w-10 border-2 border-primary/20">
-          <span className="sr-only">User Avatar</span>
-          <AvatarImage
-            src={user?.photoURL || '/profile_1.png'}
-            alt={user?.displayName || 'User'}
-          />
-          <AvatarFallback>
-            {user?.displayName?.charAt(0).toUpperCase() ||
-              user?.email?.charAt(0).toUpperCase() ||
-              'U'}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="outline-none border border-secondary p-2 hover:bg-accent rounded-full focus:ring-2 focus:ring-offset-2 focus:ring-accent-foreground hover:text-white  transition">
+        <Menu className="w-5 h-5  " />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-popover border-border"
-        // side="right"
         align="end"
         sideOffset={4}
       >
@@ -55,9 +49,21 @@ export function NavigationBarUser() {
         <DropdownMenuSeparator className="bg-border" />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
+            <Link href={'/dashboard'} className="group">
+              <Kanban className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={'/learn'} className="group">
+              <GraduationCap className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
+              Learn
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href={'/account'} className="group">
               <UserCircleIcon className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />
-              Account
+              Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

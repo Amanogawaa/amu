@@ -6,6 +6,10 @@ export async function getProfile(): Promise<UserProfile> {
   return apiRequest<null, UserProfile>('/user/profile', 'get');
 }
 
+export async function getPublicProfiles(userId: string): Promise<UserProfile> {
+  return apiRequest<null, UserProfile>(`/user/profile/${userId}`, 'get');
+}
+
 export async function updateProfile(
   updates: Partial<UserProfile>
 ): Promise<UserProfile> {
@@ -35,4 +39,10 @@ export async function uploadProfilePicture(file: File): Promise<string> {
 
 export async function getUserAnalytics(): Promise<UserAnalytics> {
   return apiRequest<null, UserAnalytics>('/user/analytics', 'get');
+}
+
+export async function getPublicUserAnalytics(
+  userId: string
+): Promise<UserAnalytics> {
+  return apiRequest<null, UserAnalytics>(`/user/analytics/${userId}`, 'get');
 }

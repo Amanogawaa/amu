@@ -1,3 +1,5 @@
+import { vi } from 'zod/v4/locales';
+
 export const queryKeys = {
   courses: {
     all: ['courses'] as const,
@@ -108,6 +110,8 @@ export const queryKeys = {
     all: ['user'] as const,
     profile: () => [...queryKeys.user.all, 'profile'] as const,
     analytics: () => [...queryKeys.user.all, 'analytics'] as const,
+    publicProfile: (userId: string) =>
+      [...queryKeys.user.all, 'publicProfile', userId] as const,
   },
 
   // Capstone

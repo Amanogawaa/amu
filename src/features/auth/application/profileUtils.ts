@@ -37,7 +37,6 @@ export const updateUserProfileWithAuth = async (
   data: UpdateProfileData
 ) => {
   try {
-    // Update Firebase Auth profile if displayName or photoURL changed
     if (data.displayName !== undefined || data.photoURL !== undefined) {
       const authUpdateData: { displayName?: string; photoURL?: string } = {};
       if (data.displayName !== undefined)
@@ -47,7 +46,6 @@ export const updateUserProfileWithAuth = async (
       await updateFirebaseProfile(user, authUpdateData);
     }
 
-    // Update Firestore document
     await updateUserProfile(user.uid, data);
 
     return { success: true };

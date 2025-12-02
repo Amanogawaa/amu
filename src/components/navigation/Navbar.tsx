@@ -119,25 +119,40 @@ const Navbar = ({
                 width={32}
                 height={32}
               />
-              <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span>
+              {!user && (
+                <span className="text-lg font-semibold tracking-tighter">
+                  {logo.title}
+                </span>
+              )}
             </a>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+            {!user && (
+              <div className="flex items-center ">
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    {menu.map((item) => renderMenuItem(item))}
+                  </NavigationMenuList>
+                </NavigationMenu>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <Button type="button" asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button type="button" asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
+            {loading ? (
+              <>
+                <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
+                <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
+              </>
+            ) : user ? (
+              <NavigationBarUser />
+            ) : (
+              <>
+                <Button type="button" asChild variant="outline" size="sm">
+                  <a href={auth.login.url}>{auth.login.title}</a>
+                </Button>
+                <Button type="button" asChild size="sm">
+                  <a href={auth.signup.url}>{auth.signup.title}</a>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
