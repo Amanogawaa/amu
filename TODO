@@ -1,0 +1,32 @@
+
+
+sir jed
+- match number of lessons to duration of courses
+- sort courses by recently generated as default with data generated indicator
+- validation verification and analysis of request before generating
+
+sir kenneth
+- project title
+- avp
+- duration concerns
+- learning continuity
+- category limitation
+- time left in generation instead of percent
+
+Todo:
+  ✔ add icons to text: signup, signin etc. @done(25-12-02 18:29)
+  ✔ icons for buttons instead of text @started(25-12-02 18:30) @done(25-12-02 18:37) @lasted(7m55s)
+  ✔ signed in navigatio should be a dropdown menu @started(25-12-02 21:26) @done(25-12-03 00:44) @lasted(3h18m59s)
+  ✔ add user profile - user can visit other users profiles @started(25-12-03 05:29) @done(25-12-03 07:39) @lasted(2h10m46s)
+  ✔ knowledge base page - reference page @started(25-12-02 18:38) @done(25-12-02 18:42) @lasted(4m25s)
+  ✔ signup page - additional field/information @done(25-12-02 18:30)
+  ✔ show and hide password feature @done(25-12-02 18:30)
+  ✔ modules - module @done(25-12-02 18:32)
+  ✔ terms and conditions page @done(25-12-02 18:30)
+  ✔ privacy policy page @done(25-12-02 18:30)
+
+Note:
+  ☐ user profile page have public and private option
+  ☐ redesign the other user page
+  - @suggestion: what are the things user can see on other user profiles?
+  
