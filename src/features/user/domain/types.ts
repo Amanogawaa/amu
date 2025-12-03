@@ -4,6 +4,7 @@ export interface UserProfile {
   firstName?: string;
   lastName?: string;
   photoURL?: string;
+  isPrivate?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -12,6 +13,7 @@ export interface UpdateUserProfile {
   firstName?: string;
   lastName?: string;
   photoURL?: string;
+  isPrivate?: boolean;
 }
 
 export interface UserResponse {

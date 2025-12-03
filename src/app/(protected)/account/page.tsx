@@ -1,24 +1,23 @@
-"use client"
+'use client';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/features/auth/application/AuthContext';
+import { useCapstoneSubmissions } from '@/features/capstone/application/useCapstoneSubmissions';
 import {
   useAllProgress,
   useProgressSummary,
 } from '@/features/progress/application/useProgress';
 import { useProgressWithCourseDetails } from '@/features/progress/application/useProgressWithCourseDetails';
-import { User2Icon, BookOpen, TrendingUp, FolderGit2 } from 'lucide-react';
-import React from 'react';
 import {
-  useUserProfile,
   useUserAnalytics,
+  useUserProfile,
 } from '@/features/user/application/useUser';
-import { useCapstoneSubmissions } from '@/features/capstone/application/useCapstoneSubmissions';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProfileHeader } from '@/features/user/presentation/ProfileHeader';
-import { UserProfileForm } from '@/features/user/presentation/UserProfileForm';
-import { OverviewTab } from '@/features/user/presentation/OverviewTab';
-import { LearningTab } from '@/features/user/presentation/LearningTab';
-import { AnalyticsTab } from '@/features/user/presentation/AnalyticsTab';
+import { ProfileHeader } from '@/features/user/presentation/components';
+import { UserProfileForm } from '@/features/user/presentation/form';
+import { OverviewTab } from '@/features/user/presentation/tabs';
+import { AnalyticsTab } from '@/features/user/presentation/tabs/AnalyticsTab';
+import { LearningTab } from '@/features/user/presentation/tabs/LearningTab';
+import { BookOpen, TrendingUp, User2Icon } from 'lucide-react';
 
 const AccountPage = () => {
   const { user } = useAuth();
@@ -30,18 +29,15 @@ const AccountPage = () => {
   const { data: allProgress, isLoading: isProgressLoading } = useAllProgress();
   const { data: progressWithCourses, isLoading: isEnrichingProgress } =
     useProgressWithCourseDetails(allProgress);
-  const {
-    data: capstoneSubmissionsData,
-    isLoading: isCapstoneLoading,
-  } = useCapstoneSubmissions(
-    user?.uid ? { userId: user.uid } : undefined,
-    { enabled: Boolean(user?.uid) }
-  );
+  const { data: capstoneSubmissionsData, isLoading: isCapstoneLoading } =
+    useCapstoneSubmissions(user?.uid ? { userId: user.uid } : undefined, {
+      enabled: Boolean(user?.uid),
+    });
 
   const isLearningLoading = isProgressLoading || isEnrichingProgress;
 
   return (
-    <section className="flex flex-col min-h-screen w-full pb-10">
+    <section className="flex flex-col min-h-screen w-full pb-10 sm:px-5">
       <div className="container mx-auto max-w-6xl">
         {/* Page Header */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mt-10">

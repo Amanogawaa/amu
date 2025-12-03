@@ -7,6 +7,7 @@ export interface UserProfile {
   githubUsername?: string;
   githubId?: string;
   githubConnectedAt?: Date;
+  isPrivate?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,9 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { ProfilePictureSelector } from './ProfilePictureSelector';
 import { GitHubConnectButton } from '@/features/auth/presentation/GithubButton';
 import type { User } from 'firebase/auth';
-import type { UserProfile } from '../domain/types';
+import { ProfilePictureSelector } from './ProfilePictureSelector';
+import { PrivacyToggle } from './PrivacyToggle';
+import { UserProfile } from '../../domain/types';
 
 interface ProfileHeaderProps {
   user: User | null;
@@ -58,9 +59,12 @@ export function ProfileHeader({
 
             {/* GitHub Connect Button - only show on own profile */}
             {!isPublicView && (
-              <div className="flex justify-center md:justify-start">
-                <GitHubConnectButton />
-              </div>
+              <>
+                <div className="flex justify-center md:justify-start">
+                  <GitHubConnectButton />
+                </div>
+                <PrivacyToggle isPrivate={userProfile?.isPrivate} />
+              </>
             )}
           </div>
         </div>

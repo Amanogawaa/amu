@@ -84,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [githubLinked, setGithubLinked] = useState(false);
+  const router = useRouter();
 
   const refreshToken = async (currentUser: User) => {
     try {
@@ -187,14 +188,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const user = userCredential.user;
 
-      // Update display name if firstName and lastName are provided
       if (additionalData?.firstName && additionalData?.lastName) {
         await updateProfile(user, {
           displayName: `${additionalData.firstName} ${additionalData.lastName}`,
         });
       }
 
-      // Store additional user data in Firestore
       const userDocRef = doc(db, 'users', user.uid);
       await setDoc(userDocRef, {
         uid: user.uid,
@@ -208,6 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         program: additionalData?.program || '',
         yearLevel: additionalData?.yearLevel || '',
         photoURL: user.photoURL || '',
+        status: 'public',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
@@ -226,12 +226,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      // Check if user document exists, if not create it
       const userDocRef = doc(db, 'users', result.user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (!userDoc.exists()) {
-        // Create user document for new Google sign-in users
         const nameParts = result.user.displayName?.split(' ') || [];
         await setDoc(userDocRef, {
           uid: result.user.uid,
@@ -242,6 +240,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           program: '',
           yearLevel: '',
           photoURL: result.user.photoURL || '',
+          status: 'public',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         });
@@ -269,6 +268,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       await firebaseSignOut(auth);
+      router.push('/');
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);

@@ -24,9 +24,16 @@ Todo:
   ✔ modules - module @done(25-12-02 18:32)
   ✔ terms and conditions page @done(25-12-02 18:30)
   ✔ privacy policy page @done(25-12-02 18:30)
+  
+Issue:
+  ✘ redesign the other user page @started(25-12-03 17:30) @cancelled(25-12-03 19:05) @wasted(1h35m55s)
+    - when visiting other user profile, show the courses created by the user but only the published ones
+    - show the number of courses created, number of students enrolled across all courses, number of reviews received, and likes (basically we can use the overview in the account page)
+    - show the date when the user joined
+    - show the bio of the user
+  ☐ other user can update the status of the other user
+  ✔ user profile page have public and private option @done(25-12-03 17:25)
+  ✔ switching between public and private profile is not working as expected. the request goes thru but when refreshing the page it goes back to previous state @done(25-12-03 17:25)
 
-Note:
-  ☐ user profile page have public and private option
-  ☐ redesign the other user page
-  - @suggestion: what are the things user can see on other user profiles?
+- @suggestion: what are the things user can see on other user profiles?
   

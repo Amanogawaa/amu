@@ -12,9 +12,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Loader2, Pencil, Save, X } from 'lucide-react';
-import { useUpdateUserProfile } from '../application/useUser';
 import { toast } from 'sonner';
 import { logger } from '@/lib/loggers';
+import { useUpdateUserProfile } from '../../application/useUser';
 
 interface UserProfileFormProps {
   firstName?: string;

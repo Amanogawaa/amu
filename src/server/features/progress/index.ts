@@ -5,6 +5,7 @@ import {
   ProgressListResponse,
   ProgressSummaryResponse,
   CourseStatisticsResponse,
+  ProgressFilters,
 } from './types';
 
 export async function markLessonProgress(
@@ -30,8 +31,29 @@ export async function getAllProgress(): Promise<ProgressListResponse> {
   return apiRequest<null, ProgressListResponse>('/progress/me', 'get');
 }
 
-export async function getProgressSummary(): Promise<ProgressSummaryResponse> {
-  return apiRequest<null, ProgressSummaryResponse>('/progress/summary', 'get');
+export async function getProgressSummary(
+  filters?: ProgressFilters
+): Promise<ProgressSummaryResponse> {
+  const params = new URLSearchParams();
+
+  if (filters) {
+    if (filters.minProgress !== undefined) {
+      params.append('minProgress', filters.minProgress.toString());
+    }
+
+    if (filters.isPublished !== undefined) {
+      params.append('isPublished', filters.isPublished.toString());
+    }
+
+    if (filters.status) {
+      params.append('status', filters.status);
+    }
+  }
+
+  const queryString = params.toString();
+  const url = `/progress/summary${queryString ? `?${queryString}` : ''}`;
+
+  return apiRequest<null, ProgressSummaryResponse>(url, 'get');
 }
 
 export async function deleteProgress(courseId: string): Promise<void> {

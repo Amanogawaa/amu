@@ -9,7 +9,7 @@ export default function Layout({
     <>
       {/* <NavigationBar /> */}
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

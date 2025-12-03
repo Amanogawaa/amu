@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Camera, Check, Upload } from 'lucide-react';
 import { useAuth } from '@/features/auth/application/AuthContext';
-import { useUploadProfilePicture } from '../application/useUser';
+import { useUploadProfilePicture } from '../../application/useUser';
 import { toast } from 'sonner';
 import { logger } from '@/lib/loggers';
 

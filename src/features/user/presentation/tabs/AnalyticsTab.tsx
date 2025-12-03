@@ -2,11 +2,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookMarked, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
-import { AnalyticsStatsCards } from './AnalyticsStatsCards';
-import { CoursePerformanceList } from './CoursePerformanceList';
-import { CapstoneAnalyticsSection } from './CapstoneAnalyticsSection';
-import type { UserAnalytics } from '../domain/types';
+import { CoursePerformanceList } from '../list/CoursePerformanceList';
+import { CapstoneAnalyticsSection } from '../CapstoneAnalyticsSection';
+import type { UserAnalytics } from '../../domain/types';
 import type { CapstoneSubmission } from '@/server/features/capstone/types';
+import { AnalyticsStatsCards } from '../cards';
 
 interface AnalyticsTabProps {
   analytics: UserAnalytics | undefined;

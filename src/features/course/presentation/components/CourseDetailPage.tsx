@@ -14,7 +14,7 @@ import { useGetCourse } from '../../application/useGetCourses';
 import { CourseInfoCard } from '../card/CourseInfoCard';
 import { CourseContent } from './CourseContent';
 import { CourseHeader } from './CourseHeader';
-import { CourseValidationStatus } from './CourseValidationStatus';
+import { CourseCreatorCard } from './CourseCreatorCard';
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -78,6 +78,8 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         language={data.language}
         level={data.level}
       />
+
+      <CourseCreatorCard creatorId={data.uid} createdAt={data.created_at} />
 
       {!enrollmentLoading &&
         !enrollmentStatus?.isEnrolled &&

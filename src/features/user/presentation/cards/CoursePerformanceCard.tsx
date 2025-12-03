@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Heart, Users, MessageSquare, TrendingUp } from 'lucide-react';
-import type { CourseAnalytics } from '../domain/types';
+import type { CourseAnalytics } from '../../domain/types';
 
 interface CoursePerformanceCardProps {
   course: CourseAnalytics;

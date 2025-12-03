@@ -1,0 +1,1 @@
+export { CoursePerformanceList } from './CoursePerformanceList';

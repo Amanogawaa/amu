@@ -13,6 +13,7 @@ import type {
   ProgressUpdatePayload,
   UserProgress,
   ProgressSummary,
+  ProgressFilters,
 } from '@/server/features/progress/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -70,11 +71,11 @@ export function useAllProgress() {
   });
 }
 
-export function useProgressSummary() {
+export function useProgressSummary(filters?: ProgressFilters) {
   return useQuery<ProgressSummary>({
     queryKey: queryKeys.progress.summary(),
     queryFn: async () => {
-      const response = await getProgressSummary();
+      const response = await getProgressSummary(filters);
       return response.data;
     },
   });

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpen, TrendingUp, CheckCircle2, Award } from 'lucide-react';
 import type { ProgressSummaryDomain } from '@/features/progress/domain/types';
-import { MetricStatsGrid, type MetricStat } from './MetricStatsGrid';
+import { MetricStat, MetricStatsGrid } from '../MetricStatsGrid';
 
 interface OverviewTabProps {
   progressSummary: ProgressSummaryDomain | undefined;
@@ -39,6 +39,7 @@ export function OverviewTab({ progressSummary, isLoading }: OverviewTabProps) {
       title: 'In Progress',
       value: progressSummary?.coursesInProgress || 0,
       icon: TrendingUp,
+
       color: 'blue-500',
       description: 'Actively learning now',
     },

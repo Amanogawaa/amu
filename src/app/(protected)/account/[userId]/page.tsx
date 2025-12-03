@@ -1,25 +1,22 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/features/auth/application/AuthContext';
-import {
-  useAllProgress,
-  useProgressSummary,
-} from '@/features/progress/application/useProgress';
-import { useProgressWithCourseDetails } from '@/features/progress/application/useProgressWithCourseDetails';
-import { User2Icon, BookOpen, TrendingUp, ArrowLeft } from 'lucide-react';
-import React from 'react';
+import { useProgressSummary } from '@/features/progress/application/useProgress';
 import {
   usePublicProfile,
   usePublicUserAnalytics,
 } from '@/features/user/application/useUser';
-import { useCapstoneSubmissions } from '@/features/capstone/application/useCapstoneSubmissions';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProfileHeader } from '@/features/user/presentation/ProfileHeader';
-import { AnalyticsTab } from '@/features/user/presentation/AnalyticsTab';
+import PrivateStatus from '@/features/user/presentation/components/PrivateStatus';
+import { ProfileHeader } from '@/features/user/presentation/components/ProfileHeader';
+import { OverviewTab } from '@/features/user/presentation/tabs';
+import { AnalyticsTab } from '@/features/user/presentation/tabs/AnalyticsTab';
+import { ArrowLeft, TrendingUp, User2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import React from 'react';
 
 const AccountVisitPage = () => {
   const params = useParams();
@@ -29,9 +26,16 @@ const AccountVisitPage = () => {
   const { user } = useAuth();
   const { data: publicProfile, isLoading: isProfileLoading } =
     usePublicProfile(userId);
+  const { data: progressSummary, isLoading: isSummaryLoading } =
+    useProgressSummary({
+      isPublished: true,
+    });
   const { data: publicAnalytics, isLoading: isAnalyticsLoading } =
     usePublicUserAnalytics(userId);
 
+  console.log(progressSummary);
+
+  console.log(publicProfile);
   React.useEffect(() => {
     if (user?.uid === userId) {
       router.push('/account');
@@ -85,6 +89,16 @@ const AccountVisitPage = () => {
     );
   }
 
+  if (publicProfile.isPrivate) {
+    const displayName =
+      publicProfile.firstName || publicProfile.lastName
+        ? `${publicProfile.firstName || ''} ${
+            publicProfile.lastName || ''
+          }`.trim()
+        : undefined;
+    return <PrivateStatus userName={displayName} />;
+  }
+
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
       <div className="container mx-auto max-w-6xl">
@@ -121,14 +135,15 @@ const AccountVisitPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Profile Header - Read-only mode */}
         <ProfileHeader
           user={null}
           userProfile={publicProfile}
           isPublicView={true}
         />
-
+        <OverviewTab
+          progressSummary={progressSummary}
+          isLoading={isSummaryLoading}
+        />
         <Tabs defaultValue="analytics" className="mt-10">
           <TabsList className="grid w-full grid-cols-1 lg:w-[200px]">
             <TabsTrigger value="analytics" className="flex items-center gap-2">

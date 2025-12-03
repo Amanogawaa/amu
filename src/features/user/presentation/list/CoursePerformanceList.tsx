@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BookMarked } from 'lucide-react';
-import { CoursePerformanceCard } from './CoursePerformanceCard';
-import type { UserAnalytics } from '../domain/types';
+import { CoursePerformanceCard } from '../cards/CoursePerformanceCard';
+import type { UserAnalytics } from '../../domain/types';
 
 interface CoursePerformanceListProps {
   analytics: UserAnalytics | undefined;

@@ -4,3 +4,9 @@ export type ProgressUpdatePayload = {
   completed: boolean;
   totalLessons?: number;
 };
+
+export type ProgressFilters = {
+  isPublished?: boolean;
+  status?: string;
+  minProgress?: number;
+};
