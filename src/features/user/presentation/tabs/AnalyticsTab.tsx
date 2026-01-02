@@ -1,12 +1,12 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { BookMarked, TrendingUp } from 'lucide-react';
-import Link from 'next/link';
-import { CoursePerformanceList } from '../list/CoursePerformanceList';
-import { CapstoneAnalyticsSection } from '../CapstoneAnalyticsSection';
-import type { UserAnalytics } from '../../domain/types';
-import type { CapstoneSubmission } from '@/server/features/capstone/types';
-import { AnalyticsStatsCards } from '../cards';
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BookMarked, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { CoursePerformanceList } from "../list/CoursePerformanceList";
+import { CapstoneAnalyticsSection } from "../CapstoneAnalyticsSection";
+import type { UserAnalytics } from "../../domain/types";
+import type { CapstoneSubmission } from "@/server/features/capstone/types";
+import { AnalyticsStatsCards } from "../cards";
 
 interface AnalyticsTabProps {
   analytics: UserAnalytics | undefined;
@@ -14,6 +14,7 @@ interface AnalyticsTabProps {
   capstoneSubmissions?: CapstoneSubmission[];
   capstoneTotal?: number;
   isCapstoneLoading?: boolean;
+  isVisiting?: boolean;
 }
 
 export function AnalyticsTab({
@@ -22,6 +23,7 @@ export function AnalyticsTab({
   capstoneSubmissions,
   capstoneTotal,
   isCapstoneLoading,
+  isVisiting = false,
 }: AnalyticsTabProps) {
   if (!isLoading && (!analytics || analytics.totalCoursesCreated === 0)) {
     return (
@@ -47,21 +49,21 @@ export function AnalyticsTab({
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4 mb-8">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Creator Analytics
-          </h2>
+          <h2 className="text-2xl font-bold">Creator Analytics</h2>
           <p className="text-muted-foreground mt-1">
-            Track your course performance and engagement
+            {isVisiting
+              ? "Course portfolio and contributions"
+              : "Track your course performance and engagement"}
           </p>
         </div>
         {analytics && (
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">
-              {analytics.totalCoursesCreated}{' '}
-              {analytics.totalCoursesCreated === 1 ? 'Course' : 'Courses'}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-muted text-sm font-medium">
+            <TrendingUp className="h-4 w-4" />
+            <span>
+              {analytics.totalCoursesCreated}{" "}
+              {analytics.totalCoursesCreated === 1 ? "Course" : "Courses"}
             </span>
           </div>
         )}
@@ -69,7 +71,11 @@ export function AnalyticsTab({
 
       <AnalyticsStatsCards analytics={analytics} isLoading={isLoading} />
 
-      <CoursePerformanceList analytics={analytics} isLoading={isLoading} />
+      <CoursePerformanceList
+        analytics={analytics}
+        isLoading={isLoading}
+        isVisiting={isVisiting}
+      />
 
       {capstoneSubmissions && (
         <CapstoneAnalyticsSection

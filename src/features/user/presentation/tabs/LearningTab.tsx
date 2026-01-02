@@ -1,21 +1,21 @@
-import { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
+import { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { BookOpen } from 'lucide-react';
-import Link from 'next/link';
-import { ProgressCard } from '@/features/progress/presentation/ProgressCard';
-import type { UserProgress } from '@/server/features/progress/types';
+} from "@/components/ui/select";
+import { BookOpen } from "lucide-react";
+import Link from "next/link";
+import { ProgressCard } from "@/features/progress/presentation/ProgressCard";
+import type { UserProgress } from "@/server/features/progress/types";
 
-type SortOption = 'recent' | 'progress' | 'name';
-type FilterOption = 'all' | 'in-progress' | 'completed' | 'not-started';
+type SortOption = "recent" | "progress" | "name";
+type FilterOption = "all" | "in-progress" | "completed" | "not-started";
 
 interface CourseDetails {
   courseName?: string;
@@ -36,33 +36,33 @@ export function LearningTab({
   progressWithCourses,
   isLoading,
 }: LearningTabProps) {
-  const [sortBy, setSortBy] = useState<SortOption>('recent');
-  const [filterBy, setFilterBy] = useState<FilterOption>('all');
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [filterBy, setFilterBy] = useState<FilterOption>("all");
 
   const displayedProgress = useMemo(() => {
     if (!progressWithCourses) return [];
 
     let filtered = progressWithCourses.filter((p) => {
-      if (filterBy === 'all') return true;
-      if (filterBy === 'completed') return p.percentComplete === 100;
-      if (filterBy === 'in-progress')
+      if (filterBy === "all") return true;
+      if (filterBy === "completed") return p.percentComplete === 100;
+      if (filterBy === "in-progress")
         return p.percentComplete > 0 && p.percentComplete < 100;
-      if (filterBy === 'not-started') return p.percentComplete === 0;
+      if (filterBy === "not-started") return p.percentComplete === 0;
       return true;
     });
 
     filtered.sort((a, b) => {
-      if (sortBy === 'recent') {
+      if (sortBy === "recent") {
         return (
           new Date(b.lastActivityAt).getTime() -
           new Date(a.lastActivityAt).getTime()
         );
       }
-      if (sortBy === 'progress') {
+      if (sortBy === "progress") {
         return b.percentComplete - a.percentComplete;
       }
-      if (sortBy === 'name') {
-        return (a.courseName || '').localeCompare(b.courseName || '');
+      if (sortBy === "name") {
+        return (a.courseName || "").localeCompare(b.courseName || "");
       }
       return 0;
     });
@@ -73,7 +73,7 @@ export function LearningTab({
   return (
     <>
       <div className="space-y-6 mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b pb-4 mb-4">
           <div>
             <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               My Learning
@@ -91,23 +91,23 @@ export function LearningTab({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex gap-2 flex-wrap">
             <Button
-              variant={filterBy === 'all' ? 'default' : 'outline'}
+              variant={filterBy === "all" ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterBy('all')}
+              onClick={() => setFilterBy("all")}
             >
               All
             </Button>
             <Button
-              variant={filterBy === 'in-progress' ? 'default' : 'outline'}
+              variant={filterBy === "in-progress" ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterBy('in-progress')}
+              onClick={() => setFilterBy("in-progress")}
             >
               In Progress
             </Button>
             <Button
-              variant={filterBy === 'completed' ? 'default' : 'outline'}
+              variant={filterBy === "completed" ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterBy('completed')}
+              onClick={() => setFilterBy("completed")}
             >
               Completed
             </Button>
@@ -168,7 +168,7 @@ export function LearningTab({
             <p className="text-muted-foreground text-center mb-4">
               No courses match the selected filter.
             </p>
-            <Button variant="outline" onClick={() => setFilterBy('all')}>
+            <Button variant="outline" onClick={() => setFilterBy("all")}>
               Show All Courses
             </Button>
           </CardContent>

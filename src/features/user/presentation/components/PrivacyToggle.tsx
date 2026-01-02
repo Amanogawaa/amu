@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Lock, Eye, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { toast } from 'sonner';
-import { useUpdateUserProfile } from '../../application/useUser';
+} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Lock, Eye, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
+import {
+  useUpdateUserProfile,
+  useUserProfile,
+} from "../../application/useUser";
+import { ModeToggle } from "@/components/ThemeToggle";
 
 interface PrivacyToggleProps {
   isPrivate?: boolean;
@@ -22,7 +26,7 @@ interface PrivacyToggleProps {
 
 export function PrivacyToggle({
   isPrivate = false,
-  className = '',
+  className = "",
 }: PrivacyToggleProps) {
   const [privateMode, setPrivateMode] = React.useState(isPrivate);
   const updateProfile = useUpdateUserProfile();
@@ -37,7 +41,7 @@ export function PrivacyToggle({
         isPrivate: checked,
       });
       toast.success(
-        checked ? 'Your profile is now private' : 'Your profile is now public'
+        checked ? "Your profile is now private" : "Your profile is now public"
       );
     } catch (error) {
       setPrivateMode(!checked);
@@ -65,7 +69,7 @@ export function PrivacyToggle({
           <div className="flex items-start gap-3 flex-1">
             <div
               className={`mt-1 p-2 rounded-md ${
-                privateMode ? 'bg-primary/10' : 'bg-muted'
+                privateMode ? "bg-primary/10" : "bg-muted"
               }`}
             >
               {privateMode ? (
@@ -83,8 +87,8 @@ export function PrivacyToggle({
               </Label>
               <p className="text-sm text-muted-foreground">
                 {privateMode
-                  ? 'Your profile is hidden from other users'
-                  : 'Your profile is visible to all logged-in users'}
+                  ? "Your profile is hidden from other users"
+                  : "Your profile is visible to all logged-in users"}
               </p>
             </div>
           </div>
@@ -127,13 +131,13 @@ export function PrivacyToggle({
         <div className="flex items-center gap-2 text-sm">
           <div
             className={`w-2 h-2 rounded-full ${
-              privateMode ? 'bg-amber-500' : 'bg-green-500'
+              privateMode ? "bg-amber-500" : "bg-green-500"
             }`}
           />
           <span className="text-muted-foreground">
-            Profile visibility:{' '}
+            Profile visibility:{" "}
             <span className="font-semibold text-foreground">
-              {privateMode ? 'Private' : 'Public'}
+              {privateMode ? "Private" : "Public"}
             </span>
           </span>
         </div>
@@ -141,3 +145,22 @@ export function PrivacyToggle({
     </Card>
   );
 }
+export const SettingsPage = () => {
+  const { data: userProfile } = useUserProfile();
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <p className="text-muted-foreground">
+          Manage your account privacy and preferences
+        </p>
+      </div>
+
+      <div className="w-full space-y-3">
+        <PrivacyToggle isPrivate={userProfile?.isPrivate} />
+        <ModeToggle />
+      </div>
+    </div>
+  );
+};

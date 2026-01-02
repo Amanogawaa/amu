@@ -88,7 +88,7 @@ export function CourseCreatorCard({
 
         <div className="flex items-center gap-4">
           <Link
-            href={`/account/${creatorId}`}
+            href={`/profile/${creatorId}`}
             className="group/avatar relative"
           >
             <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-0 group-hover/avatar:opacity-30 transition-opacity duration-300" />
@@ -104,7 +104,7 @@ export function CourseCreatorCard({
           </Link>
 
           <div className="flex-1 min-w-0 space-y-2">
-            <Link href={`/account/${creatorId}`} className="block group/link">
+            <Link href={`/profile/${creatorId}`} className="block group/link">
               <h3 className="font-bold text-lg truncate group-hover/link:text-primary transition-colors duration-200">
                 {displayName}
               </h3>

@@ -25,6 +25,12 @@ interface GenerationProgressDisplayProps {
 }
 
 const STEP_INFO = {
+  [GenerationStep.VALIDATING]: {
+    label: 'Validating Request',
+    description: 'Checking content and requirements',
+    icon: CheckCircle2,
+    color: 'text-cyan-500',
+  },
   [GenerationStep.COURSE]: {
     label: 'Course Structure',
     description: 'Generating course metadata and overview',
@@ -101,7 +107,11 @@ export function GenerationProgressDisplay({
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">{progress.message}</span>
-            <span className="text-muted-foreground">{progress.progress}%</span>
+            {progress.estimatedTimeRemaining && (
+              <span className="text-muted-foreground">
+                {progress.estimatedTimeRemaining}
+              </span>
+            )}
           </div>
           <Progress value={progress.progress} className="h-2" />
         </div>
@@ -212,6 +222,8 @@ export function GenerationProgressDisplay({
 // Helper function to determine progress threshold for each step
 function getStepProgressThreshold(step: GenerationStep): number {
   switch (step) {
+    case GenerationStep.VALIDATING:
+      return 0;
     case GenerationStep.COURSE:
       return 10;
     case GenerationStep.MODULES:

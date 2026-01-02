@@ -40,7 +40,7 @@ export function PublicUserCard({
   const initials = firstName?.[0] || lastName?.[0] || email?.[0] || 'U';
 
   return (
-    <Link href={`/account/${userId}`} className={className}>
+    <Link href={`/profile/${userId}`} className={className}>
       <Card className="hover:bg-accent transition-colors cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-center gap-4">

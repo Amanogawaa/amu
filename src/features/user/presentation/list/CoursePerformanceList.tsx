@@ -7,22 +7,26 @@ import type { UserAnalytics } from '../../domain/types';
 interface CoursePerformanceListProps {
   analytics: UserAnalytics | undefined;
   isLoading: boolean;
+  isVisiting?: boolean;
 }
 
 export function CoursePerformanceList({
   analytics,
   isLoading,
+  isVisiting = false,
 }: CoursePerformanceListProps) {
   return (
-    <Card className="border-2 border-border/50 shadow-lg">
-      <CardHeader className="border-b bg-muted/30 pb-4">
+    <Card className="border-2 border-border/50 shadow-lg overflow-hidden">
+      <CardHeader className="border-b bg-gradient-to-r from-muted/50 to-muted/30 pb-4">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-2xl font-bold">
-              Course Performance
+              {isVisiting ? 'Created Courses' : 'Course Performance'}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Detailed analytics for each of your courses
+              {isVisiting
+                ? 'Courses created by this user'
+                : 'Detailed analytics for each of your courses'}
             </p>
           </div>
         </div>
@@ -37,7 +41,7 @@ export function CoursePerformanceList({
         ) : analytics && analytics.courses.length > 0 ? (
           <div className="divide-y divide-border">
             {analytics.courses.map((course) => (
-              <CoursePerformanceCard key={course.courseId} course={course} />
+              <CoursePerformanceCard key={course.courseId} course={course} isVisiting={isVisiting} />
             ))}
           </div>
         ) : (

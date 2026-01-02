@@ -25,17 +25,18 @@ export type CourseFilters = {
 };
 
 export enum GenerationStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
+  PENDING = "pending",
+  IN_PROGRESS = "in_progress",
+  COMPLETED = "completed",
+  FAILED = "failed",
 }
 
 export enum GenerationStep {
-  COURSE = 'course',
-  MODULES = 'modules',
-  CHAPTERS = 'chapters',
-  LESSONS = 'lessons',
+  VALIDATING = "validating",
+  COURSE = "course",
+  MODULES = "modules",
+  CHAPTERS = "chapters",
+  LESSONS = "lessons",
 }
 
 export interface GenerationProgress {
@@ -56,6 +57,8 @@ export interface GenerationProgress {
   };
   error?: string;
   timestamp: string;
+  startTime?: string;
+  estimatedTimeRemaining?: string;
 }
 
 export interface FullCourseGenerationResult {
@@ -69,7 +72,7 @@ export interface FullCourseGenerationResult {
 export interface FullGenerationRequest {
   category: string;
   topic: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  level: "beginner" | "intermediate" | "advanced";
   duration: string;
   noOfModules: number;
   language: string;
