@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Maximize2, X, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Maximize2, X, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import {
   GenerationProgress,
   GenerationStatus,
-} from '@/server/features/course/types';
-import { motion } from 'framer-motion';
+} from "@/server/features/course/types";
+import { motion } from "framer-motion";
 
 interface MiniProgressIndicatorProps {
   progress: GenerationProgress;
@@ -33,9 +33,9 @@ export function MiniProgressIndicator({
   };
 
   const getStatusText = () => {
-    if (isCompleted) return 'Completed';
-    if (isFailed) return 'Failed';
-    return progress.currentStep || 'Generating...';
+    if (isCompleted) return "Completed";
+    if (isFailed) return "Failed";
+    return progress.currentStep || "Generating...";
   };
 
   return (
@@ -53,19 +53,25 @@ export function MiniProgressIndicator({
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2 mb-1">
                 <p className="text-sm font-medium truncate">
-                  {progress.data?.courseName || 'Generating Course'}
+                  {progress.data?.courseName || "Generating Course"}
                 </p>
                 <Badge
                   variant={
                     isCompleted
-                      ? 'default'
+                      ? "default"
                       : isFailed
-                      ? 'destructive'
-                      : 'secondary'
+                      ? "destructive"
+                      : "secondary"
                   }
                   className="text-xs flex-shrink-0"
                 >
-                  {Math.round(progress.progress || 0)}%
+                  {isInProgress && progress.estimatedTimeRemaining
+                    ? progress.estimatedTimeRemaining
+                    : isCompleted
+                    ? "Done"
+                    : isFailed
+                    ? "Failed"
+                    : `${Math.round(progress.progress || 0)}%`}
                 </Badge>
               </div>
 

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   CheckCircle2,
   Circle,
@@ -13,12 +13,12 @@ import {
   Layers,
   BookMarked,
   FileText,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   GenerationProgress,
   GenerationStep,
   GenerationStatus,
-} from '@/server/features/course/types';
+} from "@/server/features/course/types";
 
 interface GenerationProgressDisplayProps {
   progress: GenerationProgress | null;
@@ -26,34 +26,34 @@ interface GenerationProgressDisplayProps {
 
 const STEP_INFO = {
   [GenerationStep.VALIDATING]: {
-    label: 'Validating Request',
-    description: 'Checking content and requirements',
+    label: "Validating Request",
+    description: "Checking content and requirements",
     icon: CheckCircle2,
-    color: 'text-cyan-500',
+    color: "text-cyan-500",
   },
   [GenerationStep.COURSE]: {
-    label: 'Course Structure',
-    description: 'Generating course metadata and overview',
+    label: "Course Structure",
+    description: "Generating course metadata and overview",
     icon: BookOpen,
-    color: 'text-blue-500',
+    color: "text-blue-500",
   },
   [GenerationStep.MODULES]: {
-    label: 'Course Modules',
-    description: 'Creating learning modules',
+    label: "Course Modules",
+    description: "Creating learning modules",
     icon: Layers,
-    color: 'text-purple-500',
+    color: "text-purple-500",
   },
   [GenerationStep.CHAPTERS]: {
-    label: 'Module Chapters',
-    description: 'Building chapter structure',
+    label: "Module Chapters",
+    description: "Building chapter structure",
     icon: BookMarked,
-    color: 'text-orange-500',
+    color: "text-orange-500",
   },
   [GenerationStep.LESSONS]: {
-    label: 'Lesson Content',
-    description: 'Generating detailed lessons',
+    label: "Lesson Content",
+    description: "Generating detailed lessons",
     icon: FileText,
-    color: 'text-green-500',
+    color: "text-green-500",
   },
 };
 
@@ -107,13 +107,17 @@ export function GenerationProgressDisplay({
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">{progress.message}</span>
-            {progress.estimatedTimeRemaining && (
-              <span className="text-muted-foreground">
-                {progress.estimatedTimeRemaining}
+            {progress.estimatedTimeRemaining && isInProgress && (
+              <span className="text-muted-foreground font-medium">
+                {progress.estimatedTimeRemaining} remaining
               </span>
             )}
           </div>
           <Progress value={progress.progress} className="h-2" />
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>{Math.round(progress.progress)}%</span>
+            <span>100%</span>
+          </div>
         </div>
 
         {/* Steps */}
@@ -131,19 +135,19 @@ export function GenerationProgressDisplay({
                 key={step}
                 className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
                   isStepActive
-                    ? 'bg-primary/5 border-primary'
+                    ? "bg-primary/5 border-primary"
                     : isStepCompleted
-                    ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800'
-                    : 'bg-muted/30'
+                    ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
+                    : "bg-muted/30"
                 }`}
               >
                 <div
                   className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                     isStepActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? "bg-primary text-primary-foreground"
                       : isStepCompleted
-                      ? 'bg-green-500 text-white'
-                      : 'bg-muted'
+                      ? "bg-green-500 text-white"
+                      : "bg-muted"
                   }`}
                 >
                   {isStepActive ? (
@@ -195,7 +199,7 @@ export function GenerationProgressDisplay({
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {progress.data.courseId ? '✓' : '-'}
+                  {progress.data.courseId ? "✓" : "-"}
                 </div>
                 <div className="text-xs text-muted-foreground">Course ID</div>
               </div>

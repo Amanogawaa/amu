@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { GenerationStatus } from '@/server/features/course/types';
-import { CheckCircle2, Sparkles, Info } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useFullGeneration } from '../application/useFullGeneration';
-import { useGenerationContext } from '../context/GenerationContext';
-import { FullGenerationForm } from '../presentation/FullGenerationForm';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { GenerationStatus } from "@/server/features/course/types";
+import { CheckCircle2, Sparkles, Info } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useFullGeneration } from "../application/useFullGeneration";
+import { useGenerationContext } from "../context/GenerationContext";
+import { FullGenerationForm } from "../presentation/FullGenerationForm";
 
 export default function FullGenerationPage() {
   const router = useRouter();
@@ -57,13 +57,15 @@ export default function FullGenerationPage() {
                       Course generation in progress
                     </h3>
                     <p className="text-sm text-muted-foreground mb-3">
-                      Your course "{progress?.data?.courseName || 'Untitled'}"
+                      Your course "{progress?.data?.courseName || "Untitled"}"
                       is being generated. You can continue browsing the
                       application while we work on it.
                     </p>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">
-                        {Math.round(progress?.progress || 0)}% Complete
+                        {progress?.estimatedTimeRemaining
+                          ? `${progress.estimatedTimeRemaining} left`
+                          : `${Math.round(progress?.progress || 0)}% Complete`}
                       </Badge>
                       <Button
                         variant="outline"
