@@ -1,5 +1,5 @@
-import { CreateCoursePayload } from '@/server/features/course/types';
-import { CourseFormValues } from '../domain/CourseSchema';
+import { CreateCoursePayload } from "@/server/features/course/types";
+import { CourseFormValues } from "../domain/CourseSchema";
 
 export default function handleCreateCourse(
   values: CourseFormValues,
@@ -11,7 +11,7 @@ export default function handleCreateCourse(
     level: values.level,
     language: values.language,
     duration: values.duration,
-    noOfModules: values.noOfModules,
+    noOfChapters: values.noOfChapters,
     userInstructions: values.userInstructions,
   };
 

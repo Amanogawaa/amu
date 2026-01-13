@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { getModules } from '@/server/features/modules';
-import { getChapters } from '@/server/features/chapters';
-import { getLessons } from '@/server/features/lessons';
-import { logger } from '@/lib/loggers';
+import { useQuery } from "@tanstack/react-query";
+import { getModules } from "@/server/features/modules";
+import { getChapters } from "@/server/features/chapters";
+import { getLessons } from "@/server/features/lessons";
+import { logger } from "@/lib/loggers";
 
 export function useCourseLessonCount(courseId: string) {
   return useQuery({
-    queryKey: ['course-lesson-count', courseId],
+    queryKey: ["course-lesson-count", courseId],
     queryFn: async () => {
       if (!courseId) {
         return 0;
@@ -37,7 +37,7 @@ export function useCourseLessonCount(courseId: string) {
 
         return allLessons.length;
       } catch (error) {
-        logger.error('Error counting course lessons:', error);
+        logger.error("Error counting course lessons:", error);
         return 0;
       }
     },

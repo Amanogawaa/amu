@@ -76,7 +76,7 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
 
       <CourseInfoCard
         duration={data.duration}
-        noOfModules={data.noOfModules}
+        noOfChapters={data.noOfChapters}
         language={data.language}
         level={data.level}
       />

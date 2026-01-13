@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import React, { useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -12,17 +12,17 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Loader2,
   Sparkles,
@@ -34,22 +34,21 @@ import {
   Clock,
   Layers,
   FileText,
-} from 'lucide-react';
-import { FullGenerationRequest } from '@/server/features/course/types';
-import { logger } from '@/lib/loggers';
+} from "lucide-react";
+import { FullGenerationRequest } from "@/server/features/course/types";
 
 const fullGenerationSchema = z.object({
-  topic: z.string().min(3, 'Topic must be at least 3 characters'),
-  category: z.string().min(1, 'Category is required'),
-  level: z.enum(['beginner', 'intermediate', 'advanced']),
-  language: z.string().min(1, 'Language is required'),
-  duration: z.string().min(1, 'Duration is required'),
-  noOfModules: z.number().min(1).max(10),
+  topic: z.string().min(3, "Topic must be at least 3 characters"),
+  category: z.string().min(1, "Category is required"),
+  level: z.enum(["beginner", "intermediate", "advanced"]),
+  language: z.string().min(1, "Language is required"),
+  duration: z.string().min(1, "Duration is required"),
+  noOfChapters: z.number().min(1).max(10),
   userInstructions: z.string().optional(),
 });
 
 type FullGenerationFormValues = z.infer<typeof fullGenerationSchema>;
-
+1;
 interface FullGenerationFormProps {
   onSubmit: (payload: FullGenerationRequest) => void;
   isGenerating: boolean;
@@ -61,13 +60,13 @@ export function FullGenerationForm({
 }: FullGenerationFormProps) {
   const defaultValues = useMemo(
     () => ({
-      topic: '',
-      category: 'Programming',
-      level: 'beginner' as const,
-      language: 'English',
-      duration: '5 hours',
-      noOfModules: 5,
-      userInstructions: '',
+      topic: "",
+      category: "Programming",
+      level: "beginner" as const,
+      language: "English",
+      duration: "5 hours",
+      noOfChapters: 5,
+      userInstructions: "",
     }),
     []
   );
@@ -75,11 +74,10 @@ export function FullGenerationForm({
   const form = useForm<FullGenerationFormValues>({
     resolver: zodResolver(fullGenerationSchema),
     defaultValues,
-    mode: 'onSubmit',
+    mode: "onSubmit",
   });
 
   const handleSubmit = (values: FullGenerationFormValues) => {
-    logger.log('Form Values:', values);
     onSubmit(values as FullGenerationRequest);
   };
 
@@ -249,17 +247,17 @@ export function FullGenerationForm({
 
           {/* Number of Modules Field */}
           <FormField
-            name="noOfModules"
+            name="noOfChapters"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Number of Modules *</FormLabel>
+                <FormLabel>Number of Chapters *</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Layers className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       {...field}
-                      value={field.value || ''}
+                      value={field.value || ""}
                       type="number"
                       min={1}
                       max={10}
@@ -267,12 +265,12 @@ export function FullGenerationForm({
                       className="rounded-lg border border-secondary p-5 pl-10 text-base placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary"
                       onChange={(e) => {
                         const value = e.target.value;
-                        field.onChange(value === '' ? '' : parseInt(value, 10));
+                        field.onChange(value === "" ? "" : parseInt(value, 10));
                       }}
                     />
                   </div>
                 </FormControl>
-                <FormDescription>1-10 modules</FormDescription>
+                <FormDescription>1-10 chapters</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

@@ -18,13 +18,11 @@ import {
   useManualChapterGeneration,
   useManualLessonGeneration,
 } from "@/features/create/application/useManualGeneration";
-import type { Module } from "@/server/features/modules/types";
 import type { Chapter } from "@/server/features/chapters/types";
 import type { Lesson } from "@/server/features/lessons/types";
 
 interface ManualGenerationPanelProps {
   courseId: string;
-  modules: Module[];
   chapters: Chapter[];
   lessons: Lesson[];
   missingComponents?: string[];
@@ -32,7 +30,6 @@ interface ManualGenerationPanelProps {
 
 export function ManualGenerationPanel({
   courseId,
-  modules,
   chapters,
   lessons,
   missingComponents,

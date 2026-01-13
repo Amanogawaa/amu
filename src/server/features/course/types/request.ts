@@ -3,7 +3,7 @@ export type CreateCoursePayload = {
   category: string;
   level: string;
   duration: string;
-  noOfModules: number;
+  noOfChapters: number;
   language: string;
   userInstructions?: string;
 };
@@ -34,7 +34,6 @@ export enum GenerationStatus {
 export enum GenerationStep {
   VALIDATING = "validating",
   COURSE = "course",
-  MODULES = "modules",
   CHAPTERS = "chapters",
   LESSONS = "lessons",
 }
@@ -74,7 +73,7 @@ export interface FullGenerationRequest {
   topic: string;
   level: "beginner" | "intermediate" | "advanced";
   duration: string;
-  noOfModules: number;
+  noOfChapters: number;
   language: string;
   userInstructions?: string;
 }

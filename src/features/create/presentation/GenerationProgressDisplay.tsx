@@ -37,12 +37,7 @@ const STEP_INFO = {
     icon: BookOpen,
     color: "text-blue-500",
   },
-  [GenerationStep.MODULES]: {
-    label: "Course Modules",
-    description: "Creating learning modules",
-    icon: Layers,
-    color: "text-purple-500",
-  },
+
   [GenerationStep.CHAPTERS]: {
     label: "Module Chapters",
     description: "Building chapter structure",
@@ -224,16 +219,15 @@ export function GenerationProgressDisplay({
 }
 
 // Helper function to determine progress threshold for each step
+// need to modify according to steps later
 function getStepProgressThreshold(step: GenerationStep): number {
   switch (step) {
     case GenerationStep.VALIDATING:
       return 0;
     case GenerationStep.COURSE:
       return 10;
-    case GenerationStep.MODULES:
-      return 40;
     case GenerationStep.CHAPTERS:
-      return 70;
+      return 50;
     case GenerationStep.LESSONS:
       return 95;
     default:

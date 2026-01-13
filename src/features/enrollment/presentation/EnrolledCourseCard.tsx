@@ -111,7 +111,7 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Layers className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.noOfModules} modules</span>
+            <span className="text-xs">{course.noOfChapters} chapters</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <BookOpen className="w-4 h-4 text-primary" />
@@ -158,7 +158,8 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             <div className="space-y-1">
               <p className="text-sm font-semibold">Temporarily unavailable</p>
               <p className="text-xs text-amber-800/80 dark:text-amber-100/80">
-                The creator moved this course back to draft while making updates. We'll notify you once it returns.
+                The creator moved this course back to draft while making
+                updates. We'll notify you once it returns.
               </p>
             </div>
           </div>

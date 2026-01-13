@@ -17,7 +17,6 @@ import {
 import { CoursePreviewSkeleton } from "@/features/create/presentation/CoursePreview";
 import { PublishDraftActions } from "@/features/create/presentation/PublishDraftActions";
 import { useGetLessons } from "@/features/lessons/application/useGetLesson";
-import { useGetModules } from "@/features/modules/application/useGetModules";
 import { getChapters } from "@/server/features/chapters";
 import { Chapter } from "@/server/features/chapters/types";
 import { getLessons } from "@/server/features/lessons";
@@ -51,24 +50,20 @@ const PublishPage = () => {
     isLoading: isCourseLoading,
     isError: isCourseError,
   } = useGetCourse(courseId);
-  const { data: modules = [], isLoading: isModulesLoading } =
-    useGetModules(courseId);
 
   const { data: validationData, isLoading: isValidating } =
     useValidateCourse(courseId);
 
   const { data: allChapters = [], isLoading: isChaptersLoading } = useQuery({
-    queryKey: ["all-chapters", courseId, modules],
+    queryKey: ["all-chapters", courseId],
     queryFn: async () => {
-      if (modules.length === 0) return [];
+      if (!courseId) return;
 
-      const chaptersPromises = modules.map((module) =>
-        getChapters(module.id).catch(() => [])
-      );
-      const chaptersArrays = await Promise.all(chaptersPromises);
+      const chapters = await getChapters(courseId).catch(() => []);
+      const chaptersArrays = await Promise.all(chapters);
       return chaptersArrays.flat() as Chapter[];
     },
-    enabled: modules.length > 0,
+    enabled: courseId !== undefined,
   });
 
   const { data: allLessons = [], isLoading: isLessonsLoading } = useQuery({
@@ -98,11 +93,7 @@ const PublishPage = () => {
     redirect("/create");
   }
 
-  const isLoading =
-    isCourseLoading ||
-    isModulesLoading ||
-    isChaptersLoading ||
-    isLessonsLoading;
+  const isLoading = isCourseLoading || isChaptersLoading || isLessonsLoading;
 
   if (isLoading) {
     return (
@@ -214,7 +205,6 @@ const PublishPage = () => {
 
         <CoursePreview
           course={course}
-          modules={modules}
           chapters={allChapters}
           lessons={allLessons}
         />

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { CreateCoursePayload } from '@/server/features/course/types';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { CreateCoursePayload } from "@/server/features/course/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -12,21 +12,21 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Loader2, BookOpen, Sparkles } from 'lucide-react';
-import handleCreateCourse from '../../application/handleCreateCourse';
-import { CourseFormValues, courseFormSchema } from '../../domain/CourseSchema';
-import { RateLimitIndicator } from '@/components/rate-limit/RateLimitIndicator';
-import { useRateLimiter } from '@/hooks/useRateLimiter';
+} from "@/components/ui/select";
+import { Loader2, BookOpen, Sparkles } from "lucide-react";
+import handleCreateCourse from "../../application/handleCreateCourse";
+import { CourseFormValues, courseFormSchema } from "../../domain/CourseSchema";
+import { RateLimitIndicator } from "@/components/rate-limit/RateLimitIndicator";
+import { useRateLimiter } from "@/hooks/useRateLimiter";
 
 interface CourseFormProps {
   initialValues?: Partial<CourseFormValues>;
@@ -48,13 +48,13 @@ const CreateCourseForm = ({
 
   const defaultValues = useMemo(
     () => ({
-      topic: '',
-      category: 'Programming',
-      level: 'beginner' as const,
-      language: 'english',
-      duration: '5 hours',
-      noOfModules: 5,
-      userInstructions: '',
+      topic: "",
+      category: "Programming",
+      level: "beginner" as const,
+      language: "english",
+      duration: "5 hours",
+      noOfChapters: 5,
+      userInstructions: "",
       ...initialValues,
     }),
     [initialValues]
@@ -63,7 +63,7 @@ const CreateCourseForm = ({
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseFormSchema),
     defaultValues,
-    mode: 'onSubmit',
+    mode: "onSubmit",
   });
 
   return (
@@ -73,7 +73,7 @@ const CreateCourseForm = ({
           <BookOpen className="w-8 h-8 text-primary" />
         </div>
         <h1 className="text-3xl font-bold mb-2 text-primary">
-          {isEdit ? 'Edit Course' : 'Create Your Course'}
+          {isEdit ? "Edit Course" : "Create Your Course"}
         </h1>
         <p className="text-muted-foreground">
           Fill in the details below to generate an AI-powered course
@@ -216,13 +216,13 @@ const CreateCourseForm = ({
               )}
             />
 
-            {/* Number of Modules */}
+            {/* Number of Chapters */}
             <FormField
-              name="noOfModules"
+              name="noOfChapters"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Modules *</FormLabel>
+                  <FormLabel>Number of Chapters *</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -258,7 +258,7 @@ const CreateCourseForm = ({
               ) : (
                 <>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  {isEdit ? 'Update Course' : 'Generate Course'}
+                  {isEdit ? "Update Course" : "Generate Course"}
                 </>
               )}
             </Button>

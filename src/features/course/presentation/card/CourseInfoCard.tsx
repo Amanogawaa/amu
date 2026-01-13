@@ -1,48 +1,48 @@
-'use client';
+"use client";
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from "@/components/ui/card";
 import {
   ClockIcon,
   BookIcon,
   LanguagesIcon,
   AwardIcon,
   BarChartIcon,
-} from 'lucide-react';
+} from "lucide-react";
 
 interface CourseInfoCardProps {
   duration: string;
-  noOfModules: number;
+  noOfChapters: number;
   language: string;
   level: string;
 }
 
 export const CourseInfoCard = ({
   duration,
-  noOfModules,
+  noOfChapters,
   language,
   level,
 }: CourseInfoCardProps) => {
   const infoItems = [
     {
       icon: ClockIcon,
-      label: 'Duration',
+      label: "Duration",
       value: duration,
     },
     {
       icon: BookIcon,
-      label: `${noOfModules === 1 ? 'Module' : 'Modules'}`,
-      value: `${noOfModules === undefined ? 'N/A' : noOfModules} ${
-        noOfModules === 1 ? 'Module' : 'Modules'
+      label: `${noOfChapters === 1 ? "Chapter" : "Chapters"}`,
+      value: `${noOfChapters === undefined ? "N/A" : noOfChapters} ${
+        noOfChapters === 1 ? "Chapter" : "Chapters"
       }`,
     },
     {
       icon: BarChartIcon,
-      label: 'Level',
+      label: "Level",
       value: level.charAt(0).toUpperCase() + level.slice(1),
     },
     {
       icon: LanguagesIcon,
-      label: 'Language',
+      label: "Language",
       value: language,
     },
   ];

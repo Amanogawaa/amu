@@ -4,13 +4,13 @@ export type Course = {
   name: string;
   description: string;
   category: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  level: "beginner" | "intermediate" | "advanced";
   topic: string;
-  prequisites: string;
+  prerequisites: string;
   language: string;
   learning_outcomes: string[];
   duration: string;
-  noOfModules: number;
+  noOfChapters: number;
   banner_url: string;
   include_certificate: boolean;
   enrollmentCount?: number;
@@ -22,8 +22,8 @@ export type Course = {
   publish: boolean;
   draft: boolean;
   subtitle: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type ListCoursesResponse = {
@@ -37,8 +37,6 @@ export type CourseValidationResponse = {
   isComplete: boolean;
   missingComponents: string[];
   details: {
-    hasModules: boolean;
-    modulesCount: number;
     hasChapters: boolean;
     chaptersCount: number;
     hasLessons: boolean;

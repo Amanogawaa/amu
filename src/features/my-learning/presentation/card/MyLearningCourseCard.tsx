@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,10 +9,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { useEnrollmentCount } from '@/features/enrollment/application/useEnrollment';
-import { LikeButton } from '@/features/likes/presentation/LikeButton';
-import { Course } from '@/server/features/course/types';
+} from "@/components/ui/card";
+import { useEnrollmentCount } from "@/features/enrollment/application/useEnrollment";
+import { LikeButton } from "@/features/likes/presentation/LikeButton";
+import { Course } from "@/server/features/course/types";
 import {
   ArrowRight,
   BookOpen,
@@ -21,10 +21,10 @@ import {
   Layers,
   Trash2,
   User2,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { CourseValidationBadge } from '@/features/course/presentation/components/CourseValidationBadge';
+} from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { CourseValidationBadge } from "@/features/course/presentation/components/CourseValidationBadge";
 
 interface CourseCardProps {
   course: Course;
@@ -38,11 +38,11 @@ const MyLearningCourseCard = ({ course, href }: CourseCardProps) => {
 
   const levelColors = {
     beginner:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize',
+      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize",
     intermediate:
-      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize',
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize",
     advance:
-      'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize',
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 capitalize",
   };
 
   const cardContent = (
@@ -84,7 +84,7 @@ const MyLearningCourseCard = ({ course, href }: CourseCardProps) => {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Layers className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.noOfModules} modules</span>
+            <span className="text-xs">{course.noOfChapters} modules</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <BookOpen className="w-4 h-4 text-primary" />
@@ -125,7 +125,7 @@ const MyLearningCourseCard = ({ course, href }: CourseCardProps) => {
           <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
             <User2 className="w-4 h-4 text-primary" />
             <span>
-              {enrollmentCount} enrollee{enrollmentCount !== 1 ? 's' : ''}
+              {enrollmentCount} enrollee{enrollmentCount !== 1 ? "s" : ""}
             </span>
           </div>
         )}

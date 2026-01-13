@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BookOpen,
   Clock,
@@ -13,17 +13,15 @@ import {
   PlayCircle,
   FileText,
   CheckCircle2,
-} from 'lucide-react';
-import { Course } from '@/server/features/course/types';
-import { Module } from '@/server/features/modules/types';
-import { Chapter } from '@/server/features/chapters/types';
-import { Lesson } from '@/server/features/lessons/types';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { Course } from "@/server/features/course/types";
+import { Chapter } from "@/server/features/chapters/types";
+import { Lesson } from "@/server/features/lessons/types";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface CoursePreviewProps {
   course: Course;
-  modules: Module[];
   chapters: Chapter[];
   lessons: Lesson[];
 }
@@ -38,7 +36,6 @@ interface ChapterWithLessons extends Chapter {
 
 export function CoursePreview({
   course,
-  modules,
   chapters,
   lessons,
 }: CoursePreviewProps) {
@@ -90,24 +87,24 @@ export function CoursePreview({
 
   const getLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
-      case 'beginner':
-        return 'bg-green-500/10 text-green-700 dark:text-green-400';
-      case 'intermediate':
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
-      case 'advanced':
-        return 'bg-red-500/10 text-red-700 dark:text-red-400';
+      case "beginner":
+        return "bg-green-500/10 text-green-700 dark:text-green-400";
+      case "intermediate":
+        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
+      case "advanced":
+        return "bg-red-500/10 text-red-700 dark:text-red-400";
       default:
-        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400';
+        return "bg-gray-500/10 text-gray-700 dark:text-gray-400";
     }
   };
 
   const getLessonIcon = (type: string) => {
     switch (type) {
-      case 'video':
+      case "video":
         return <PlayCircle className="h-4 w-4" />;
-      case 'article':
+      case "article":
         return <FileText className="h-4 w-4" />;
-      case 'quiz':
+      case "quiz":
         return <CheckCircle2 className="h-4 w-4" />;
       default:
         return <BookOpen className="h-4 w-4" />;
@@ -134,7 +131,7 @@ export function CoursePreview({
                 </p>
               )}
             </div>
-            <Badge className={cn('self-start', getLevelColor(course.level))}>
+            <Badge className={cn("self-start", getLevelColor(course.level))}>
               {course.level}
             </Badge>
           </div>
@@ -195,11 +192,11 @@ export function CoursePreview({
           )}
 
           {/* Prerequisites */}
-          {course.prequisites && (
+          {course.prerequisites && (
             <div className="space-y-2">
               <h3 className="font-semibold text-lg">Prerequisites</h3>
               <p className="text-sm text-muted-foreground">
-                {course.prequisites}
+                {course.prerequisites}
               </p>
             </div>
           )}
@@ -211,7 +208,7 @@ export function CoursePreview({
         <CardHeader>
           <CardTitle className="text-xl">Course Content</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {totalModules} modules • {totalChapters} chapters • {totalLessons}{' '}
+            {totalModules} modules • {totalChapters} chapters • {totalLessons}{" "}
             lessons
           </p>
         </CardHeader>
@@ -234,7 +231,7 @@ export function CoursePreview({
                       Module {moduleIndex + 1}: {module.moduleName}
                     </h3>
                     <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
-                      {module.chapters.length} chapters •{' '}
+                      {module.chapters.length} chapters •{" "}
                       {module.estimatedDuration}
                     </p>
                   </div>
@@ -267,11 +264,11 @@ export function CoursePreview({
                             )}
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-sm">
-                                Chapter {chapterIndex + 1}:{' '}
+                                Chapter {chapterIndex + 1}:{" "}
                                 {chapter.chapterName}
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                {chapter.lessons.length} lessons •{' '}
+                                {chapter.lessons.length} lessons •{" "}
                                 {chapter.estimatedDuration}
                               </p>
                             </div>
