@@ -1,10 +1,10 @@
-import { queryKeys } from '@/lib/queryKeys';
-import { showErrorToast } from '@/lib/errorHandling';
-import { createChapter } from '@/server/features/chapters';
-import { CreateChapterPayload } from '@/server/features/chapters/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { queryKeys } from "@/lib/queryKeys";
+import { showErrorToast } from "@/lib/errorHandling";
+import { createChapter } from "@/server/features/chapters";
+import { CreateChapterPayload } from "@/server/features/chapters/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function useCreateChapter() {
   const router = useRouter();
@@ -21,15 +21,15 @@ export default function useCreateChapter() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.modules.detail(variables.moduleId),
+        queryKey: queryKeys.courses.detail(variables.moduleId),
       });
 
-      toast.success('Chapter created successfully!');
+      toast.success("Chapter created successfully!");
       router.refresh();
     },
 
     onError: (error) => {
-      showErrorToast(error, 'Failed to create chapter. Please try again.');
+      showErrorToast(error, "Failed to create chapter. Please try again.");
     },
   });
 }

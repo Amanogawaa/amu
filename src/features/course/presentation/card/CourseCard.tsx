@@ -75,26 +75,6 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           {course.description}
         </p>
 
-        {/* Course Info Grid */}
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.duration}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Layers className="w-4 h-4 text-primary" />
-            <span className="text-xs">{course.noOfChapters} modules</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <BookOpen className="w-4 h-4 text-primary" />
-            <span className="text-xs capitalize">{course.category}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <GraduationCap className="w-4 h-4 text-primary" />
-            <span className="text-xs capitalize">{course.language}</span>
-          </div>
-        </div>
-
         {/* Learning Outcomes Preview */}
         {course.learning_outcomes && course.learning_outcomes.length > 0 && (
           <div className="mt-4 pt-4 border-t border-border">
@@ -119,15 +99,6 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
             )}
           </div>
         )}
-
-        {enrollmentCount !== undefined && (
-          <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
-            <User2 className="w-4 h-4 text-primary" />
-            <span>
-              {enrollmentCount} enrollee{enrollmentCount !== 1 ? "s" : ""}
-            </span>
-          </div>
-        )}
       </CardContent>
 
       <CardFooter className="pt-4 border-t border-border flex gap-2">
@@ -144,7 +115,7 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           asChild
         >
           <Link href={`/courses/${course.id}`}>
-            View Course
+            {isOwner ? "Manage Course" : "View Course"}
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
@@ -152,7 +123,6 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
     </Card>
   );
 
-  // If href is provided, wrap in Link
   if (href) {
     return (
       <Link href={href} className="block h-full">

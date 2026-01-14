@@ -14,6 +14,7 @@ import { CourseInfoCard } from "../card/CourseInfoCard";
 import { CourseContent } from "./CourseContent";
 import { CourseHeader } from "./CourseHeader";
 import { CourseCreatorCard } from "./CourseCreatorCard";
+import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -78,7 +79,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         level={data.level}
       />
 
-      <CourseCreatorCard creatorId={data.uid} createdAt={data.createdAt} />
+      {/* <CourseCreatorCard creatorId={data.uid} createdAt={data.createdAt} /> */}
 
       {!enrollmentLoading &&
         !enrollmentStatus?.isEnrolled &&
@@ -116,6 +117,8 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         learningOutcomes={data.learning_outcomes}
         prerequisites={data.prerequisites}
       />
+
+      <ChapterList courseId={courseId} />
     </div>
   );
 };

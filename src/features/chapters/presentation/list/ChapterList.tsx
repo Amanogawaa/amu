@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { BookOpenIcon, PlayCircleIcon } from 'lucide-react';
-import Link from 'next/link';
-import { useMemo } from 'react';
-import { useGetChapters } from '../../application/useGetChapters';
-import ChapterForm from '../form/ChapterForm';
-import { useResourceEvents } from '@/hooks/use-socket-events';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { BookOpenIcon, PlayCircleIcon } from "lucide-react";
+import Link from "next/link";
+import { useMemo } from "react";
+import { useGetChapters } from "../../application/useGetChapters";
+import ChapterForm from "../form/ChapterForm";
+import { useResourceEvents } from "@/hooks/use-socket-events";
 
 interface ChapterListProps {
-  moduleId: string;
+  courseId: string;
 }
 
-export const ChapterList = ({ moduleId }: ChapterListProps) => {
-  const { data: chapters } = useGetChapters(moduleId);
+export const ChapterList = ({ courseId }: ChapterListProps) => {
+  const { data: chapters } = useGetChapters(courseId);
 
   useResourceEvents({
-    resourceType: 'chapter',
-    queryKey: ['chapters', moduleId],
+    resourceType: "chapter",
+    queryKey: ["chapters", courseId],
   });
 
   const sortedChapters = useMemo(() => {
@@ -29,20 +29,10 @@ export const ChapterList = ({ moduleId }: ChapterListProps) => {
 
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between">
-        <div>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <BookOpenIcon className="h-5 w-5 text-primary" />
-            Module Content
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {chapters?.length} {chapters?.length === 1 ? 'chapter' : 'chapters'}
-          </p>
-        </div>
-      </CardHeader>
       <CardContent>
         {!chapters || chapters.length === 0 ? (
-          <ChapterForm moduleId={moduleId} />
+          // <ChapterForm courseId={courseId} />
+          <div>hllo world</div>
         ) : (
           <div className="space-y-3">
             {sortedChapters?.map((chapter, index) => (
@@ -65,14 +55,19 @@ export const ChapterList = ({ moduleId }: ChapterListProps) => {
                         {chapter.estimatedDuration}
                       </div>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="mt-2 h-8 text-xs"
-                      asChild
-                    >
-                      <Link href={`/chapters/${chapter.id}`}>View Chapter</Link>
-                    </Button>
+                    <div className="flex justify-between">
+                      <Button>hello world</Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="mt-2 h-8 text-xs"
+                        asChild
+                      >
+                        <Link href={`/chapters/${chapter.id}`}>
+                          View Chapter
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 {index < chapters.length - 1 && <Separator className="my-3" />}
