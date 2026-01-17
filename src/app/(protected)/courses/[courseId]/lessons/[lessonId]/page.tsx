@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 import { LessonContent } from "@/features/lessons/presentation/LessonContent";
 import { useGetCourse } from "@/features/course/application/useGetCourses";
+import { LessonPageHeader } from "@/features/lessons/presentation/LessonPageHeader";
 
 const LessonPage = () => {
   const params = useParams();
@@ -15,29 +14,17 @@ const LessonPage = () => {
   const { data: course } = useGetCourse(courseId);
 
   return (
-    <>
-      <div className="p-6">
-        <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
-          <Link
-            href="/courses"
-            className="hover:text-foreground transition-colors font-medium"
-          >
-            Courses
-          </Link>
-          <ChevronRight className="h-4 w-4 mx-2" />
-          <Link
-            href={`/courses/${courseId}`}
-            className="hover:text-foreground transition-colors font-medium truncate"
-          >
-            {course?.name || "Course"}
-          </Link>
-          <ChevronRight className="h-4 w-4 mx-2" />
-          <span className="font-medium text-foreground">Lesson</span>
-        </nav>
+    <div className="min-h-screen flex flex-col">
+      <LessonPageHeader
+        courseId={courseId}
+        courseName={course?.name}
+        lessonId={lessonId}
+      />
 
+      <div className="flex-1 flex justify-center p-6">
         <LessonContent lessonId={lessonId} />
       </div>
-    </>
+    </div>
   );
 };
 
