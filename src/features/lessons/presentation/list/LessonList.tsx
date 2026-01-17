@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BookOpenIcon,
   LockIcon,
   PlayCircleIcon,
   FileText,
   Video,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { CheckCircle2Icon } from 'lucide-react';
-import Link from 'next/link';
-import { useGetLessons } from '../../application/useGetLesson';
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { CheckCircle2Icon } from "lucide-react";
+import Link from "next/link";
+import { useGetLessons } from "../../application/useGetLesson";
 
 interface LessonListProps {
   chapterId: string;
@@ -23,11 +23,11 @@ export const LessonList = ({ chapterId }: LessonListProps) => {
 
   const getLessonIcon = (type: string) => {
     switch (type) {
-      case 'video':
+      case "video":
         return <Video className="h-5 w-5 text-primary" />;
-      case 'article':
+      case "article":
         return <FileText className="h-5 w-5 text-primary" />;
-      case 'quiz':
+      case "quiz":
         return <CheckCircle2Icon className="h-5 w-5 text-primary" />;
       default:
         return <BookOpenIcon className="h-5 w-5 text-primary" />;
@@ -56,7 +56,7 @@ export const LessonList = ({ chapterId }: LessonListProps) => {
             Lessons
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            {data?.length} {data?.length === 1 ? 'lesson' : 'lessons'}
+            {data?.length} {data?.length === 1 ? "lesson" : "lessons"}
           </p>
         </div>
         <Button variant="outline">Generate Lessons</Button>

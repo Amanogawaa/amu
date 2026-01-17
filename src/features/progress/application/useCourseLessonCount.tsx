@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getModules } from "@/server/features/modules";
 import { getChapters } from "@/server/features/chapters";
 import { getLessons } from "@/server/features/lessons";
 import { logger } from "@/lib/loggers";
@@ -15,21 +14,13 @@ export function useCourseLessonCount(courseId: string) {
       }
 
       try {
-        const modules = await getModules(courseId);
+        const chapters = await getChapters(courseId);
 
-        if (!modules || modules.length === 0) {
+        if (!chapters || chapters.length === 0) {
           return 0;
         }
 
-        const chapterPromises = modules.map((module) => getChapters(module.id));
-        const chaptersArrays = await Promise.all(chapterPromises);
-        const allChapters = chaptersArrays.flat();
-
-        if (allChapters.length === 0) {
-          return 0;
-        }
-
-        const lessonPromises = allChapters.map((chapter) =>
+        const lessonPromises = chapters.map((chapter) =>
           getLessons(chapter.id)
         );
         const lessonsArrays = await Promise.all(lessonPromises);

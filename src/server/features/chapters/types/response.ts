@@ -1,9 +1,8 @@
 export interface Chapter {
   id: string;
-  moduleId: string;
+  courseId: string;
   chapterOrder: number;
   courseName: string;
-  moduleName: string;
   chapterName: string;
   chapterDescription: string;
   estimatedDuration: string;

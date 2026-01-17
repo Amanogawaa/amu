@@ -1,15 +1,15 @@
 "use client";
 
 import { getChapter } from "@/server/features/chapters";
-import { getModule } from "@/server/features/modules";
 import { useQuery } from "@tanstack/react-query";
 import { useGetLesson } from "./useGetLesson";
+import { getCourseById } from "@/server/features/course";
 
 export function useLessonCourse(lessonId: string) {
   const { data: lesson } = useGetLesson(lessonId);
 
   return useQuery({
-    queryKey: ["lesson-course", lessonId],
+    queryKey: ["lesson-course", lessonId],  
     queryFn: async () => {
       if (!lesson?.chapterId) {
         throw new Error("Lesson has no chapterId");
@@ -17,20 +17,18 @@ export function useLessonCourse(lessonId: string) {
 
       const chapter = await getChapter(lesson.chapterId);
 
-      if (!chapter?.moduleId) {
-        throw new Error("Chapter has no moduleId");
+      if (!chapter?.courseId) {
+        throw new Error("Chapter has no courseId");
       }
 
-      const module = await getModule(chapter.moduleId);
-      if (!module?.courseId) {
-        throw new Error("Module has no courseId");
+      const course = await getCourseById(chapter.courseId);
+      if (!course?.id) {
+        throw new Error("Course has no courseId");
       }
 
       return {
-        courseId: module.courseId,
-        courseName: module.courseName,
-        moduleId: chapter.moduleId,
-        moduleName: chapter.moduleName,
+        courseId: course.id,
+        courseName: course.name,
         chapterId: lesson.chapterId,
         chapterName: chapter.chapterName,
       };
