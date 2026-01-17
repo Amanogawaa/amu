@@ -5,6 +5,7 @@ import React from "react";
 import { LessonContent } from "@/features/lessons/presentation/LessonContent";
 import { useGetCourse } from "@/features/course/application/useGetCourses";
 import { LessonPageHeader } from "@/features/lessons/presentation/LessonPageHeader";
+import { LessonAssistant } from "@/features/lesson-assistant/presentation";
 
 const LessonPage = () => {
   const params = useParams();
@@ -24,6 +25,12 @@ const LessonPage = () => {
       <div className="flex-1 flex justify-center p-6">
         <LessonContent lessonId={lessonId} />
       </div>
+
+      <LessonAssistant
+        lessonId={lessonId}
+        courseId={courseId}
+        lessonTitle={course?.name}
+      />
     </div>
   );
 };
