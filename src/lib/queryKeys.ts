@@ -21,6 +21,9 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.chapters.details(), id] as const,
   },
 
+  // lesson assistant
+  lesson_assistant: {},
+
   // Lessons
   lessons: {
     all: ["lessons"] as const,
@@ -59,7 +62,7 @@ export const queryKeys = {
       courseId: string,
       limit: number,
       offset: number,
-      parentId?: string
+      parentId?: string,
     ) =>
       [
         ...queryKeys.comments.lists(),

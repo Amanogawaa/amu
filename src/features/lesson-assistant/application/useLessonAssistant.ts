@@ -1,9 +1,32 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/features/auth/application/AuthContext";
 import type { AssistantMessage, SuggestedQuestion } from "../domain/types";
+import {
+  createOrGetChat,
+  askQuestionStream,
+  getChatHistory,
+  deleteChat,
+} from "@/server/features/lesson-assistant";
+import type { ChatMessage } from "@/server/features/lesson-assistant/types";
 
-export const useLessonAssistant = (lessonId: string, courseId: string) => {
+const convertMessage = (msg: ChatMessage): AssistantMessage => ({
+  id: msg.id,
+  role: msg.role,
+  content: msg.content,
+  timestamp: new Date(msg.createdAt),
+  metadata: msg.metadata,
+});
+
+export const useLessonAssistant = (lessonId: string) => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [chatId, setChatId] = useState<string | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const streamingBufferRef = useRef<string>("");
+  const streamingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const queryClient = useQueryClient();
 
   const suggestedQuestions: SuggestedQuestion[] = [
     {
@@ -28,44 +51,154 @@ export const useLessonAssistant = (lessonId: string, courseId: string) => {
     },
   ];
 
+  const { data: chatData, isLoading: isInitializing } = useQuery({
+    queryKey: ["lesson-assistant-chat", lessonId],
+    queryFn: () => createOrGetChat({ lessonId }),
+    enabled: !!lessonId,
+  });
+
+  const { data: historyData, isLoading: isLoadingHistory } = useQuery({
+    queryKey: ["lesson-assistant-history", chatId],
+    queryFn: () => getChatHistory(chatId!, { limit: 50 }),
+    enabled: !!chatId,
+  });
+
+  useEffect(() => {
+    if (chatData?.data?.chat?.id) {
+      setChatId(chatData.data.chat.id);
+    }
+  }, [chatData]);
+
+  useEffect(() => {
+    if (historyData?.data?.messages) {
+      setMessages(historyData.data.messages.map(convertMessage));
+      setIsInitialLoad(false);
+    }
+  }, [historyData]);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => {
+      if (!chatId) throw new Error("Chat session not initialized");
+      return deleteChat(chatId);
+    },
+    onSuccess: () => {
+      setMessages([]);
+      setChatId(null);
+      queryClient.invalidateQueries({
+        queryKey: ["lesson-assistant-chat", lessonId],
+      });
+    },
+  });
+
   const sendMessage = useCallback(
     async (content: string) => {
+      if (!chatId) {
+        console.error("Chat session not initialized");
+        return;
+      }
+
       const userMessage: AssistantMessage = {
-        id: Date.now().toString(),
+        id: `temp-user-${Date.now()}`,
         role: "user",
         content,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, userMessage]);
-      setIsLoading(true);
+      setIsStreaming(true);
 
-      // TODO: Integrate with actual API
-      // Simulate AI response for UI demo
-      setTimeout(() => {
-        const assistantMessage: AssistantMessage = {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content:
-            "I'm here to help! This is a placeholder response. The AI assistant will be integrated soon to provide personalized help based on the lesson content.",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-        setIsLoading(false);
-      }, 1000);
+      const assistantMessageId = `temp-assistant-${Date.now()}`;
+      const placeholderMessage: AssistantMessage = {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, placeholderMessage]);
+
+      try {
+        let currentAssistantId = assistantMessageId;
+
+        await askQuestionStream(
+          chatId,
+          { question: content },
+          user,
+          (chunk: string) => {
+            streamingBufferRef.current += chunk;
+
+            if (streamingTimerRef.current) {
+              clearTimeout(streamingTimerRef.current);
+            }
+
+            streamingTimerRef.current = setTimeout(() => {
+              const bufferedContent = streamingBufferRef.current;
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === currentAssistantId
+                    ? { ...msg, content: bufferedContent }
+                    : msg,
+                ),
+              );
+            }, 50);
+          },
+          (finalMessage: ChatMessage) => {
+            // Clear any pending updates
+            if (streamingTimerRef.current) {
+              clearTimeout(streamingTimerRef.current);
+            }
+            streamingBufferRef.current = "";
+
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === currentAssistantId
+                  ? convertMessage(finalMessage)
+                  : msg,
+              ),
+            );
+            setIsStreaming(false);
+          },
+          (error: Error) => {
+            console.error("Streaming error:", error);
+            if (streamingTimerRef.current) {
+              clearTimeout(streamingTimerRef.current);
+            }
+            streamingBufferRef.current = "";
+            setMessages((prev) =>
+              prev.filter((msg) => msg.id !== currentAssistantId),
+            );
+            setIsStreaming(false);
+          },
+        );
+      } catch (error) {
+        console.error("Failed to send message:", error);
+        if (streamingTimerRef.current) {
+          clearTimeout(streamingTimerRef.current);
+        }
+        streamingBufferRef.current = "";
+        setMessages((prev) =>
+          prev.filter((msg) => msg.id !== assistantMessageId),
+        );
+        setIsStreaming(false);
+      }
     },
-    [lessonId, courseId]
+    [chatId, user],
   );
 
   const clearMessages = useCallback(() => {
-    setMessages([]);
-  }, []);
+    deleteMutation.mutate();
+  }, [deleteMutation]);
 
   return {
     messages,
-    isLoading,
+    isLoading: isStreaming,
+    isInitializing:
+      messages.length === 0 &&
+      isInitialLoad &&
+      (isInitializing || isLoadingHistory),
     suggestedQuestions,
     sendMessage,
     clearMessages,
+    chatId,
   };
 };
