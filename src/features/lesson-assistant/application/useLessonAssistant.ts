@@ -143,7 +143,6 @@ export const useLessonAssistant = (lessonId: string) => {
             }, 50);
           },
           (finalMessage: ChatMessage) => {
-            // Clear any pending updates
             if (streamingTimerRef.current) {
               clearTimeout(streamingTimerRef.current);
             }

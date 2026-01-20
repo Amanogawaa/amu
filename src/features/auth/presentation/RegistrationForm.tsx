@@ -1,20 +1,20 @@
-import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
-import { Button } from '@/components/ui/button';
+import GeneralLoadingPage from "@/components/states/GeneralLoadingPage";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -22,10 +22,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { logger } from '@/lib/loggers';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { logger } from "@/lib/loggers";
+import { cn } from "@/lib/utils";
 import {
   Calendar,
   Eye,
@@ -35,18 +35,18 @@ import {
   Mail,
   User,
   User2,
-} from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useAuth } from '../application/AuthContext';
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../application/AuthContext";
 
 const RegistrationForm = ({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<'div'>) => {
+}: React.ComponentPropsWithoutRef<"div">) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -57,18 +57,18 @@ const RegistrationForm = ({
 
   const form = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      program: '',
-      yearLevel: '',
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      program: "",
+      yearLevel: "",
     },
   });
 
   useEffect(() => {
     if (!loading && user) {
-      const redirect = searchParams.get('redirect') || '/';
+      const redirect = searchParams.get("redirect") || "/dashboard";
       router.push(redirect);
     }
   }, [user, loading, router, searchParams]);
@@ -93,7 +93,7 @@ const RegistrationForm = ({
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
         <form
           method="post"
@@ -136,7 +136,7 @@ const RegistrationForm = ({
               Welcome to CourseCraft
             </h1>
             <p className="text-xs text-center">
-              Already have an account? <Link href={'/signin'}>Sign in</Link>
+              Already have an account? <Link href={"/signin"}>Sign in</Link>
             </p>
           </div>
           <div className="relative grid gap-4 ">
@@ -156,7 +156,7 @@ const RegistrationForm = ({
                           required
                           {...field}
                           className={cn(
-                            'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                            "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                           )}
                         />
                       </div>
@@ -179,7 +179,7 @@ const RegistrationForm = ({
                           required
                           {...field}
                           className={cn(
-                            'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                            "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                           )}
                         />
                       </div>
@@ -205,7 +205,7 @@ const RegistrationForm = ({
                         >
                           <SelectTrigger
                             className={cn(
-                              'rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                              "rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                             )}
                           >
                             <SelectValue placeholder="Select program" />
@@ -239,7 +239,7 @@ const RegistrationForm = ({
                         >
                           <SelectTrigger
                             className={cn(
-                              'rounded-lg border  w-full border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                              "rounded-lg border  w-full border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                             )}
                           >
                             <SelectValue placeholder="Select year level" />
@@ -272,7 +272,7 @@ const RegistrationForm = ({
                         required
                         {...field}
                         className={cn(
-                          'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                         )}
                       />
                     </div>
@@ -293,15 +293,15 @@ const RegistrationForm = ({
                         placeholder="••••••••"
                         required
                         {...field}
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         className={cn(
-                          'rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                         )}
                       />
                       <Button
                         type="button"
                         className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
-                        variant={'ghost'}
+                        variant={"ghost"}
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? <EyeClosed /> : <Eye />}
@@ -313,7 +313,7 @@ const RegistrationForm = ({
             />
             <Button
               className={cn(
-                'w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in'
+                "w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in",
               )}
               type="submit"
             >
@@ -336,7 +336,7 @@ const RegistrationForm = ({
               await signInWithGoogle();
             } catch (err: any) {
               if (!err?.cancelled) {
-                logger.error('Google sign-in error:', err);
+                logger.error("Google sign-in error:", err);
               }
             }
           }}
@@ -351,15 +351,15 @@ const RegistrationForm = ({
         </Button>
       </div>
       <div className="text-center text-xs text-muted-foreground">
-        By signing up, you agree to our{' '}
+        By signing up, you agree to our{" "}
         <Link
           href="/terms"
           target="_blank"
           className="underline hover:text-primary"
         >
           Terms & Conditions
-        </Link>{' '}
-        and{' '}
+        </Link>{" "}
+        and{" "}
         <Link
           href="/privacy"
           target="_blank"

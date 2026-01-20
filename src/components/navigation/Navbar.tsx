@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { cn } from '@/lib/utils';
-import { Menu } from 'lucide-react';
-import Image from 'next/image';
-import { NavigationBarUser } from './NavbarUser';
+} from "@/components/ui/sheet";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { cn } from "@/lib/utils";
+import { Menu } from "lucide-react";
+import Image from "next/image";
+import { NavigationBarUser } from "./NavbarUser";
 
 export interface MenuItem {
   title: string;
@@ -50,20 +50,20 @@ interface NavbarProps {
 
 const Navbar = ({
   logo = {
-    url: '/',
-    src: '/coursecraft.png',
-    alt: 'logo',
-    title: 'CourseCraft',
+    url: "/",
+    src: "/coursecraft.png",
+    alt: "logo",
+    title: "CourseCraft",
   },
   menu = [
-    { title: 'Home', url: '/' },
-    { title: 'About', url: '/about' },
-    { title: 'Features', url: '/features' },
-    { title: 'Glossary', url: '/glossary' },
+    { title: "Home", url: "/" },
+    { title: "About", url: "/about" },
+    { title: "Features", url: "/features" },
+    { title: "Glossary", url: "/glossary" },
   ],
   auth = {
-    login: { title: 'Login', url: '/signin' },
-    signup: { title: 'Sign up', url: '/signup' },
+    login: { title: "Login", url: "/signin" },
+    signup: { title: "Sign up", url: "/signup" },
   },
 }: NavbarProps) => {
   const { user, loading } = useAuth();
@@ -71,7 +71,7 @@ const Navbar = ({
   return (
     <section
       className={cn(
-        'py-4 sticky top-0 border-b border-border/40 z-50 shadow-sm backdrop-blur-lg bg-background/30'
+        "py-4 sticky top-0 border-b border-border/40 z-50 shadow-sm backdrop-blur-lg bg-background/30",
       )}
     >
       <div className="container max-w-7xl mx-auto">
@@ -79,7 +79,10 @@ const Navbar = ({
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <a
+              href={!user ? logo.url : "/dashboard"}
+              className="flex items-center gap-2"
+            >
               <Image
                 src={logo.src}
                 className="max-h-8 dark:invert"

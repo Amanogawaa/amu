@@ -1,28 +1,28 @@
-import GeneralLoadingPage from '@/components/states/GeneralLoadingPage';
-import { Button } from '@/components/ui/button';
+import GeneralLoadingPage from "@/components/states/GeneralLoadingPage";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useAuth } from '../application/AuthContext';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { logger } from '@/lib/loggers';
-import { Eye, EyeClosed, Lock, User2, UserCircle } from 'lucide-react';
-import { Value } from '@radix-ui/react-select';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../application/AuthContext";
+import { useRouter, useSearchParams } from "next/navigation";
+import { logger } from "@/lib/loggers";
+import { Eye, EyeClosed, Lock, User2, UserCircle } from "lucide-react";
+import { Value } from "@radix-ui/react-select";
 
 const LoginForm = ({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<'div'>) => {
+}: React.ComponentPropsWithoutRef<"div">) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
@@ -30,14 +30,14 @@ const LoginForm = ({
 
   const form = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   useEffect(() => {
     if (!loading && user) {
-      const redirect = searchParams.get('redirect') || '/';
+      const redirect = searchParams.get("redirect") || "/dashboard";
       router.push(redirect);
     }
   }, [user, loading, router, searchParams]);
@@ -47,13 +47,13 @@ const LoginForm = ({
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
         <form
           method="post"
           onSubmit={(e) => {
             e.preventDefault();
-            signIn(form.getValues('email'), form.getValues('password'));
+            signIn(form.getValues("email"), form.getValues("password"));
           }}
           className="flex flex-col gap-6"
         >
@@ -95,7 +95,7 @@ const LoginForm = ({
                         required
                         {...field}
                         className={cn(
-                          'rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                         )}
                       />
                     </div>
@@ -116,15 +116,15 @@ const LoginForm = ({
                         placeholder="••••••••"
                         required
                         {...field}
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         className={cn(
-                          'rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary'
+                          "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
                         )}
                       />
                       <Button
                         type="button"
                         className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
-                        variant={'ghost'}
+                        variant={"ghost"}
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? <EyeClosed /> : <Eye />}
@@ -136,7 +136,7 @@ const LoginForm = ({
             />
             <Button
               className={cn(
-                'w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in'
+                "w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in",
               )}
               type="submit"
             >
@@ -159,7 +159,7 @@ const LoginForm = ({
               await signInWithGoogle();
             } catch (err: any) {
               if (!err?.cancelled) {
-                logger.error('Google sign-in error:', err);
+                logger.error("Google sign-in error:", err);
               }
             }
           }}
@@ -174,15 +174,15 @@ const LoginForm = ({
         </Button>
       </div>
       <div className="text-center text-xs text-muted-foreground">
-        By signing in, you agree to our{' '}
+        By signing in, you agree to our{" "}
         <Link
           href="/terms"
           target="_blank"
           className="underline hover:text-primary"
         >
           Terms & Conditions
-        </Link>{' '}
-        and{' '}
+        </Link>{" "}
+        and{" "}
         <Link
           href="/privacy"
           target="_blank"

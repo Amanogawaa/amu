@@ -1,6 +1,8 @@
 new features to implement: 
-    ☐ implement ai chatbot with context-based knowledge - ai agent that can answer questions related to the generated lesson 
-    ☐ Leaderboards with context: By skill level, by topic, by learning style (optional?)
+    ✔ implement ai chatbot with context-based knowledge - ai agent that can answer questions related to the generated lesson @done(26-01-20 19:49)
+    ☐ Leaderboards based on the exp they get from completing lessons and courses
+    ☐ Streak calendar: Visualize learning streaks and reward consistency - maybe commit not streak? just to be different
+    ☐ Quick actions: Buttons for generating new courses, reviewing past lessons, or taking quizzes
     ☐ Achievement trees: Not just badges, but skill trees showing progression
     ☐ Progress visualization: Beautiful skill trees and learning maps
     ☐ 5-minute challenges: Quick daily practice
