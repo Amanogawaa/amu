@@ -21,9 +21,12 @@ import {
   GraduationCap,
   Layers,
   User2,
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import { CourseValidationBadge } from "../components/CourseValidationBadge";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 interface CourseCardProps {
   course: Course;
@@ -34,6 +37,9 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
   const { data: enrollmentCount } = useEnrollmentCount(course.id);
   const { user } = useAuth();
   const isOwner = user?.uid === course.uid;
+
+  // Extend dayjs with relativeTime plugin
+  dayjs.extend(relativeTime);
 
   const levelColors = {
     beginner:
@@ -74,6 +80,14 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
         <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
           {course.description}
         </p>
+
+        {/* Date Generated Indicator */}
+        {course.createdAt && (
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
+            <Calendar className="h-3.5 w-3.5" />
+            <span>Generated {dayjs(course.createdAt).fromNow()}</span>
+          </div>
+        )}
 
         {/* Learning Outcomes Preview */}
         {course.learning_outcomes && course.learning_outcomes.length > 0 && (
