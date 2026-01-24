@@ -2,19 +2,27 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function StreakCalendar() {
-  // Mock data for the last 30 days
-  const days = Array.from({ length: 30 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (29 - i));
-    const isCompleted = Math.random() > 0.3; // Random completion
-    return {
-      date,
-      completed: isCompleted,
-      xp: isCompleted ? Math.floor(Math.random() * 100) + 50 : 0,
-    };
-  });
+  const [days, setDays] = useState<Array<{ date: Date; completed: boolean; xp: number }>>([]);
+  const [mounted, setMounted] = useState(false);
+
+  // Generate mock data only on client side to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    const mockDays = Array.from({ length: 30 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (29 - i));
+      const isCompleted = Math.random() > 0.3; // Random completion
+      return {
+        date,
+        completed: isCompleted,
+        xp: isCompleted ? Math.floor(Math.random() * 100) + 50 : 0,
+      };
+    });
+    setDays(mockDays);
+  }, []);
 
   const getDayName = (date: Date) => {
     return date.toLocaleDateString("en-US", { weekday: "short" });
@@ -26,6 +34,42 @@ export function StreakCalendar() {
     if (xp < 100) return "bg-green-400 dark:bg-green-700/60";
     return "bg-green-600 dark:bg-green-500";
   };
+
+  // Show skeleton while loading to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Flame className="h-5 w-5 text-orange-500" />
+            Daily Streak
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-3xl font-bold">-</p>
+                <p className="text-sm text-muted-foreground">Current streak</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-semibold text-orange-500">🔥</p>
+                <p className="text-sm text-muted-foreground">Keep it up!</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-10 gap-1.5">
+              {Array.from({ length: 30 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="aspect-square rounded-sm bg-muted animate-pulse"
+                />
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
