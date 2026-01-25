@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
+import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
 
 interface LessonPageHeaderProps {
   courseId: string;
@@ -68,7 +69,6 @@ export const LessonPageHeader = ({
               </span>
             )}
           </a>
-          {/* Left side - Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link
               href="/my-learning"
@@ -110,9 +110,10 @@ export const LessonPageHeader = ({
                 Course Outline
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[400px] sm:w-[540px]">
+            <SheetContent side="right" className="min-w-[800px]">
               <SheetHeader>
                 <SheetTitle>{displayCourseName}</SheetTitle>
+                <ChapterList courseId={courseId} />
               </SheetHeader>
               <div className="mt-4">
                 <p className="text-sm text-muted-foreground">later</p>

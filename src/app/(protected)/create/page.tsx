@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import { Skeleton } from '@/components/ui/skeleton';
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FullGenerationPage = dynamic(
-  () => import('@/features/create/presentation/FullGenerationPage'),
+  () => import("@/features/create/presentation/FullGenerationPage"),
   {
     loading: () => (
       <div className="space-y-6">
@@ -14,7 +14,7 @@ const FullGenerationPage = dynamic(
       </div>
     ),
     ssr: false,
-  }
+  },
 );
 
 const CreatePage = () => {

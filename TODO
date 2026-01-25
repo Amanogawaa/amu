@@ -1,18 +1,17 @@
 new features to implement: 
     ✔ implement ai chatbot with context-based knowledge - ai agent that can answer questions related to the generated lesson @done(26-01-20 19:49)
     ☐ Leaderboards based on the exp they get from completing lessons and courses
-    ☐ Streak calendar: Visualize learning streaks and reward consistency - maybe commit not streak? just to be different
-    ☐ Quick actions: Buttons for generating new courses, reviewing past lessons, or taking quizzes
-    ☐ Achievement trees: Not just badges, but skill trees showing progression
-    ☐ Progress visualization: Beautiful skill trees and learning maps
+    ☐ Streak calendar: Visualize learning streaks and reward consistency - maybe commit not streak? just to be different - included on the leaderboards feature
+    ☐ Progress visualization: Beautiful skill trees and learning maps -i dont know how to do this yet, how can we connect the courses that user generates based on skill level and topic? should i rely on the recommednation system for this?
     ☐ 5-minute challenges: Quick daily practice
+    ☐ for quizzes - implement different types of questions like true/false, fill in the blanks, matching type, and scenario-based questions
 
 revisions todo:
     ✔ duration concerns - remove the module/chapter feature - course -> chapter -> lesson, keep the course structure simple but rich with lessons only - @done(26-01-17 15:25)
     ☐ learning continuity - its either generate a new course or recommend an existing course but will be based on next difficulty level from previous course taken
-    ☐ match number of lessons to duration of courses - dont force 4 lessons per chapter, let the ai decide based on the duration of the course, remove ung constraints in the chapter template
+    ✔ match number of lessons to duration of courses - dont force 4 lessons per chapter, let the ai decide based on the duration of the course, remove ung constraints in the chapter template @done(26-01-23 17:00)
     ☐ course recommendation system - based on learning style, skill level, and previous courses
-    ☐ sort courses by recently generated as default with data generated indicator
+    ✔ sort courses by recently generated as default with data generated indicator @done(26-01-23 16:42)
 
 issue to fix:
     ✔ validation verification and analysis of request before generating - backend middleware to validate request data before processing (current implementation is not working as intended) @done(25-11-10 08:03)
@@ -22,14 +21,14 @@ issue to fix:
 
 minor fix: 
     ☐ avp - revise into making a self-made animation
-    ☐ project title - i dont know what to put there
+    ☐ project title - i dont know what to put there    
 
 note:
-    ☐ make the lesson generation flexible, while having a structure is good, but let the ai decide how many lessons are needed based on the course duration and topic
+    ✔ make the lesson generation flexible, while having a structure is good, but let the ai decide how many lessons are needed based on the course duration and topic @done(26-01-23 17:00)
 
 duration concerns:
-    ☐ rechecking of system and user prompt for lesson is needed - make sure the ai understands the duration and adjust the number of lessons accordingly
-    ☐ recheck the chapter template for lesson generation - remove ung constraints and make it flexible
-    ☐ frontend refactor for removing module feature - course -> chapter -> lesson only (pending)
+    ✔ rechecking of system and user prompt for lesson is needed - make sure the ai understands the duration and adjust the number of lessons accordingly @done(26-01-23 17:00)
+    ✔ recheck the chapter template for lesson generation - remove ung constraints and make it flexible @done(26-01-23 17:00)
+    ✔ frontend refactor for removing module feature - course dd-> chapter -> lesson only (pending) @done(26-01-24 13:10)
 
 generationprogressdisplay

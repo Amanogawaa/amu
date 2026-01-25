@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useFullGeneration } from "../application/useFullGeneration";
 import { useGenerationContext } from "../context/GenerationContext";
 import { FullGenerationForm } from "../presentation/FullGenerationForm";
+import { StreamingResponseWindow } from "./StreamingResponseWindow";
 
 export default function FullGenerationPage() {
   const router = useRouter();
@@ -92,6 +93,7 @@ export default function FullGenerationPage() {
                     onSubmit={startGeneration}
                     isGenerating={isGenerating}
                   />
+                  <StreamingResponseWindow />
                 </CardContent>
               </Card>
             ) : (
