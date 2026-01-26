@@ -4,51 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award } from "lucide-react";
+import { useLeaderboards } from "@/features/leaderboards/application/useLeaderboards";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth/application/AuthContext";
 
 export function Leaderboard() {
-  const leaderboardData = [
-    {
-      rank: 1,
-      name: "Sarah Chen",
-      avatar: "",
-      xp: 3850,
-      streak: 15,
-      initials: "SC",
-    },
-    {
-      rank: 2,
-      name: "John Martinez",
-      avatar: "",
-      xp: 3420,
-      streak: 12,
-      initials: "JM",
-    },
-    {
-      rank: 3,
-      name: "Emma Wilson",
-      avatar: "",
-      xp: 3180,
-      streak: 10,
-      initials: "EW",
-    },
-    {
-      rank: 4,
-      name: "You",
-      avatar: "",
-      xp: 1250,
-      streak: 7,
-      initials: "ME",
-      isCurrentUser: true,
-    },
-    {
-      rank: 5,
-      name: "Michael Brown",
-      avatar: "",
-      xp: 980,
-      streak: 5,
-      initials: "MB",
-    },
-  ];
+  const { user } = useAuth();
+  const { data, isLoading, isError } = useLeaderboards({
+    limit: 10,
+    sortBy: "score",
+  });
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -75,6 +40,60 @@ export function Leaderboard() {
     return "";
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="h-fit sticky top-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-yellow-500" />
+            Leaderboard
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 p-3">
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-3 w-32" />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <Card className="h-fit sticky top-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-yellow-500" />
+            Leaderboard
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-4">
+            Unable to load leaderboard
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const leaderboardData = data.data || [];
+
   return (
     <Card className="h-fit sticky top-4">
       <CardHeader>
@@ -84,51 +103,66 @@ export function Leaderboard() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {leaderboardData.map((user) => (
-          <div
-            key={user.rank}
-            className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-              user.isCurrentUser
-                ? "bg-primary/10 border border-primary/20"
-                : "hover:bg-muted/50"
-            }`}
-          >
-            <div className="flex items-center justify-center w-8">
-              {getRankIcon(user.rank) || (
-                <span className="text-sm font-semibold text-muted-foreground">
-                  #{user.rank}
-                </span>
-              )}
-            </div>
-
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className={getRankBadge(user.rank)}>
-                {user.initials}
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm truncate">
-                {user.name}
-                {user.isCurrentUser && (
-                  <Badge variant="secondary" className="ml-2 text-xs">
-                    You
-                  </Badge>
-                )}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {user.xp.toLocaleString()} XP • {user.streak} day streak
-              </p>
-            </div>
-          </div>
-        ))}
-
-        <div className="pt-3 border-t">
-          <p className="text-xs text-center text-muted-foreground">
-            Keep learning to climb the ranks!
+        {leaderboardData.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No leaderboard data yet
           </p>
-        </div>
+        ) : (
+          <>
+            {leaderboardData.map((entry) => {
+              const isCurrentUser = user?.uid === entry.userId;
+              return (
+                <div
+                  key={entry.userId}
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                    isCurrentUser
+                      ? "bg-primary/10 border border-primary/20"
+                      : "hover:bg-muted/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-center w-8">
+                    {getRankIcon(entry.rank) || (
+                      <span className="text-sm font-semibold text-muted-foreground">
+                        #{entry.rank}
+                      </span>
+                    )}
+                  </div>
+
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={entry.photoURL} alt={entry.userName} />
+                    <AvatarFallback className={getRankBadge(entry.rank)}>
+                      {getInitials(entry.userName)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">
+                      {entry.userName}
+                      {isCurrentUser && (
+                        <Badge variant="secondary" className="ml-2 text-xs">
+                          You
+                        </Badge>
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {entry.score.toLocaleString()} XP • {entry.currentStreak}{" "}
+                      day streak
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="pt-3 border-t">
+              <p className="text-xs text-center text-muted-foreground">
+                {data.userRank && data.userRank > 10 && (
+                  <>Your rank: #{data.userRank} • </>
+                )}
+                Keep learning to climb the ranks!
+              </p>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

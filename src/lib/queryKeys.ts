@@ -143,4 +143,16 @@ export const queryKeys = {
     likeStatus: (submissionId: string) =>
       [...queryKeys.capstone.all, "like-status", submissionId] as const,
   },
+
+  // Leaderboards
+  leaderboards: {
+    all: ["leaderboards"] as const,
+    lists: () => [...queryKeys.leaderboards.all, "list"] as const,
+    list: (filters?: any) =>
+      [...queryKeys.leaderboards.lists(), filters] as const,
+    stats: () => [...queryKeys.leaderboards.all, "stats"] as const,
+    userStats: (userId?: string) =>
+      [...queryKeys.leaderboards.all, "user", userId || "me"] as const,
+    myStats: () => [...queryKeys.leaderboards.all, "user", "me"] as const,
+  },
 } as const;
