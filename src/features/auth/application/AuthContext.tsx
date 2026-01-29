@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   User,
   onAuthStateChanged,
@@ -15,12 +15,12 @@ import {
   GithubAuthProvider,
   linkWithPopup,
   unlink,
-} from 'firebase/auth';
-import { auth, db } from '@/utils/firebase';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
-import { logger } from '@/lib/loggers';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+} from "firebase/auth";
+import { auth, db } from "@/utils/firebase";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { logger } from "@/lib/loggers";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -35,7 +35,7 @@ interface AuthContextType {
       lastName?: string;
       program?: string;
       yearLevel?: string;
-    }
+    },
   ) => Promise<void>;
   linkGithub: () => Promise<void>;
   unlinkGithub: () => Promise<void>;
@@ -50,32 +50,32 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 const getErrorMessage = (error: AuthError): string => {
   switch (error.code) {
-    case 'auth/invalid-email':
-      return 'Invalid email address.';
-    case 'auth/user-disabled':
-      return 'This account has been disabled.';
-    case 'auth/user-not-found':
-      return 'No account found with this email.';
-    case 'auth/wrong-password':
-      return 'Incorrect password.';
-    case 'auth/email-already-in-use':
-      return 'An account with this email already exists.';
-    case 'auth/weak-password':
-      return 'Password should be at least 6 characters.';
-    case 'auth/operation-not-allowed':
-      return 'This sign-in method is not enabled.';
-    case 'auth/popup-closed-by-user':
-      return 'Sign-in popup was closed before completing.';
-    case 'auth/cancelled-popup-request':
-      return 'Sign-in was cancelled.';
-    case 'auth/network-request-failed':
-      return 'Network error. Please check your connection.';
-    case 'auth/too-many-requests':
-      return 'Too many attempts. Please try again later.';
-    case 'auth/invalid-credential':
-      return 'Invalid credentials. Please check your email and password.';
+    case "auth/invalid-email":
+      return "Invalid email address.";
+    case "auth/user-disabled":
+      return "This account has been disabled.";
+    case "auth/user-not-found":
+      return "No account found with this email.";
+    case "auth/wrong-password":
+      return "Incorrect password.";
+    case "auth/email-already-in-use":
+      return "An account with this email already exists.";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters.";
+    case "auth/operation-not-allowed":
+      return "This sign-in method is not enabled.";
+    case "auth/popup-closed-by-user":
+      return "Sign-in popup was closed before completing.";
+    case "auth/cancelled-popup-request":
+      return "Sign-in was cancelled.";
+    case "auth/network-request-failed":
+      return "Network error. Please check your connection.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Please try again later.";
+    case "auth/invalid-credential":
+      return "Invalid credentials. Please check your email and password.";
     default:
-      return error.message || 'An unexpected error occurred. Please try again.';
+      return error.message || "An unexpected error occurred. Please try again.";
   }
 };
 
@@ -84,20 +84,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [githubLinked, setGithubLinked] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
 
   const refreshToken = async (currentUser: User) => {
     try {
       const token = await currentUser.getIdToken(true);
-      Cookies.set('auth-token', token, {
+      Cookies.set("auth-token", token, {
         expires: 7,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
       });
       return token;
     } catch (err) {
-      logger.error('Error refreshing ID token:', err);
+      logger.error("Error refreshing ID token:", err);
       throw err;
     }
   };
@@ -110,10 +118,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           await refreshToken(user);
         } catch (err) {
-          logger.error('Error getting ID token:', err);
+          logger.error("Error getting ID token:", err);
         }
       } else {
-        Cookies.remove('auth-token');
+        Cookies.remove("auth-token");
       }
       setLoading(false);
     });
@@ -125,14 +133,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let refreshInterval: NodeJS.Timeout;
 
     if (user) {
-      refreshInterval = setInterval(async () => {
-        try {
-          await refreshToken(user);
-          logger.info('Token refreshed successfully');
-        } catch (err) {
-          logger.error('Failed to refresh token:', err);
-        }
-      }, 50 * 60 * 1000);
+      refreshInterval = setInterval(
+        async () => {
+          try {
+            await refreshToken(user);
+            logger.info("Token refreshed successfully");
+          } catch (err) {
+            logger.error("Failed to refresh token:", err);
+          }
+        },
+        50 * 60 * 1000,
+      );
     }
 
     return () => {
@@ -145,7 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (user) {
       const hasGithub = user.providerData.some(
-        (provider) => provider.providerId === 'github.com'
+        (provider) => provider.providerId === "github.com",
       );
       setGithubLinked(hasGithub);
     } else {
@@ -176,14 +187,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastName?: string;
       program?: string;
       yearLevel?: string;
-    }
+    },
   ) => {
     try {
       setError(null);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
 
       const user = userCredential.user;
@@ -194,25 +205,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
-      const userDocRef = doc(db, 'users', user.uid);
+      const userDocRef = doc(db, "users", user.uid);
       await setDoc(userDocRef, {
         uid: user.uid,
         email: user.email,
-        firstName: additionalData?.firstName || '',
-        lastName: additionalData?.lastName || '',
+        firstName: additionalData?.firstName || "",
+        lastName: additionalData?.lastName || "",
         displayName:
           additionalData?.firstName && additionalData?.lastName
             ? `${additionalData.firstName} ${additionalData.lastName}`
-            : '',
-        program: additionalData?.program || '',
-        yearLevel: additionalData?.yearLevel || '',
-        photoURL: user.photoURL || '',
-        status: 'public',
+            : "",
+        program: additionalData?.program || "",
+        yearLevel: additionalData?.yearLevel || "",
+        photoURL: user.photoURL || "",
+        status: "public",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
 
-      logger.info('User profile created successfully');
+      logger.info("User profile created successfully");
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -226,25 +237,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      const userDocRef = doc(db, 'users', result.user.uid);
+      const userDocRef = doc(db, "users", result.user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (!userDoc.exists()) {
-        const nameParts = result.user.displayName?.split(' ') || [];
+        const nameParts = result.user.displayName?.split(" ") || [];
         await setDoc(userDocRef, {
           uid: result.user.uid,
           email: result.user.email,
-          firstName: nameParts[0] || '',
-          lastName: nameParts.slice(1).join(' ') || '',
-          displayName: result.user.displayName || '',
-          program: '',
-          yearLevel: '',
-          photoURL: result.user.photoURL || '',
-          status: 'public',
+          firstName: nameParts[0] || "",
+          lastName: nameParts.slice(1).join(" ") || "",
+          displayName: result.user.displayName || "",
+          program: "",
+          yearLevel: "",
+          photoURL: result.user.photoURL || "",
+          status: "public",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         });
-        logger.info('Google user profile created successfully');
+        logger.info("Google user profile created successfully");
       }
 
       return result;
@@ -252,8 +263,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const authError = err as AuthError;
 
       if (
-        authError.code === 'auth/popup-closed-by-user' ||
-        authError.code === 'auth/cancelled-popup-request'
+        authError.code === "auth/popup-closed-by-user" ||
+        authError.code === "auth/cancelled-popup-request"
       ) {
         return Promise.reject({ cancelled: true });
       }
@@ -268,7 +279,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       await firebaseSignOut(auth);
-      router.push('/');
+      // Only navigate if component is still mounted
+      if (isMounted) {
+        router.push("/");
+      }
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
       setError(errorMessage);
@@ -280,7 +294,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null);
       if (!user) {
-        throw new Error('No user is currently signed in');
+        throw new Error("No user is currently signed in");
       }
       await updateProfile(user, { photoURL });
       await user.reload();
@@ -297,11 +311,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
 
       if (!user) {
-        throw new Error('No user is currently signed in');
+        throw new Error("No user is currently signed in");
       }
 
       const provider = new GithubAuthProvider();
-      provider.addScope('repo');
+      provider.addScope("repo");
 
       await linkWithPopup(user, provider);
       setGithubLinked(true);
@@ -315,9 +329,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const unlinkGithub = async () => {
     try {
       setError(null);
-      if (!user) throw new Error('No user signed in');
+      if (!user) throw new Error("No user signed in");
 
-      await unlink(user, 'github.com');
+      await unlink(user, "github.com");
       setGithubLinked(false);
     } catch (err) {
       const errorMessage = getErrorMessage(err as AuthError);
