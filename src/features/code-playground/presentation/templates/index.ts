@@ -1,8 +1,18 @@
 export * from "./react-template";
 export * from "./vue-template";
 export * from "./angular-template";
+export * from "./django-template";
+export * from "./fastapi-template";
+export * from "./express-template";
 
-export type FrameworkType = "react" | "vue" | "angular" | "vanilla";
+export type FrameworkType =
+  | "react"
+  | "vue"
+  | "angular"
+  | "django"
+  | "fastapi"
+  | "express"
+  | "vanilla";
 
 export function getFileExtension(framework: string): string {
   switch (framework.toLowerCase()) {

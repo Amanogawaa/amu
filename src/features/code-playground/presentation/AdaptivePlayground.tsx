@@ -16,6 +16,12 @@ const CodePlayground = lazy(() =>
   })),
 );
 
+const BackendPlayground = lazy(() =>
+  import("./BackendPlayground").then((mod) => ({
+    default: mod.BackendPlayground,
+  })),
+);
+
 interface AdaptivePlaygroundProps {
   lesson: Lesson;
   className?: string;
@@ -114,48 +120,7 @@ function renderPlayground(lesson: Lesson, env: any) {
   }
 
   if (env.type === "backend") {
-    return (
-      <div className="rounded-lg border bg-muted/50 p-8 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-          <svg
-            className="h-8 w-8 text-primary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-            />
-          </svg>
-        </div>
-        <h4 className="mb-2 text-lg font-semibold">
-          Backend Framework Playground
-        </h4>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {env.framework || "Backend"} playground coming in Phase 3
-        </p>
-        <div className="rounded-md bg-background p-4 text-left">
-          <p className="mb-2 text-xs font-medium text-muted-foreground">
-            Framework: {env.framework || "Unknown"}
-          </p>
-          {env.config?.files && (
-            <div className="text-xs">
-              <p className="font-medium">Project Structure:</p>
-              <ul className="ml-4 mt-1 list-disc">
-                {Object.keys(env.config.files).map((file) => (
-                  <li key={file} className="text-muted-foreground">
-                    {file}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    );
+    return <BackendPlayground environment={env} lessonId={lesson.id} />;
   }
 
   return (
