@@ -35,11 +35,11 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   });
   const { data: courseInfo } = useLessonCourse(lessonId);
   const { data: course, isLoading: courseLoading } = useGetCourse(
-    courseInfo?.courseId || ""
+    courseInfo?.courseId || "",
   );
   const { data: progress } = useProgressForCourse(courseInfo?.courseId || "");
   const { data: totalLessons } = useCourseLessonCount(
-    courseInfo?.courseId || ""
+    courseInfo?.courseId || "",
   );
   const { data: enrollmentStatus, isLoading: enrollmentLoading } =
     useEnrollmentStatus(courseInfo?.courseId || "", !!courseInfo?.courseId);
@@ -176,7 +176,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
 
           {course?.supportsCodePlayground && lesson.type === "article" && (
             <CodePlaygroundSection
-              lessonId={lessonId}
+              lesson={lesson}
               courseId={courseInfo?.courseId}
               courseLanguage={course?.language}
             />

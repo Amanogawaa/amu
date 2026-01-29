@@ -1,10 +1,20 @@
 new features to implement: 
     ✔ implement ai chatbot with context-based knowledge - ai agent that can answer questions related to the generated lesson @done(26-01-20 19:49)
-    ☐ Leaderboards based on the exp they get from completing lessons and courses
-    ☐ Streak calendar: Visualize learning streaks and reward consistency - maybe commit not streak? just to be different - included on the leaderboards feature
+    ✔ Leaderboards based on the exp they get from completing lessons and courses @done(26-01-26 22:29)
+    ✔ Streak calendar: Visualize learning streaks and reward consistency - maybe commit not streak? just to be different - included on the leaderboards feature @done(26-01-26 22:29)
     ☐ Progress visualization: Beautiful skill trees and learning maps -i dont know how to do this yet, how can we connect the courses that user generates based on skill level and topic? should i rely on the recommednation system for this?
-    ☐ 5-minute challenges: Quick daily practice
-    ☐ for quizzes - implement different types of questions like true/false, fill in the blanks, matching type, and scenario-based questions
+    ☐ 5-minute challenges: Quick daily practice - PHASE 2: integrate with adaptive playground exercise lessons
+    ✔ for quizzes - implement different types of questions like true/false, fill in the blanks, matching type, and scenario-based questions @done(26-01-26)
+    ✔ Adaptive Code Playground - Phase 1: Dual Engine Support (Piston + Judge0) @done(26-01-29 09:00)
+    ☐ Adaptive Code Playground - Phase 2: Frontend Framework Support (Sandpack) - IN PROGRESS
+        ✔ Install Sandpack dependencies @done(26-01-29 10:00)
+        ✔ Create SandpackPlayground component @done(26-01-29 10:30)
+        ✔ Create AdaptivePlayground switcher component @done(26-01-29 10:30)
+        ✔ Add React/Vue/Angular templates @done(26-01-29 10:15)
+        ✔ Update lesson rendering to use adaptive playground @done(26-01-29 10:45)
+        ☐ Test with AI-generated React lessons
+        ☐ UI/UX polish and responsive design
+        ☐ Performance optimization
 
 revisions todo:
     ✔ duration concerns - remove the module/chapter feature - course -> chapter -> lesson, keep the course structure simple but rich with lessons only - @done(26-01-17 15:25)

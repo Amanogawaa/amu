@@ -142,6 +142,16 @@ export async function generateFullCourse(
   );
 }
 
+export async function generateCourseStream(
+  payload: CreateCoursePayload,
+): Promise<{ data: Course; message: string }> {
+  return apiRequest<CreateCoursePayload, { data: Course; message: string }>(
+    "/courses/stream",
+    "post",
+    payload,
+  );
+}
+
 export async function generateFullCourseStream(
   payload: FullGenerationRequest,
   user: User | null,

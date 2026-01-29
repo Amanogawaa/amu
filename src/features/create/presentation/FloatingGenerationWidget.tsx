@@ -7,39 +7,50 @@ import { ExpandedProgressView } from "./ExpandedProgressView";
 import { StreamingResponseWindow } from "./StreamingResponseWindow";
 
 export function FloatingGenerationWidget() {
-  const { isWidgetVisible, isMinimized, progress, toggleMinimize, hideWidget } =
-    useGenerationContext();
-
-  if (!isWidgetVisible || !progress) {
-    return null;
-  }
+  const {
+    isWidgetVisible,
+    isMinimized,
+    progress,
+    isStreamWindowVisible,
+    toggleMinimize,
+    hideWidget,
+    hideStreamWindow,
+  } = useGenerationContext();
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
-        <AnimatePresence mode="wait">
-          {isMinimized ? (
-            <MiniProgressIndicator
-              key="mini"
-              progress={progress}
-              onExpand={toggleMinimize}
-              onClose={hideWidget}
-            />
-          ) : (
-            <ExpandedProgressView
-              key="expanded"
-              progress={progress}
-              onMinimize={toggleMinimize}
-              onClose={hideWidget}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Progress Widget */}
+      {isWidgetVisible && progress && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <AnimatePresence mode="wait">
+            {isMinimized ? (
+              <MiniProgressIndicator
+                key="mini"
+                progress={progress}
+                onExpand={toggleMinimize}
+                onClose={hideWidget}
+              />
+            ) : (
+              <ExpandedProgressView
+                key="expanded"
+                progress={progress}
+                onMinimize={toggleMinimize}
+                onClose={hideWidget}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
-      {/* New streaming window - positioned on the left to not overlap */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <StreamingResponseWindow />
-      </div>
+      {/* Streaming Window - positioned on the left */}
+      {isStreamWindowVisible && (
+        <div className="fixed bottom-4 left-4 z-50 max-w-2xl">
+          <StreamingResponseWindow
+            isVisible={isStreamWindowVisible}
+            onClose={hideStreamWindow}
+          />
+        </div>
+      )}
     </>
   );
 }

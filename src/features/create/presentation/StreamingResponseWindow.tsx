@@ -5,20 +5,24 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Minimize2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useSocket } from "@/provider/SocketProvider";
 
 interface StreamingResponseWindowProps {
   isVisible?: boolean;
   onClose?: () => void;
+  onComplete?: (courseId: string) => void;
 }
 
 export function StreamingResponseWindow({
-  isVisible = true,
+  isVisible = false,
   onClose,
+  onComplete,
 }: StreamingResponseWindowProps) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [streamedContent, setStreamedContent] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { socket, isConnected } = useSocket();
 
   // Auto-scroll to bottom as content streams
   useEffect(() => {
@@ -27,26 +31,51 @@ export function StreamingResponseWindow({
     }
   }, [streamedContent, isMinimized]);
 
-  // Simulate streaming for now - replace with actual backend connection
-  const startStreaming = () => {
-    setIsStreaming(true);
-    setStreamedContent("");
+  // Listen for streaming events
+  useEffect(() => {
+    if (!socket || !isConnected) return;
 
-    // TODO: Replace with actual SSE or WebSocket connection
-    const mockStream =
-      "This is a simulated streaming response from the backend. In production, this would connect to your actual API endpoint and display real-time responses as they come in...";
-    let index = 0;
+    const handleStreamStart = () => {
+      setIsStreaming(true);
+      setStreamedContent("");
+    };
 
-    const interval = setInterval(() => {
-      if (index < mockStream.length) {
-        setStreamedContent((prev) => prev + mockStream[index]);
-        index++;
-      } else {
-        setIsStreaming(false);
-        clearInterval(interval);
+    const handleStreamChunk = (data: { chunk: string }) => {
+      setStreamedContent((prev) => prev + data.chunk);
+    };
+
+    const handleStreamComplete = (data: {
+      courseId: string;
+      courseName: string;
+    }) => {
+      setIsStreaming(false);
+      setStreamedContent(
+        (prev) =>
+          prev + `\n\n✅ Course "${data.courseName}" created successfully!`,
+      );
+
+      if (onComplete) {
+        onComplete(data.courseId);
       }
-    }, 25);
-  };
+    };
+
+    const handleStreamError = (data: { error: string }) => {
+      setIsStreaming(false);
+      setStreamedContent((prev) => prev + `\n\n❌ Error: ${data.error}`);
+    };
+
+    socket.on("course:stream:start", handleStreamStart);
+    socket.on("course:stream", handleStreamChunk);
+    socket.on("course:stream:complete", handleStreamComplete);
+    socket.on("course:stream:error", handleStreamError);
+
+    return () => {
+      socket.off("course:stream:start", handleStreamStart);
+      socket.off("course:stream", handleStreamChunk);
+      socket.off("course:stream:complete", handleStreamComplete);
+      socket.off("course:stream:error", handleStreamError);
+    };
+  }, [socket, isConnected, onComplete]);
 
   if (!isVisible) return null;
 
@@ -149,20 +178,16 @@ export function StreamingResponseWindow({
               {/* Footer */}
               <div className="p-4 border-t flex gap-2">
                 <Button
-                  onClick={startStreaming}
-                  disabled={isStreaming}
-                  size="sm"
-                  className="flex-1"
-                >
-                  {isStreaming ? "Streaming..." : "Start Stream"}
-                </Button>
-                <Button
                   onClick={() => setStreamedContent("")}
                   variant="outline"
                   size="sm"
+                  disabled={isStreaming}
                 >
                   Clear
                 </Button>
+                <div className="text-xs text-muted-foreground flex items-center ml-auto">
+                  {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
+                </div>
               </div>
             </Card>
           </motion.div>

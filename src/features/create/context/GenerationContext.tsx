@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -8,17 +8,17 @@ import {
   useEffect,
   useRef,
   ReactNode,
-} from 'react';
-import { useSocket } from '@/provider/SocketProvider';
-import { toast } from 'sonner';
-import { generateFullCourse } from '@/server/features/course';
+} from "react";
+import { useSocket } from "@/provider/SocketProvider";
+import { toast } from "sonner";
+import { generateFullCourse } from "@/server/features/course";
 import {
   GenerationProgress,
   FullGenerationRequest,
   GenerationStatus,
-} from '@/server/features/course/types';
-import { logger } from '@/lib/loggers';
-import { useRouter } from 'next/navigation';
+} from "@/server/features/course/types";
+import { logger } from "@/lib/loggers";
+import { useRouter } from "next/navigation";
 
 interface GenerationState {
   progress: GenerationProgress | null;
@@ -26,21 +26,25 @@ interface GenerationState {
   isMinimized: boolean;
   isWidgetVisible: boolean;
   error: string | null;
+  isStreamWindowVisible: boolean;
 }
 
 interface GenerationContextType extends GenerationState {
   startGeneration: (request: FullGenerationRequest) => Promise<void>;
+  startStreamingGeneration: (request: FullGenerationRequest) => Promise<void>;
   setProgress: (progress: GenerationProgress | null) => void;
   setIsGenerating: (value: boolean) => void;
   toggleMinimize: () => void;
   setIsMinimized: (value: boolean) => void;
   showWidget: () => void;
   hideWidget: () => void;
+  showStreamWindow: () => void;
+  hideStreamWindow: () => void;
   resetGeneration: () => void;
   navigateToCourse: () => void;
 }
 
-const STORAGE_KEY = 'coursecraft_active_generation';
+const STORAGE_KEY = "coursecraft_active_generation";
 const GENERATION_TIMEOUT = 10 * 60 * 1500;
 
 const GenerationContext = createContext<GenerationContextType | null>(null);
@@ -56,6 +60,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     isMinimized: false,
     isWidgetVisible: false,
     error: null,
+    isStreamWindowVisible: false,
   });
 
   useEffect(() => {
@@ -73,13 +78,13 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
               ...parsed,
               isWidgetVisible: true,
             }));
-            logger.info('Restored active generation from localStorage');
+            logger.info("Restored active generation from localStorage");
           } else {
             localStorage.removeItem(STORAGE_KEY);
           }
         }
       } catch (error) {
-        logger.error('Failed to load persisted generation state:', error);
+        logger.error("Failed to load persisted generation state:", error);
         localStorage.removeItem(STORAGE_KEY);
       }
     };
@@ -92,7 +97,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (error) {
-        logger.error('Failed to persist generation state:', error);
+        logger.error("Failed to persist generation state:", error);
       }
     } else if (!state.isGenerating) {
       localStorage.removeItem(STORAGE_KEY);
@@ -103,7 +108,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     if (!socket || !isConnected) return;
 
     const handleProgress = (data: GenerationProgress) => {
-      logger.info('Generation progress update:', data);
+      logger.info("Generation progress update:", data);
 
       setState((prev) => ({
         ...prev,
@@ -117,13 +122,13 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           error: null,
         }));
 
-        toast.success('Course generated successfully!', {
+        toast.success("Course generated successfully!", {
           description: `Created ${data.data?.modulesCount || 0} modules, ${
             data.data?.chaptersCount || 0
           } chapters, and ${data.data?.lessonsCount || 0} lessons`,
           duration: 5000,
           action: {
-            label: 'View Course',
+            label: "View Course",
             onClick: () => {
               if (data.data?.courseId) {
                 router.push(`/create/${data.data.courseId}`);
@@ -142,11 +147,11 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
         setState((prev) => ({
           ...prev,
           isGenerating: false,
-          error: data.error || 'Generation failed',
+          error: data.error || "Generation failed",
         }));
 
-        toast.error('Course generation failed', {
-          description: data.error || 'An unknown error occurred',
+        toast.error("Course generation failed", {
+          description: data.error || "An unknown error occurred",
           duration: 5000,
         });
 
@@ -157,18 +162,18 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    socket.on('generation:progress', handleProgress);
+    socket.on("generation:progress", handleProgress);
 
     return () => {
-      socket.off('generation:progress', handleProgress);
+      socket.off("generation:progress", handleProgress);
     };
   }, [socket, isConnected, router]);
 
   const startGeneration = useCallback(
     async (request: FullGenerationRequest) => {
       if (!socket || !isConnected) {
-        toast.error('Socket connection required', {
-          description: 'Please wait for connection to establish',
+        toast.error("Socket connection required", {
+          description: "Please wait for connection to establish",
         });
         return;
       }
@@ -185,10 +190,10 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
 
         const response = await generateFullCourse(request);
 
-        toast.info('Generation started', {
+        toast.info("Generation started", {
           description:
             response.note ||
-            'Generating your course... You can continue browsing.',
+            "Generating your course... You can continue browsing.",
           duration: 3000,
         });
 
@@ -203,16 +208,16 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           setState((prev) => ({
             ...prev,
             isGenerating: false,
-            error: 'Generation timed out',
+            error: "Generation timed out",
           }));
 
-          toast.error('Generation timed out', {
-            description: 'Please try again or contact support',
+          toast.error("Generation timed out", {
+            description: "Please try again or contact support",
           });
         }, GENERATION_TIMEOUT);
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : 'Failed to start generation';
+          error instanceof Error ? error.message : "Failed to start generation";
 
         setState((prev) => ({
           ...prev,
@@ -221,14 +226,14 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           isWidgetVisible: false,
         }));
 
-        toast.error('Failed to start generation', {
+        toast.error("Failed to start generation", {
           description: errorMessage,
         });
 
-        logger.error('Generation start failed:', error);
+        logger.error("Generation start failed:", error);
       }
     },
-    [socket, isConnected]
+    [socket, isConnected],
   );
 
   const setProgress = useCallback((progress: GenerationProgress | null) => {
@@ -279,15 +284,81 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     }
   }, [state.progress, router]);
 
+  const startStreamingGeneration = useCallback(
+    async (request: FullGenerationRequest) => {
+      if (!socket || !isConnected) {
+        toast.error("Socket connection required", {
+          description: "Please wait for connection to establish",
+        });
+        return;
+      }
+
+      try {
+        setState((prev) => ({
+          ...prev,
+          isGenerating: true,
+          isStreamWindowVisible: true,
+          error: null,
+        }));
+
+        const { generateCourseStream } =
+          await import("@/server/features/course");
+
+        toast.info("Starting streaming generation", {
+          description: "Watch the streaming window for real-time output",
+          duration: 3000,
+        });
+
+        await generateCourseStream(request);
+
+        toast.success("Course generated successfully!", {
+          duration: 5000,
+        });
+
+        setState((prev) => ({
+          ...prev,
+          isGenerating: false,
+        }));
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to generate course";
+
+        setState((prev) => ({
+          ...prev,
+          isGenerating: false,
+          error: errorMessage,
+        }));
+
+        toast.error("Failed to generate course", {
+          description: errorMessage,
+        });
+
+        logger.error("Streaming generation failed:", error);
+      }
+    },
+    [socket, isConnected],
+  );
+
+  const showStreamWindow = useCallback(() => {
+    setState((prev) => ({ ...prev, isStreamWindowVisible: true }));
+  }, []);
+
+  const hideStreamWindow = useCallback(() => {
+    setState((prev) => ({ ...prev, isStreamWindowVisible: false }));
+  }, []);
+
   const value: GenerationContextType = {
     ...state,
     startGeneration,
+    startStreamingGeneration,
     setProgress,
     setIsGenerating,
     toggleMinimize,
     setIsMinimized,
     showWidget,
     hideWidget,
+    showStreamWindow,
+    hideStreamWindow,
     resetGeneration,
     navigateToCourse,
   };
@@ -303,7 +374,7 @@ export function useGenerationContext() {
   const context = useContext(GenerationContext);
   if (!context) {
     throw new Error(
-      'useGenerationContext must be used within GenerationProvider'
+      "useGenerationContext must be used within GenerationProvider",
     );
   }
   return context;
