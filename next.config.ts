@@ -8,8 +8,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
+    optimizeCss: true,
   },
+
+  // Enable SWC minification for better performance
+  swcMinify: true,
+
+  // Enable standalone output for better bundle size
+  output: isDevelopment ? undefined : "standalone",
 
   async rewrites() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -38,9 +45,19 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
-              "https://*.firebaseapp.com https://*.google.com",
-            ].join(" "),
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.firebaseapp.com https://*.google.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.google.com wss://* ws://localhost:* http://localhost:*",
+              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://*.google.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
           },
           {
             key: "X-DNS-Prefetch-Control",
@@ -61,6 +78,10 @@ const nextConfig: NextConfig = {
           {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin-allow-popups",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
           },
         ],
       },
@@ -114,16 +135,60 @@ const nextConfig: NextConfig = {
   },
 
   webpack: (config, { isServer }) => {
-    if (!isServer && !isDevelopment) {
-      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: "static",
-          reportFilename: "./bundle-analysis.html",
-          openAnalyzer: false,
-        }),
-      );
+    // Optimize bundle splitting
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk
+            vendor: {
+              name: "vendor",
+              chunks: "all",
+              test: /node_modules/,
+              priority: 20,
+            },
+            // Firebase chunk (large library)
+            firebase: {
+              name: "firebase",
+              test: /[\\/]node_modules[\\/](firebase|@firebase)[\\/]/,
+              chunks: "all",
+              priority: 30,
+            },
+            // React/Next.js chunk
+            framework: {
+              name: "framework",
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              chunks: "all",
+              priority: 40,
+            },
+            // Common components
+            common: {
+              name: "common",
+              minChunks: 2,
+              priority: 10,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+
+      // Bundle analyzer in production builds
+      if (!isDevelopment) {
+        const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: "static",
+            reportFilename: "./bundle-analysis.html",
+            openAnalyzer: false,
+          }),
+        );
+      }
     }
+
     return config;
   },
 };

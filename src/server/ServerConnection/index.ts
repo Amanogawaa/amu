@@ -1,8 +1,8 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { auth } from '@/utils/firebase';
-import { User } from 'firebase/auth';
-import Cookies from 'js-cookie';
-import { logger } from '@/lib/loggers';
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { auth } from "@/utils/firebase";
+import { User } from "firebase/auth";
+import Cookies from "js-cookie";
+import { logger } from "@/lib/loggers";
 
 class serverConnectionSingleton {
   private static instance: AxiosInstance;
@@ -12,7 +12,7 @@ class serverConnectionSingleton {
 
   public static getInstance(config?: AxiosRequestConfig) {
     if (!this.instance && !config) {
-      throw new Error('No instance to return and no config to setup.');
+      throw new Error("No instance to return and no config to setup.");
     }
 
     if (!this.instance) {
@@ -54,24 +54,24 @@ class serverConnectionSingleton {
             const token = await currentUser.getIdToken(shouldRefresh);
 
             if (shouldRefresh) {
-              Cookies.set('auth-token', token, {
+              Cookies.set("auth-token", token, {
                 expires: 7,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                path: '/',
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                path: "/",
               });
             }
 
             config.headers.Authorization = `Bearer ${token}`;
           } catch (error) {
-            logger.error('Error getting ID token:', error);
-            const cookieToken = Cookies.get('auth-token');
+            logger.error("Error getting ID token:", error);
+            const cookieToken = Cookies.get("auth-token");
             if (cookieToken) {
               config.headers.Authorization = `Bearer ${cookieToken}`;
             }
           }
         } else {
-          const cookieToken = Cookies.get('auth-token');
+          const cookieToken = Cookies.get("auth-token");
           if (cookieToken) {
             config.headers.Authorization = `Bearer ${cookieToken}`;
           }
@@ -80,7 +80,7 @@ class serverConnectionSingleton {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     this.instance.interceptors.response.use(
@@ -96,42 +96,37 @@ class serverConnectionSingleton {
 
           if (currentUser) {
             try {
-              // Force refresh the token
               const token = await currentUser.getIdToken(true);
 
-              // Update cookie
-              Cookies.set('auth-token', token, {
+              Cookies.set("auth-token", token, {
                 expires: 7,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                path: '/',
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                path: "/",
               });
 
-              // Retry the original request with new token
               originalRequest.headers.Authorization = `Bearer ${token}`;
               return this.instance(originalRequest);
             } catch (refreshError) {
-              logger.error('Token refresh failed:', refreshError);
-              Cookies.remove('auth-token');
-              // Optionally redirect to login
-              if (typeof window !== 'undefined') {
+              logger.error("Token refresh failed:", refreshError);
+              Cookies.remove("auth-token");
+              if (typeof window !== "undefined") {
                 window.location.href =
-                  '/signin?redirect=' + window.location.pathname;
+                  "/signin?redirect=" + window.location.pathname;
               }
             }
           } else {
-            logger.error('Unauthorized access - no user logged in.');
-            Cookies.remove('auth-token');
-            // Optionally redirect to login
-            if (typeof window !== 'undefined') {
+            logger.error("Unauthorized access - no user logged in.");
+            Cookies.remove("auth-token");
+            if (typeof window !== "undefined") {
               window.location.href =
-                '/signin?redirect=' + window.location.pathname;
+                "/signin?redirect=" + window.location.pathname;
             }
           }
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 }
