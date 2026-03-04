@@ -27,8 +27,8 @@ export function NavigationBarUser() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none border border-secondary p-2 bg-white hover:bg-accent rounded-full focus:ring-2 focus:ring-offset-2 focus:ring-accent-foreground hover:text-white  transition">
-        <Menu className="w-5 h-5  " />
+      <DropdownMenuTrigger className="outline-none border border-secondary p-2 bg-white hover:bg-accent rounded-full focus:ring-2 focus:ring-offset-2 focus:ring-accent-foreground hover:text-white transition">
+        <Menu className="w-5 h-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-popover border-border"
@@ -79,7 +79,6 @@ export function NavigationBarUser() {
               My Learning
             </Link>
           </DropdownMenuItem>
-
           <DropdownMenuItem asChild>
             <Link href={"/courses"} className="group">
               <Kanban className="mr-2 h-4 w-4 group-hover:text-accent-foreground group-focus:text-accent-foreground" />

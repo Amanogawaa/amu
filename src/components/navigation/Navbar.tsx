@@ -75,10 +75,8 @@ const Navbar = ({
       )}
     >
       <div className="container max-w-7xl mx-auto">
-        {/* Desktop Menu */}
-        <nav className="hidden justify-between lg:flex">
+        <nav className=" justify-between flex items-center px-4">
           <div className="flex items-center gap-6">
-            {/* Logo */}
             <a
               href={!user ? logo.url : "/dashboard"}
               className="flex items-center gap-2"
@@ -126,71 +124,6 @@ const Navbar = ({
             )}
           </div>
         </nav>
-
-        <div className="block lg:hidden px-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
-              <img
-                src={logo.src}
-                className="max-h-8 dark:invert"
-                alt={logo.alt}
-              />
-            </a>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
-                      <img
-                        src={logo.src}
-                        className="max-h-8 dark:invert"
-                        alt={logo.alt}
-                      />
-                    </a>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <div className="flex w-full flex-col gap-4">
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    {loading ? (
-                      <>
-                        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
-                        <div className="h-10 w-full bg-muted animate-pulse rounded-md" />
-                      </>
-                    ) : user ? (
-                      <>
-                        <Button asChild variant="outline">
-                          <a href="/create">Create</a>
-                        </Button>
-                        <Button asChild>
-                          <a href="/profile">Profile</a>
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button asChild variant="outline">
-                          <a href={auth.login.url}>{auth.login.title}</a>
-                        </Button>
-                        <Button asChild>
-                          <a href={auth.signup.url}>{auth.signup.title}</a>
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
       </div>
     </section>
   );
