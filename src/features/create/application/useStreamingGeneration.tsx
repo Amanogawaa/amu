@@ -2,17 +2,42 @@
 
 import { useState } from "react";
 import { useGenerationContext } from "../context/GenerationContext";
-import { CreateCoursePayload } from "@/server/features/course/types";
+import type { CreateCoursePayload } from "@/server/features/course/types";
+import { generateCourseStream } from "@/server/features/course";
+import { toast } from "sonner";
 
 export function useStreamingGeneration() {
-  const { startStreamingGeneration, isGenerating, error } =
-    useGenerationContext();
+  const {
+    isGenerating,
+    error,
+    isStreamWindowVisible,
+    showStreamWindow,
+    hideStreamWindow,
+  } = useGenerationContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const generateWithStreaming = async (payload: CreateCoursePayload) => {
     setIsLoading(true);
+    showStreamWindow();
+
     try {
-      await startStreamingGeneration(payload);
+      const response = await generateCourseStream(payload);
+
+      toast.success("Course generated successfully!", {
+        description: response.message,
+        duration: 5000,
+      });
+
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to generate course";
+
+      toast.error("Failed to generate course", {
+        description: errorMessage,
+      });
+
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -22,5 +47,8 @@ export function useStreamingGeneration() {
     generateWithStreaming,
     isLoading: isLoading || isGenerating,
     error,
+    isStreamWindowVisible,
+    showStreamWindow,
+    hideStreamWindow,
   };
 }

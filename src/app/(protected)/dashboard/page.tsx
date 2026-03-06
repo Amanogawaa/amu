@@ -112,7 +112,7 @@ const DashboardPage = () => {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Stats */}
-            <DashboardStats />
+            {/* <DashboardStats /> */}
 
             {/* Quick Actions */}
             <QuickActions />

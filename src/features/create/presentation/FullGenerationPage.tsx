@@ -11,6 +11,7 @@ import { useFullGeneration } from "../application/useFullGeneration";
 import { useGenerationContext } from "../context/GenerationContext";
 import { FullGenerationForm } from "../presentation/FullGenerationForm";
 import { StreamingResponseWindow } from "./StreamingResponseWindow";
+import { StreamingCourseExample } from "./StreamingCourseExample";
 
 export default function FullGenerationPage() {
   const router = useRouter();
@@ -81,6 +82,8 @@ export default function FullGenerationPage() {
               </CardContent>
             </Card>
           )}
+
+          <StreamingCourseExample />
 
           <div>
             {!isGenerating ? (

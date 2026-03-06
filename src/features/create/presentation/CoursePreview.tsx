@@ -26,10 +26,6 @@ interface CoursePreviewProps {
   lessons: Lesson[];
 }
 
-interface ModuleWithContent extends Module {
-  chapters: ChapterWithLessons[];
-}
-
 interface ChapterWithLessons extends Chapter {
   lessons: Lesson[];
 }
@@ -39,41 +35,18 @@ export function CoursePreview({
   chapters,
   lessons,
 }: CoursePreviewProps) {
-  const [expandedModules, setExpandedModules] = useState<Set<string>>(
-    new Set()
-  );
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
-  const modulesWithContent: ModuleWithContent[] = modules
-    .map((module) => {
-      const moduleChapters = chapters
-        .filter((chapter) => chapter.moduleId === module.id)
-        .sort((a, b) => a.chapterOrder - b.chapterOrder)
-        .map((chapter) => ({
-          ...chapter,
-          lessons: lessons
-            .filter((lesson) => lesson.chapterId === chapter.id)
-            .sort((a, b) => a.lessonOrder - b.lessonOrder),
-        }));
-
-      return {
-        ...module,
-        chapters: moduleChapters,
-      };
-    })
-    .sort((a, b) => a.moduleOrder - b.moduleOrder);
-
-  const toggleModule = (moduleId: string) => {
-    const newExpanded = new Set(expandedModules);
-    if (newExpanded.has(moduleId)) {
-      newExpanded.delete(moduleId);
-    } else {
-      newExpanded.add(moduleId);
-    }
-    setExpandedModules(newExpanded);
-  };
+  const chaptersWithLessons: ChapterWithLessons[] = chapters
+    .map((chapter) => ({
+      ...chapter,
+      lessons: lessons
+        .filter((lesson) => lesson.chapterId === chapter.id)
+        .sort((a, b) => a.lessonOrder - b.lessonOrder),
+    }))
+    .sort((a, b) => a.chapterOrder - b.chapterOrder);
 
   const toggleChapter = (chapterId: string) => {
     const newExpanded = new Set(expandedChapters);
@@ -113,7 +86,6 @@ export function CoursePreview({
 
   const totalLessons = lessons.length;
   const totalChapters = chapters.length;
-  const totalModules = modules.length;
 
   return (
     <div className="space-y-6">
@@ -142,19 +114,12 @@ export function CoursePreview({
           </p>
 
           {/* Course Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
               <Clock className="h-5 w-5 text-primary" />
               <div className="flex flex-col">
                 <span className="text-xs text-muted-foreground">Duration</span>
                 <span className="text-sm font-semibold">{course.duration}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-              <BookOpen className="h-5 w-5 text-primary" />
-              <div className="flex flex-col">
-                <span className="text-xs text-muted-foreground">Modules</span>
-                <span className="text-sm font-semibold">{totalModules}</span>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
@@ -208,102 +173,88 @@ export function CoursePreview({
         <CardHeader>
           <CardTitle className="text-xl">Course Content</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {totalModules} modules • {totalChapters} chapters • {totalLessons}{" "}
-            lessons
+            {totalChapters} chapters • {totalLessons} lessons
           </p>
         </CardHeader>
         <CardContent className="space-y-2">
-          {modulesWithContent.map((module, moduleIndex) => (
-            <div key={module.id} className="border rounded-lg overflow-hidden">
-              {/* Module Header */}
+          {chaptersWithLessons.map((chapter, chapterIndex) => (
+            <div key={chapter.id} className="border rounded-lg overflow-hidden">
+              {/* Chapter Header */}
               <button
-                onClick={() => toggleModule(module.id)}
+                onClick={() => toggleChapter(chapter.id)}
                 className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-3 flex-1 text-left">
-                  {expandedModules.has(module.id) ? (
+                  {expandedChapters.has(chapter.id) ? (
                     <ChevronDown className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                   ) : (
                     <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                   )}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm md:text-base">
-                      Module {moduleIndex + 1}: {module.moduleName}
+                      Chapter {chapterIndex + 1}: {chapter.chapterName}
                     </h3>
                     <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
-                      {module.chapters.length} chapters •{" "}
-                      {module.estimatedDuration}
+                      {chapter.lessons.length} lessons •{" "}
+                      {chapter.estimatedDuration}
                     </p>
                   </div>
                 </div>
               </button>
 
-              {/* Module Content */}
-              {expandedModules.has(module.id) && (
-                <div className="px-4 pb-3 space-y-2">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {module.moduleDescription}
+              {/* Chapter Content */}
+              {expandedChapters.has(chapter.id) && (
+                <div className="px-4 pb-3 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    {chapter.chapterDescription}
                   </p>
 
-                  {/* Chapters */}
-                  <div className="space-y-2 ml-8">
-                    {module.chapters.map((chapter, chapterIndex) => (
-                      <div
-                        key={chapter.id}
-                        className="border-l-2 border-muted pl-4"
-                      >
-                        <button
-                          onClick={() => toggleChapter(chapter.id)}
-                          className="w-full text-left py-2 hover:text-primary transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            {expandedChapters.has(chapter.id) ? (
-                              <ChevronDown className="h-4 w-4 flex-shrink-0" />
-                            ) : (
-                              <ChevronRight className="h-4 w-4 flex-shrink-0" />
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-sm">
-                                Chapter {chapterIndex + 1}:{" "}
-                                {chapter.chapterName}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {chapter.lessons.length} lessons •{" "}
-                                {chapter.estimatedDuration}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
+                  {/* Learning Objectives */}
+                  {chapter.learningObjectives &&
+                    chapter.learningObjectives.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">
+                          Learning Objectives
+                        </h4>
+                        <ul className="space-y-1">
+                          {chapter.learningObjectives.map((objective, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-start gap-2 text-xs text-muted-foreground"
+                            >
+                              <CheckCircle2 className="h-3 w-3 mt-0.5 text-primary flex-shrink-0" />
+                              <span>{objective}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                        {/* Lessons */}
-                        {expandedChapters.has(chapter.id) && (
-                          <div className="space-y-1 ml-6 mt-2">
-                            {chapter.lessons.map((lesson, lessonIndex) => (
-                              <div
-                                key={lesson.id}
-                                className="flex items-start gap-2 py-2 text-sm border-l-2 border-muted pl-3"
-                              >
-                                {getLessonIcon(lesson.type)}
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm">
-                                    {lessonIndex + 1}. {lesson.lessonName}
-                                  </p>
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs capitalize"
-                                    >
-                                      {lesson.type}
-                                    </Badge>
-                                    <span className="text-xs text-muted-foreground">
-                                      {lesson.duration}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
+                  {/* Lessons */}
+                  <div className="space-y-1 mt-3">
+                    <h4 className="text-sm font-semibold mb-2">Lessons</h4>
+                    {chapter.lessons.map((lesson, lessonIndex) => (
+                      <div
+                        key={lesson.id}
+                        className="flex items-start gap-2 py-2 text-sm border-l-2 border-muted pl-3 hover:border-primary transition-colors"
+                      >
+                        {getLessonIcon(lesson.type)}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm">
+                            {lessonIndex + 1}. {lesson.lessonName}
+                          </p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge
+                              variant="outline"
+                              className="text-xs capitalize"
+                            >
+                              {lesson.type}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              {lesson.duration}
+                            </span>
                           </div>
-                        )}
+                        </div>
                       </div>
                     ))}
                   </div>

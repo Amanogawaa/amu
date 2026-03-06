@@ -39,7 +39,7 @@ const STEP_INFO = {
   },
 
   [GenerationStep.CHAPTERS]: {
-    label: "Module Chapters",
+    label: "Chapters",
     description: "Building chapter structure",
     icon: BookMarked,
     color: "text-orange-500",
@@ -132,8 +132,8 @@ export function GenerationProgressDisplay({
                   isStepActive
                     ? "bg-primary/5 border-primary"
                     : isStepCompleted
-                    ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
-                    : "bg-muted/30"
+                      ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
+                      : "bg-muted/30"
                 }`}
               >
                 <div
@@ -141,8 +141,8 @@ export function GenerationProgressDisplay({
                     isStepActive
                       ? "bg-primary text-primary-foreground"
                       : isStepCompleted
-                      ? "bg-green-500 text-white"
-                      : "bg-muted"
+                        ? "bg-green-500 text-white"
+                        : "bg-muted"
                   }`}
                 >
                   {isStepActive ? (
