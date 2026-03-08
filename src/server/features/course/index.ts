@@ -150,6 +150,16 @@ export async function generateCourseStream(
   );
 }
 
+export async function generateFullCourseSequentialTransactionalStreaming(
+  payload: FullGenerationRequest,
+): Promise<FullGenerationResponse> {
+  return apiRequest<FullGenerationRequest, FullGenerationResponse>(
+    "/courses/generate-sequential-transactional-streaming",
+    "post",
+    payload,
+  );
+}
+
 export async function deleteCourse(courseId: string): Promise<void> {
   return apiRequest<null, void>(`/courses/${courseId}`, "delete");
 }

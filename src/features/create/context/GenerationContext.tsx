@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useSocket } from "@/provider/SocketProvider";
 import { toast } from "sonner";
-import { generateFullCourse } from "@/server/features/course";
+import { generateFullCourseSequentialTransactionalStreaming } from "@/server/features/course";
 import {
   GenerationProgress,
   FullGenerationRequest,
@@ -20,6 +20,11 @@ import {
 import { logger } from "@/lib/loggers";
 import { useRouter } from "next/navigation";
 
+export interface StreamChunk {
+  step: string;
+  text: string;
+}
+
 interface GenerationState {
   progress: GenerationProgress | null;
   isGenerating: boolean;
@@ -27,6 +32,8 @@ interface GenerationState {
   isWidgetVisible: boolean;
   error: string | null;
   isStreamWindowVisible: boolean;
+  streamChunks: StreamChunk[];
+  currentStreamStep: string | null;
 }
 
 interface GenerationContextType extends GenerationState {
@@ -42,6 +49,7 @@ interface GenerationContextType extends GenerationState {
   hideStreamWindow: () => void;
   resetGeneration: () => void;
   navigateToCourse: () => void;
+  clearStreamChunks: () => void;
 }
 
 const STORAGE_KEY = "coursecraft_active_generation";
@@ -54,6 +62,11 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Chunk buffering: accumulate rapid Socket.IO chunks in a ref,
+  // then flush to React state every ~50ms to avoid jittery re-renders.
+  const chunkBufferRef = useRef<Map<string, string>>(new Map());
+  const flushIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const [state, setState] = useState<GenerationState>({
     progress: null,
     isGenerating: false,
@@ -61,8 +74,11 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     isWidgetVisible: false,
     error: null,
     isStreamWindowVisible: false,
+    streamChunks: [],
+    currentStreamStep: null,
   });
 
+  // Restore persisted state on mount
   useEffect(() => {
     const loadPersistedState = () => {
       try {
@@ -77,6 +93,9 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
               ...prev,
               ...parsed,
               isWidgetVisible: true,
+              // Don't restore stream chunks — they're ephemeral
+              streamChunks: [],
+              currentStreamStep: null,
             }));
             logger.info("Restored active generation from localStorage");
           } else {
@@ -92,10 +111,12 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     loadPersistedState();
   }, []);
 
+  // Persist state (excluding stream chunks which are too large)
   useEffect(() => {
     if (state.isGenerating && state.progress) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const { streamChunks, currentStreamStep, ...persistable } = state;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
       } catch (error) {
         logger.error("Failed to persist generation state:", error);
       }
@@ -104,9 +125,43 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     }
   }, [state]);
 
+  // Flush buffered chunks into React state every ~50ms
+  useEffect(() => {
+    flushIntervalRef.current = setInterval(() => {
+      const buffer = chunkBufferRef.current;
+      if (buffer.size === 0) return;
+
+      setState((prev) => {
+        const chunks = [...prev.streamChunks];
+        let latestStep = prev.currentStreamStep;
+
+        buffer.forEach((text, step) => {
+          const existing = chunks.find((c) => c.step === step);
+          if (existing) {
+            existing.text += text;
+          } else {
+            chunks.push({ step, text });
+          }
+          latestStep = step;
+        });
+
+        buffer.clear();
+        return { ...prev, streamChunks: chunks, currentStreamStep: latestStep };
+      });
+    }, 50);
+
+    return () => {
+      if (flushIntervalRef.current) {
+        clearInterval(flushIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // Listen for Socket.IO events
   useEffect(() => {
     if (!socket || !isConnected) return;
 
+    // Progress events (same as before)
     const handleProgress = (data: GenerationProgress) => {
       logger.info("Generation progress update:", data);
 
@@ -123,9 +178,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
         }));
 
         toast.success("Course generated successfully!", {
-          description: `Created ${data.data?.modulesCount || 0} modules, ${
-            data.data?.chaptersCount || 0
-          } chapters, and ${data.data?.lessonsCount || 0} lessons`,
+          description: `Created ${data.data?.chaptersCount || 0} chapters and ${data.data?.lessonsCount || 0} lessons`,
           duration: 5000,
           action: {
             label: "View Course",
@@ -162,13 +215,23 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    // NEW: Streaming chunk events — buffer them, don't setState directly
+    const handleStreamChunk = (data: { step: string; chunk: string }) => {
+      const buffer = chunkBufferRef.current;
+      const existing = buffer.get(data.step) || "";
+      buffer.set(data.step, existing + data.chunk);
+    };
+
     socket.on("generation:progress", handleProgress);
+    socket.on("generation:stream", handleStreamChunk);
 
     return () => {
       socket.off("generation:progress", handleProgress);
+      socket.off("generation:stream", handleStreamChunk);
     };
   }, [socket, isConnected, router]);
 
+  // Start generation using the sequential-transactional-streaming endpoint
   const startGeneration = useCallback(
     async (request: FullGenerationRequest) => {
       if (!socket || !isConnected) {
@@ -183,26 +246,25 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           ...prev,
           isGenerating: true,
           isWidgetVisible: true,
+          isStreamWindowVisible: true,
           isMinimized: false,
           error: null,
           progress: null,
+          streamChunks: [],
+          currentStreamStep: null,
         }));
 
-        const response = await generateFullCourse(request);
+        chunkBufferRef.current.clear();
+
+        const response =
+          await generateFullCourseSequentialTransactionalStreaming(request);
 
         toast.info("Generation started", {
           description:
             response.note ||
-            "Generating your course... You can continue browsing.",
+            "Generating your course... Watch the streaming output!",
           duration: 3000,
         });
-
-        setTimeout(() => {
-          setState((prev) => ({
-            ...prev,
-            isMinimized: true,
-          }));
-        }, 3000);
 
         timeoutRef.current = setTimeout(() => {
           setState((prev) => ({
@@ -224,6 +286,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           isGenerating: false,
           error: errorMessage,
           isWidgetVisible: false,
+          isStreamWindowVisible: false,
         }));
 
         toast.error("Failed to start generation", {
@@ -235,6 +298,9 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     },
     [socket, isConnected],
   );
+
+  // Alias for backward-compat
+  const startStreamingGeneration = startGeneration;
 
   const setProgress = useCallback((progress: GenerationProgress | null) => {
     setState((prev) => ({ ...prev, progress }));
@@ -266,12 +332,17 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
       timeoutRef.current = null;
     }
 
+    chunkBufferRef.current.clear();
+
     setState({
       progress: null,
       isGenerating: false,
       isMinimized: false,
       isWidgetVisible: false,
       error: null,
+      isStreamWindowVisible: false,
+      streamChunks: [],
+      currentStreamStep: null,
     });
 
     localStorage.removeItem(STORAGE_KEY);
@@ -284,67 +355,21 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     }
   }, [state.progress, router]);
 
-  const startStreamingGeneration = useCallback(
-    async (request: FullGenerationRequest) => {
-      if (!socket || !isConnected) {
-        toast.error("Socket connection required", {
-          description: "Please wait for connection to establish",
-        });
-        return;
-      }
-
-      try {
-        setState((prev) => ({
-          ...prev,
-          isGenerating: true,
-          isStreamWindowVisible: true,
-          error: null,
-        }));
-
-        const { generateCourseStream } =
-          await import("@/server/features/course");
-
-        toast.info("Starting streaming generation", {
-          description: "Watch the streaming window for real-time output",
-          duration: 3000,
-        });
-
-        await generateCourseStream(request);
-
-        toast.success("Course generated successfully!", {
-          duration: 5000,
-        });
-
-        setState((prev) => ({
-          ...prev,
-          isGenerating: false,
-        }));
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to generate course";
-
-        setState((prev) => ({
-          ...prev,
-          isGenerating: false,
-          error: errorMessage,
-        }));
-
-        toast.error("Failed to generate course", {
-          description: errorMessage,
-        });
-
-        logger.error("Streaming generation failed:", error);
-      }
-    },
-    [socket, isConnected],
-  );
-
   const showStreamWindow = useCallback(() => {
     setState((prev) => ({ ...prev, isStreamWindowVisible: true }));
   }, []);
 
   const hideStreamWindow = useCallback(() => {
     setState((prev) => ({ ...prev, isStreamWindowVisible: false }));
+  }, []);
+
+  const clearStreamChunks = useCallback(() => {
+    chunkBufferRef.current.clear();
+    setState((prev) => ({
+      ...prev,
+      streamChunks: [],
+      currentStreamStep: null,
+    }));
   }, []);
 
   const value: GenerationContextType = {
@@ -361,6 +386,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     hideStreamWindow,
     resetGeneration,
     navigateToCourse,
+    clearStreamChunks,
   };
 
   return (

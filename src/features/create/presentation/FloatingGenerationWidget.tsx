@@ -14,13 +14,12 @@ export function FloatingGenerationWidget() {
     isStreamWindowVisible,
     toggleMinimize,
     hideWidget,
-    hideStreamWindow,
   } = useGenerationContext();
 
   return (
     <>
-      {/* Progress Widget */}
-      {isWidgetVisible && progress && (
+      {/* Progress Widget — only shown when NOT streaming */}
+      {isWidgetVisible && !isStreamWindowVisible && progress && (
         <div className="fixed bottom-4 right-4 z-50">
           <AnimatePresence mode="wait">
             {isMinimized ? (
@@ -42,15 +41,8 @@ export function FloatingGenerationWidget() {
         </div>
       )}
 
-      {/* Streaming Window - positioned on the left */}
-      {isStreamWindowVisible && (
-        <div className="fixed bottom-4 left-4 z-50 max-w-2xl">
-          <StreamingResponseWindow
-            isVisible={isStreamWindowVisible}
-            onClose={hideStreamWindow}
-          />
-        </div>
-      )}
+      {/* Streaming Dialog — manages its own position and maximized state */}
+      <StreamingResponseWindow />
     </>
   );
 }

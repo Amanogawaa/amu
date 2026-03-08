@@ -1,4 +1,4 @@
-import apiRequest from '@/server/helpers/apiRequest';
+import apiRequest from "@/server/helpers/apiRequest";
 import {
   CapstoneGuideline,
   CapstoneSubmissionResponse,
@@ -12,172 +12,169 @@ import {
   UpdateCapstoneReviewPayload,
   CapstoneSubmissionFilters,
   CapstoneReviewFilters,
-} from './types';
-import normalizeCapstoneGuideline from '@/utils/transform';
+} from "./types";
+import normalizeCapstoneGuideline from "@/utils/transform";
 
 // ==================== CAPSTONE GUIDELINES ====================
 
 export async function generateCapstoneGuideline(
-  courseId: string
+  courseId: string,
 ): Promise<CapstoneGuideline> {
   const data = await apiRequest<null, any>(
-    `/capstone/guidelines/generate/${courseId}`,
-    'post'
+    `guidelines/generate/${courseId}`,
+    "post",
   );
   return normalizeCapstoneGuideline(data);
 }
 
 export async function getCapstoneGuidelineByCourseId(
-  courseId: string
+  courseId: string,
 ): Promise<CapstoneGuideline> {
   const data = await apiRequest<null, any>(
-    `/capstone/guidelines/course/${courseId}`,
-    'get'
+    `guidelines/course/${courseId}`,
+    "get",
   );
   return normalizeCapstoneGuideline(data);
 }
 
 export async function getCapstoneGuidelineById(
-  id: string
+  id: string,
 ): Promise<CapstoneGuideline> {
-  const data = await apiRequest<null, any>(`/capstone/guidelines/${id}`, 'get');
+  const data = await apiRequest<null, any>(`guidelines/${id}`, "get");
   return normalizeCapstoneGuideline(data);
 }
 
 // ==================== CAPSTONE SUBMISSIONS ====================
 
 export async function createCapstoneSubmission(
-  payload: CreateCapstoneSubmissionPayload
+  payload: CreateCapstoneSubmissionPayload,
 ): Promise<CapstoneSubmissionResponse> {
   return apiRequest<
     CreateCapstoneSubmissionPayload,
     CapstoneSubmissionResponse
-  >('/capstone/submissions', 'post', payload);
+  >("submissions", "post", payload);
 }
 
 export async function getCapstoneSubmissions(
-  filters?: CapstoneSubmissionFilters
+  filters?: CapstoneSubmissionFilters,
 ): Promise<CapstoneSubmissionsListResponse> {
   const params = new URLSearchParams();
 
   if (filters) {
-    if (filters.courseId) params.append('courseId', filters.courseId);
-    if (filters.userId) params.append('userId', filters.userId);
-    if (filters.sortBy) params.append('sortBy', filters.sortBy);
-    if (filters.limit) params.append('limit', filters.limit.toString());
-    if (filters.offset) params.append('offset', filters.offset.toString());
+    if (filters.courseId) params.append("courseId", filters.courseId);
+    if (filters.userId) params.append("userId", filters.userId);
+    if (filters.sortBy) params.append("sortBy", filters.sortBy);
+    if (filters.limit) params.append("limit", filters.limit.toString());
+    if (filters.offset) params.append("offset", filters.offset.toString());
   }
 
   const queryString = params.toString();
-  const url = `/capstone/submissions${queryString ? `?${queryString}` : ''}`;
+  const url = `submissions${queryString ? `?${queryString}` : ""}`;
 
-  return apiRequest<null, CapstoneSubmissionsListResponse>(url, 'get');
+  return apiRequest<null, CapstoneSubmissionsListResponse>(url, "get");
 }
 
 export async function getCapstoneSubmissionById(
-  id: string
+  id: string,
 ): Promise<CapstoneSubmissionResponse> {
   return apiRequest<null, CapstoneSubmissionResponse>(
-    `/capstone/submissions/${id}`,
-    'get'
+    `submissions/${id}`,
+    "get",
   );
 }
 
 export async function updateCapstoneSubmission(
   id: string,
-  payload: UpdateCapstoneSubmissionPayload
+  payload: UpdateCapstoneSubmissionPayload,
 ): Promise<CapstoneSubmissionResponse> {
   return apiRequest<
     UpdateCapstoneSubmissionPayload,
     CapstoneSubmissionResponse
-  >(`/capstone/submissions/${id}`, 'put', payload);
+  >(`submissions/${id}`, "put", payload);
 }
 
 export async function deleteCapstoneSubmission(id: string): Promise<void> {
-  return apiRequest<null, void>(`/capstone/submissions/${id}`, 'delete');
+  return apiRequest<null, void>(`submissions/${id}`, "delete");
 }
 
 // ==================== CAPSTONE REVIEWS ====================
 
 export async function createCapstoneReview(
-  payload: CreateCapstoneReviewPayload
+  payload: CreateCapstoneReviewPayload,
 ): Promise<CapstoneReviewResponse> {
   return apiRequest<CreateCapstoneReviewPayload, CapstoneReviewResponse>(
-    '/capstone/reviews',
-    'post',
-    payload
+    "reviews",
+    "post",
+    payload,
   );
 }
 
 export async function getCapstoneReviews(
-  filters?: CapstoneReviewFilters
+  filters?: CapstoneReviewFilters,
 ): Promise<CapstoneReviewsListResponse> {
   const params = new URLSearchParams();
 
   if (filters) {
     if (filters.capstoneSubmissionId)
-      params.append('capstoneSubmissionId', filters.capstoneSubmissionId);
-    if (filters.reviewerId) params.append('reviewerId', filters.reviewerId);
+      params.append("capstoneSubmissionId", filters.capstoneSubmissionId);
+    if (filters.reviewerId) params.append("reviewerId", filters.reviewerId);
     // Handle parentReviewId: null means top-level reviews, undefined means don't filter
     if (filters.parentReviewId !== undefined) {
       if (filters.parentReviewId === null) {
         // Send empty string to indicate we want null parent reviews
-        params.append('parentReviewId', '');
+        params.append("parentReviewId", "");
       } else if (filters.parentReviewId) {
-        params.append('parentReviewId', filters.parentReviewId);
+        params.append("parentReviewId", filters.parentReviewId);
       }
     }
-    if (filters.limit) params.append('limit', filters.limit.toString());
-    if (filters.offset) params.append('offset', filters.offset.toString());
+    if (filters.limit) params.append("limit", filters.limit.toString());
+    if (filters.offset) params.append("offset", filters.offset.toString());
   }
 
   const queryString = params.toString();
-  const url = `/capstone/reviews${queryString ? `?${queryString}` : ''}`;
+  const url = `reviews${queryString ? `?${queryString}` : ""}`;
 
-  return apiRequest<null, CapstoneReviewsListResponse>(url, 'get');
+  return apiRequest<null, CapstoneReviewsListResponse>(url, "get");
 }
 
 export async function getCapstoneReviewById(
-  id: string
+  id: string,
 ): Promise<CapstoneReviewResponse> {
-  return apiRequest<null, CapstoneReviewResponse>(
-    `/capstone/reviews/${id}`,
-    'get'
-  );
+  return apiRequest<null, CapstoneReviewResponse>(`reviews/${id}`, "get");
 }
 
 export async function updateCapstoneReview(
   id: string,
-  payload: UpdateCapstoneReviewPayload
+  payload: UpdateCapstoneReviewPayload,
 ): Promise<CapstoneReviewResponse> {
   return apiRequest<UpdateCapstoneReviewPayload, CapstoneReviewResponse>(
-    `/capstone/reviews/${id}`,
-    'put',
-    payload
+    `reviews/${id}`,
+    "put",
+    payload,
   );
 }
 
 export async function deleteCapstoneReview(id: string): Promise<void> {
-  return apiRequest<null, void>(`/capstone/reviews/${id}`, 'delete');
+  return apiRequest<null, void>(`reviews/${id}`, "delete");
 }
 
 // ==================== CAPSTONE LIKES ====================
 
 export async function toggleCapstoneLike(
-  id: string
+  id: string,
 ): Promise<CapstoneLikeToggleResponse> {
   return apiRequest<null, CapstoneLikeToggleResponse>(
-    `/capstone/submissions/${id}/like`,
-    'post'
+    `submissions/${id}/like`,
+    "post",
   );
 }
 
 export async function getCapstoneLikeStatus(
-  id: string
+  id: string,
 ): Promise<CapstoneLikeToggleResponse> {
   return apiRequest<null, CapstoneLikeToggleResponse>(
-    `/capstone/submissions/${id}/like-status`,
-    'get'
+    `submissions/${id}/like-status`,
+    "get",
   );
 }
 
@@ -190,20 +187,20 @@ export interface UploadScreenshotResponse {
 
 export async function uploadCapstoneScreenshot(
   submissionId: string,
-  file: File
+  file: File,
 ): Promise<string> {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   const response = await apiRequest<FormData, UploadScreenshotResponse>(
-    `/capstone/submissions/${submissionId}/screenshots`,
-    'post',
+    `submissions/${submissionId}/screenshots`,
+    "post",
     formData,
     {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
-    }
+    },
   );
 
   return response.data.screenshotUrl;
@@ -211,12 +208,12 @@ export async function uploadCapstoneScreenshot(
 
 export async function deleteCapstoneScreenshot(
   submissionId: string,
-  screenshotUrl: string
-): Promise<{message: string}> {
+  screenshotUrl: string,
+): Promise<{ message: string }> {
   return apiRequest<{ screenshotUrl: string }, { message: string }>(
-    `/capstone/submissions/${submissionId}/screenshots`,
-    'delete',
-    { screenshotUrl }
+    `submissions/${submissionId}/screenshots`,
+    "delete",
+    { screenshotUrl },
   );
 }
 
@@ -229,20 +226,20 @@ export interface UploadReviewImageResponse {
 
 export async function uploadCapstoneReviewImage(
   reviewId: string,
-  file: File
+  file: File,
 ): Promise<string> {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   const response = await apiRequest<FormData, UploadReviewImageResponse>(
-    `/capstone/reviews/${reviewId}/images`,
-    'post',
+    `reviews/${reviewId}/images`,
+    "post",
     formData,
     {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
-    }
+    },
   );
 
   return response.data.imageUrl;
@@ -250,11 +247,11 @@ export async function uploadCapstoneReviewImage(
 
 export async function deleteCapstoneReviewImage(
   reviewId: string,
-  imageUrl: string
+  imageUrl: string,
 ): Promise<{ message: string }> {
   return apiRequest<{ imageUrl: string }, { message: string }>(
-    `/capstone/reviews/${reviewId}/images`,
-    'delete',
-    { imageUrl }
+    `reviews/${reviewId}/images`,
+    "delete",
+    { imageUrl },
   );
 }
