@@ -48,4 +48,42 @@ duration concerns:
     ✔ recheck the chapter template for lesson generation - remove ung constraints and make it flexible @done(26-01-23 17:00)
     ✔ frontend refactor for removing module feature - course dd-> chapter -> lesson only (pending) @done(26-01-24 13:10)
 
-generationprogressdisplay
+CHECK DONE REVISIONS:
+    KENNETH:
+        ☐ Duration Concern
+        ☐ Terms and Conditions and Data Privacy
+        ☐ Learning Continuity 
+        ☐ Category Limitation
+        ☐ Time left in generation
+        ☐ Password hide/unhide button
+        ☐ sing up page
+    
+    JED:
+        ☐ match number of lessons to duration of courses
+        ☐ icons for buttons instead of text
+        ☐ sort courses by recently generated as default with data generated indicator
+        ☐ when signed in, navigation link should a dropdownmenu
+        ☐ validation, verification and analysis of request before generating - backend middleware to validate request data before processing
+        ☐ add icons to text: signup, signin, logout, profile, etc.
+
+SOLUTIONS:
+    KENNETH:
+        ☐ duration concern - make the structure more simple but make the contents comprehensive and detailed
+        ☐ learning continuity - make a recommendation system for this or allow user to generate a new course based on the previous course they took - not yet tested but the revision is already implemented
+        ✔ category limitation - make the selection in create page of category disabled @done(26-03-04 20:09)
+        ☐ time left in generation - instead of time left, use a percent for this or make a streamed response so that its doesnt feel like its too long to wait for
+        ✔ terms and conditions and data privacy - just make a ui for this @done(26-03-04 14:23)
+        ✔ password hide/unhide button - already done @done(26-03-04 14:23)
+        ✔ sign up page - already done @done(26-03-04 14:23)
+    
+    JED:
+        ☐ match number of lessons to duration of courses - prompt based and no hard enforcement - the youtube video is kinda random is there any way that we can select youtube video based on the duration of the lesson??
+        ✔ sort courses by recently generated as default with data generated indicator - we can just sort the data before retrieving it @done(26-03-04 21:37)
+        ✔ validation, verification and analysis of request before generating - backend middleware to validate request data before processing @done(26-03-04 21:37)
+        ✔ icons for buttons instead of text - already done @done(26-03-04 14:23)
+        ✔ when signed in, navigation link should a dropdownmenu - already done @done(26-03-04 14:24)
+        ✔ add icons to text: signup, signin, logout, profile, etc. - already done @done(26-03-04 14:24)
+
+
+    ADDITIONAL FIX:
+        ☐ how do i avoid reaching the quota limit of the gemini api - maybe limit the tokens for every user?
