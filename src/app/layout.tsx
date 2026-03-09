@@ -2,13 +2,13 @@ import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/features/auth/application/AuthContext';
 import ReactQueryProvider from '@/provider/ReactQueryProvider';
 import { SocketProvider } from '@/provider/SocketProvider';
-import { GenerationProvider } from '@/features/create/context/GenerationContext';
 
 import type { Metadata } from 'next';
 import { Montserrat, Poppins } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/provider/ThemeProvider';
 import { FloatingGenerationWidget } from '@/features/create/presentation/FloatingGenerationWidget';
+import { GenerationProvider } from '@/features/create/application/GenerationContext';
 
 const poppins = Poppins({
   subsets: ['latin'],

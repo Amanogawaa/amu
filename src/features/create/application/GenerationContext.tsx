@@ -125,7 +125,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     }
   }, [state]);
 
-  // Flush buffered chunks into React state every ~50ms
+  // Flush buffered chunks into React state every ~100ms for smooth typing pace
   useEffect(() => {
     flushIntervalRef.current = setInterval(() => {
       const buffer = chunkBufferRef.current;
@@ -148,12 +148,22 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
         buffer.clear();
         return { ...prev, streamChunks: chunks, currentStreamStep: latestStep };
       });
-    }, 50);
+    }, 100);
+
+    // DEV: Listen for mock stream events (from MockStreamButton)
+    const handleMockChunk = (e: Event) => {
+      const { step, chunk } = (e as CustomEvent).detail;
+      const buffer = chunkBufferRef.current;
+      const existing = buffer.get(step) || "";
+      buffer.set(step, existing + chunk);
+    };
+    window.addEventListener("mock:stream:chunk", handleMockChunk);
 
     return () => {
       if (flushIntervalRef.current) {
         clearInterval(flushIntervalRef.current);
       }
+      window.removeEventListener("mock:stream:chunk", handleMockChunk);
     };
   }, []);
 

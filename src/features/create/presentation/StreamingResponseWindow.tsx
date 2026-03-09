@@ -1,37 +1,32 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  X,
-  Minimize2,
-  Maximize2,
-  CheckCircle2,
-  BookOpen,
-  Layers,
-  FileText,
-  ExternalLink,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  useGenerationContext,
-  type StreamChunk,
-} from "../context/GenerationContext";
-import { GenerationStatus } from "@/server/features/course/types";
+  BookOpen,
+  CheckCircle2,
+  ExternalLink,
+  FileText,
+  Layers,
+  Maximize2,
+  Minimize2,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-/**
- * Maps step names from the backend to display labels and icons.
- * Steps arrive as: "course", "module-1", "lessons-1", "module-2", "lessons-2", etc.
- */
+import { GenerationStatus } from "@/server/features/course/types";
+import { StreamChunk, useGenerationContext } from "../application/GenerationContext";
+
+
 function getStepInfo(step: string) {
   if (step === "course") {
     return {
@@ -67,30 +62,22 @@ function getStepInfo(step: string) {
   };
 }
 
-/**
- * Repairs partial/incomplete JSON so it can be parsed mid-stream.
- * Closes any open strings, arrays, and objects.
- * e.g. `{"name":"React Ho` → `{"name":"React Ho"}`
- */
 function repairPartialJson(text: string): any | null {
   let cleaned = text.trim();
   if (!cleaned) return null;
 
-  // Strip markdown code fences if present
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:json)?\s*\n?/, "");
     cleaned = cleaned.replace(/\n?```\s*$/, "");
     cleaned = cleaned.trim();
   }
 
-  // Try parsing as-is first (fast path for complete JSON)
   try {
     return JSON.parse(cleaned);
   } catch {
-    // Continue to repair
+  // skip 
   }
 
-  // Repair: close open strings, brackets, braces
   let repaired = cleaned;
   let inString = false;
   let escaped = false;
@@ -117,13 +104,10 @@ function repairPartialJson(text: string): any | null {
     }
   }
 
-  // Close open string
   if (inString) repaired += '"';
 
-  // Remove trailing comma before we close brackets
   repaired = repaired.replace(/,\s*$/, "");
 
-  // Close open brackets/braces
   while (stack.length > 0) {
     repaired += stack.pop();
   }
@@ -135,10 +119,6 @@ function repairPartialJson(text: string): any | null {
   }
 }
 
-/**
- * Formats a JSON key into a readable label.
- * e.g. "learningObjectives" → "Learning Objectives"
- */
 function formatKey(key: string): string {
   return key
     .replace(/([A-Z])/g, " $1")
@@ -147,9 +127,6 @@ function formatKey(key: string): string {
     .trim();
 }
 
-/**
- * Renders a parsed JSON value as readable content.
- */
 function FormattedValue({
   value,
   isStreaming,
@@ -173,7 +150,6 @@ function FormattedValue({
   if (Array.isArray(value)) {
     if (value.length === 0)
       return <span className="text-muted-foreground italic">None</span>;
-    // Array of strings → bullet list
     if (typeof value[0] === "string") {
       return (
         <ul className="list-disc list-inside space-y-0.5">
@@ -185,7 +161,6 @@ function FormattedValue({
         </ul>
       );
     }
-    // Array of objects (e.g. lessons) → numbered cards
     return (
       <div className="space-y-2 mt-1">
         {value.map((item, i) => (
@@ -199,17 +174,13 @@ function FormattedValue({
       </div>
     );
   }
-  // Nested object
   if (typeof value === "object") {
     return <ParsedJsonCard data={value} />;
   }
   return <span>{String(value)}</span>;
 }
 
-/**
- * Renders a parsed JSON object as a clean key-value card.
- * The last entry gets the blinking cursor when still streaming.
- */
+
 function ParsedJsonCard({
   data,
   isStreaming,
@@ -217,14 +188,28 @@ function ParsedJsonCard({
   data: Record<string, any>;
   isStreaming?: boolean;
 }) {
-  const entries = Object.entries(data);
+  let entries = Object.entries(data);
+
+  if (isStreaming && entries.length > 0) {
+    const [, lastValue] = entries[entries.length - 1];
+    if (lastValue === "" || lastValue === null || lastValue === undefined) {
+      entries = entries.slice(0, -1);
+    }
+  }
+
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {entries.map(([key, value], idx) => {
         const isLast = idx === entries.length - 1;
         return (
-          <div key={key} className="text-xs">
-            <span className="font-medium text-muted-foreground">
+          <motion.div
+            key={key}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="text-xs"
+          >
+            <span className="font-semibold text-muted-foreground">
               {formatKey(key)}:
             </span>{" "}
             <span className="text-foreground/90">
@@ -233,7 +218,7 @@ function ParsedJsonCard({
                 isStreaming={isStreaming && isLast}
               />
             </span>
-          </div>
+          </motion.div>
         );
       })}
     </div>
@@ -252,7 +237,12 @@ function StepSection({
   const parsed = repairPartialJson(chunk.text);
 
   return (
-    <div className={`rounded-lg border p-3 ${info.bgColor} transition-all`}>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={`rounded-lg border p-3 ${info.bgColor} transition-colors`}
+    >
       <div className="flex items-center gap-2 mb-2">
         <Icon className={`h-4 w-4 ${info.color}`} />
         <span className={`text-sm font-semibold ${info.color}`}>
@@ -270,7 +260,6 @@ function StepSection({
         )}
       </div>
 
-      {/* Always try to show formatted view */}
       {parsed && typeof parsed === "object" ? (
         <div className="text-xs leading-relaxed">
           <ParsedJsonCard
@@ -278,16 +267,13 @@ function StepSection({
             isStreaming={isActive}
           />
         </div>
-      ) : (
-        /* Fallback: raw text if repair failed */
-        <pre className="text-xs font-mono whitespace-pre-wrap break-all text-foreground/80 leading-relaxed">
-          {chunk.text}
-          {isActive && (
-            <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-primary animate-pulse rounded-sm" />
-          )}
-        </pre>
-      )}
-    </div>
+      ) : chunk.text.length > 0 ? (
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="inline-block w-1.5 h-3.5 bg-primary animate-pulse rounded-sm" />
+          <span>Receiving data...</span>
+        </div>
+      ) : null}
+    </motion.div>
   );
 }
 
@@ -312,7 +298,6 @@ export function StreamingResponseWindow() {
   const isFailed = progress?.status === GenerationStatus.FAILED;
   const isStreaming = isGenerating && streamChunks.length > 0;
 
-  // Auto-scroll to bottom when new content arrives
   useEffect(() => {
     const totalText = streamChunks.reduce((sum, c) => sum + c.text.length, 0);
     if (totalText > prevChunkLengthRef.current && scrollRef.current) {
@@ -340,7 +325,6 @@ export function StreamingResponseWindow() {
     progress?.message ||
     (isStreaming ? "Streaming AI output..." : "Waiting for response...");
 
-  // Content shared between compact and maximized views
   const streamContent = (
     <div className="flex flex-col h-full">
       {/* Progress bar */}
@@ -436,7 +420,6 @@ export function StreamingResponseWindow() {
     </div>
   );
 
-  // Maximized view: render as a Dialog
   if (isMaximized) {
     return (
       <Dialog
@@ -444,17 +427,12 @@ export function StreamingResponseWindow() {
         onOpenChange={(open) => !open && setIsMaximized(false)}
       >
         <DialogContent
-          className="max-w-4xl h-[80vh] flex flex-col p-0 gap-0"
+          className="min-w-4xl h-[80vh] flex flex-col p-0 gap-0"
           showCloseButton={false}
         >
           <DialogHeader className="px-4 py-3 border-b flex-shrink-0">
             <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2">
-                <div
-                  className={`h-2.5 w-2.5 rounded-full ${isStreaming ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
-                />
-                Course Generation — Live Output
-              </DialogTitle>
+        
               <div className="flex gap-1">
                 <Button
                   variant="ghost"
@@ -496,15 +474,8 @@ export function StreamingResponseWindow() {
         >
           <Card className="w-[420px] h-[500px] shadow-2xl border-2 flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`h-2 w-2 rounded-full ${isStreaming ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
-                />
-                <h3 className="font-semibold text-sm">
-                  Generation — Live Output
-                </h3>
-              </div>
+            <div className="flex items-center justify-between px-4 border-b flex-shrink-0">
+            
               <div className="flex gap-1">
                 <Button
                   variant="ghost"

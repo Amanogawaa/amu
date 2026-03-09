@@ -9,7 +9,7 @@ import {
 } from '@/server/features/course/types';
 import { GenerationProgressDisplay } from './GenerationProgressDisplay';
 import { motion } from 'framer-motion';
-import { useGenerationContext } from '../context/GenerationContext';
+import { useGenerationContext } from '../application/GenerationContext';
 
 interface ExpandedProgressViewProps {
   progress: GenerationProgress;

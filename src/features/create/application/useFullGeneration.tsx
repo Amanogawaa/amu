@@ -1,7 +1,7 @@
 'use client';
 
-import { useGenerationContext } from '../context/GenerationContext';
 import type { FullGenerationRequest } from '@/server/features/course/types';
+import { useGenerationContext } from './GenerationContext';
 
 interface UseFullGenerationReturn {
   progress: ReturnType<typeof useGenerationContext>['progress'];
@@ -20,8 +20,6 @@ export function useFullGeneration(): UseFullGenerationReturn {
   const context = useGenerationContext();
 
   const cancelGeneration = () => {
-    // For now, just reset the generation
-    // In the future, we could implement actual cancellation via API
     context.resetGeneration();
   };
 

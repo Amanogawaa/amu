@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import { useGenerationContext } from "../context/GenerationContext";
+import { useGenerationContext } from '../application/GenerationContext';
 import { MiniProgressIndicator } from "./MiniProgressIndicator";
 import { ExpandedProgressView } from "./ExpandedProgressView";
 import { StreamingResponseWindow } from "./StreamingResponseWindow";
