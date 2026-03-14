@@ -2,19 +2,22 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CheckCircle2Icon } from "lucide-react";
 import { useAuth } from "@/features/auth/application/AuthContext";
 import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
 import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
 import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
+import { usePublicProfile } from "@/features/user/application/useUser";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 import { useGetCourse } from "../../application/useGetCourses";
-import { CourseInfoCard } from "../card/CourseInfoCard";
 import { CourseContent } from "./CourseContent";
 import { CourseHeader } from "./CourseHeader";
-import { CourseCreatorCard } from "./CourseCreatorCard";
 import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
+import { CourseCreatorCard } from "./CourseCreatorCard";
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -60,7 +63,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       <CourseHeader
         courseId={courseId}
         name={data.name}
@@ -70,55 +73,92 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         ownerId={data.uid}
         isPublished={data.publish}
         isDrafted={data.draft}
-      />
-
-      <CourseInfoCard
         duration={data.duration}
         noOfChapters={data.noOfChapters}
         language={data.language}
-        level={data.level}
       />
 
-      {/* <CourseCreatorCard creatorId={data.uid} createdAt={data.createdAt} /> */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main content */}
+        <div className="lg:col-span-2 space-y-6">
+          <CourseContent
+            description={data.description}
+            learningOutcomes={data.learning_outcomes}
+            prerequisites={data.prerequisites}
+          />
+          <ChapterList courseId={courseId} />
+        </div>
 
-      {!enrollmentLoading &&
-        !enrollmentStatus?.isEnrolled &&
-        user?.uid != data.uid && (
-          <EnrollmentPrompt courseId={courseId} variant="banner" />
-        )}
+        {/* Sidebar */}
+        <div className="space-y-4">
+          {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-lg">Your Progress</h3>
+                    <CourseStatusBadge
+                      percentComplete={progress.percentComplete}
+                    />
+                  </div>
+                  <ProgressBar
+                    percent={progress.percentComplete}
+                    showLabel
+                    size="lg"
+                  />
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>
+                      {progress.lessonsCompleted.length} of{" "}
+                      {progress.totalLessons} lessons completed
+                    </span>
+                    <span>{progress.percentComplete}%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-      {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg">Your Progress</h3>
-                <CourseStatusBadge percentComplete={progress.percentComplete} />
-              </div>
-              <ProgressBar
-                percent={progress.percentComplete}
-                showLabel
-                size="lg"
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>
-                  {progress.lessonsCompleted.length} of {progress.totalLessons}{" "}
-                  lessons completed
-                </span>
-                <span>{progress.percentComplete}%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          {!enrollmentLoading &&
+            !enrollmentStatus?.isEnrolled &&
+            user?.uid !== data.uid && (
+              <EnrollmentPrompt courseId={courseId} variant="card" />
+            )}
 
-      <CourseContent
-        description={data.description}
-        learningOutcomes={data.learning_outcomes}
-        prerequisites={data.prerequisites}
-      />
+          {/* Instructor Card */}
+          <CourseCreatorCard creatorId={data.uid} />
 
-      <ChapterList courseId={courseId} />
+          {/* What You'll Learn */}
+          {data.learning_outcomes && data.learning_outcomes.length > 0 && (
+            <Card className="shadow-none">
+              <CardContent className="pt-6 ">
+                <h3 className="font-semibold text-base mb-4">
+                  What You'll Learn
+                </h3>
+                <ul className="space-y-2">
+                  {data.learning_outcomes.map((outcome, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <CheckCircle2Icon className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Prerequisites */}
+          {data.prerequisites && (
+            <Card className="shadow-none">
+              <CardContent className="pt-6">
+                <h3 className="font-semibold text-base mb-3">Prerequisites</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {data.prerequisites}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
