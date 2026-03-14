@@ -4,8 +4,7 @@ import { useAuth } from '@/features/auth/application/AuthContext';
 import EnrolledCoursesGrid from '@/features/enrollment/presentation/EnrolledCoursesGrid';
 import { CapstoneGallery } from '@/features/capstone/presentation';
 import { SearchBar } from '@/features/course/presentation/SearchBar';
-import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
-import { SortingPanel } from '@/features/course/presentation/SortingPanel';
+import { FilterAndSortPanel } from '@/features/course/presentation/FilterAndSortPanel';
 import { BookOpenIcon, Sparkles } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { useState } from 'react';
@@ -56,18 +55,17 @@ const MyLearningPage = () => {
         </div>
 
         <div className="mt-8 space-y-4">
-          <SearchBar
-            onSearch={handleSearch}
-            placeholder="Search enrolled courses..."
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <LevelFilterPanel
+          <div className="flex gap-3">
+            <SearchBar
+              onSearch={handleSearch}
+              placeholder="Search enrolled courses..."
+            />
+            <FilterAndSortPanel
               selectedLevel={selectedLevel}
               onLevelChange={handleLevelChange}
-            />
-            <SortingPanel
               selectedSort={selectedSort}
               onSortChange={handleSortChange}
+              showStatus={false}
             />
           </div>
         </div>

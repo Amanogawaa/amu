@@ -3,9 +3,7 @@
 import { useAuth } from "@/features/auth/application/AuthContext";
 import CourseGrid from "@/features/course/presentation/grid/CourseGrid";
 import { SearchBar } from "@/features/course/presentation/SearchBar";
-import { LevelFilterPanel } from "@/features/course/presentation/LevelFilterPanel";
-import { SortingPanel } from "@/features/course/presentation/SortingPanel";
-import { StatusFilterPanel } from "@/features/course/presentation/StatusFilterPanel";
+import { FilterAndSortPanel } from "@/features/course/presentation/FilterAndSortPanel";
 import { BookOpenIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
@@ -65,22 +63,19 @@ const CoursesPage = () => {
         </div>
 
         <div className="mt-8 space-y-4">
-          <SearchBar
-            onSearch={handleSearch}
-            placeholder="Search your courses..."
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <LevelFilterPanel
+          <div className="flex gap-3">
+            <SearchBar
+              onSearch={handleSearch}
+              placeholder="Search your courses..."
+            />
+            <FilterAndSortPanel
               selectedLevel={selectedLevel}
               onLevelChange={handleLevelChange}
-            />
-            <SortingPanel
               selectedSort={selectedSort}
               onSortChange={handleSortChange}
-            />
-            <StatusFilterPanel
               selectedStatus={selectedStatus}
               onStatusChange={handleStatusChange}
+              showStatus={true}
             />
           </div>
         </div>

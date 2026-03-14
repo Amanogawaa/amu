@@ -30,11 +30,15 @@ export function useMarkLessonProgress() {
       toast.success(
         variables.completed ? 'Lesson marked complete!' : 'Progress updated'
       );
-      queryClient.invalidateQueries({ queryKey: queryKeys.progress.all });
+      // ✅ Only invalidate specific course progress and summary, not all progress
       queryClient.invalidateQueries({
         queryKey: queryKeys.progress.course(variables.courseId),
+        exact: true,
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.progress.summary() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.progress.summary(),
+        exact: true,
+      });
     },
 
     onError: (error) => {

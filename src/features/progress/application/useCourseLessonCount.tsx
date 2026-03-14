@@ -20,19 +20,27 @@ export function useCourseLessonCount(courseId: string) {
           return 0;
         }
 
-        const lessonPromises = chapters.map((chapter) =>
-          getLessons(chapter.id)
-        );
-        const lessonsArrays = await Promise.all(lessonPromises);
-        const allLessons = lessonsArrays.flat();
+        // Limit concurrent requests to avoid overwhelming the API
+        const batchSize = 3;
+        let totalLessons = 0;
 
-        return allLessons.length;
+        for (let i = 0; i < chapters.length; i += batchSize) {
+          const batch = chapters.slice(i, i + batchSize);
+          const lessonPromises = batch.map((chapter) =>
+            getLessons(chapter.id).catch(() => [])
+          );
+          const lessonsArrays = await Promise.all(lessonPromises);
+          totalLessons += lessonsArrays.flat().length;
+        }
+
+        return totalLessons;
       } catch (error) {
         logger.error("Error counting course lessons:", error);
         return 0;
       }
     },
     enabled: !!courseId,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000, // Increased from 5 to 10 minutes - lesson counts don't change frequently
+    gcTime: 15 * 60 * 1000, // Add gcTime to prevent garbage collection too soon
   });
 }

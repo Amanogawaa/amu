@@ -14,15 +14,7 @@ import { useAuth } from "@/features/auth/application/AuthContext";
 import { useEnrollmentCount } from "@/features/enrollment/application/useEnrollment";
 import { LikeButton } from "@/features/likes/presentation/LikeButton";
 import { Course } from "@/server/features/course/types";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock,
-  GraduationCap,
-  Layers,
-  User2,
-  Calendar,
-} from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 import { CourseValidationBadge } from "../components/CourseValidationBadge";
 import dayjs from "dayjs";
@@ -33,13 +25,46 @@ interface CourseCardProps {
   href?: string;
 }
 
+type FirestoreTimestamp = {
+  _seconds: number;
+  _nanoseconds?: number;
+};
+
+const isFirestoreTimestamp = (value: unknown): value is FirestoreTimestamp => {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "_seconds" in value &&
+    typeof (value as FirestoreTimestamp)._seconds === "number"
+  );
+};
+
+const normalizeDate = (value: unknown): Date | null => {
+  if (!value) return null;
+
+  if (isFirestoreTimestamp(value)) {
+    return new Date(value._seconds * 1000);
+  }
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  return null;
+};
+
+dayjs.extend(relativeTime);
+
 const CourseCard = ({ course, href }: CourseCardProps) => {
   const { data: enrollmentCount } = useEnrollmentCount(course.id);
   const { user } = useAuth();
   const isOwner = user?.uid === course.uid;
-
-  // Extend dayjs with relativeTime plugin
-  dayjs.extend(relativeTime);
+  const createdAtDate = normalizeDate(course.createdAt as unknown);
 
   const levelColors = {
     beginner:
@@ -82,10 +107,10 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
         </p>
 
         {/* Date Generated Indicator */}
-        {course.createdAt && (
+        {createdAtDate && (
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
             <Calendar className="h-3.5 w-3.5" />
-            <span>Generated {dayjs(course.createdAt).fromNow()}</span>
+            <span>Generated {dayjs(createdAtDate).fromNow()}</span>
           </div>
         )}
 
