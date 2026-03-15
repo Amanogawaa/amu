@@ -35,6 +35,8 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
   const { user } = useAuth();
   const isOwner = user?.uid === course.uid;
 
+  console.log("Enrollment course:", course);
+
   const levelColors = {
     beginner:
       "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 capitalize",
