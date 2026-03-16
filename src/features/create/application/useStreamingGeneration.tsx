@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useGenerationContext } from "../context/GenerationContext";
 import type { CreateCoursePayload } from "@/server/features/course/types";
 import { generateCourseStream } from "@/server/features/course";
 import { toast } from "sonner";
+import { useGenerationContext } from "./GenerationContext";
 
 export function useStreamingGeneration() {
   const {
