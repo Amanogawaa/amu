@@ -194,7 +194,7 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
             label: "View Course",
             onClick: () => {
               if (data.data?.courseId) {
-                router.push(`/create/${data.data.courseId}`);
+                router.push(`/courses/${data.data.courseId}`);
               }
             },
           },
@@ -309,7 +309,6 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
     [socket, isConnected],
   );
 
-  // Alias for backward-compat
   const startStreamingGeneration = startGeneration;
 
   const setProgress = useCallback((progress: GenerationProgress | null) => {

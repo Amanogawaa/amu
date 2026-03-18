@@ -17,6 +17,7 @@ import {
   ExternalLink,
   FileText,
   Layers,
+  Minus,
   Maximize2,
   Minimize2,
   X,
@@ -24,8 +25,10 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { GenerationStatus } from "@/server/features/course/types";
-import { StreamChunk, useGenerationContext } from "../application/GenerationContext";
-
+import {
+  StreamChunk,
+  useGenerationContext,
+} from "../application/GenerationContext";
 
 function getStepInfo(step: string) {
   if (step === "course") {
@@ -75,7 +78,7 @@ function repairPartialJson(text: string): any | null {
   try {
     return JSON.parse(cleaned);
   } catch {
-  // skip 
+    // skip
   }
 
   let repaired = cleaned;
@@ -180,7 +183,6 @@ function FormattedValue({
   return <span>{String(value)}</span>;
 }
 
-
 function ParsedJsonCard({
   data,
   isStreaming,
@@ -281,6 +283,7 @@ export function StreamingResponseWindow() {
   const {
     isStreamWindowVisible,
     hideStreamWindow,
+    hideWidget,
     streamChunks,
     currentStreamStep,
     progress,
@@ -291,6 +294,7 @@ export function StreamingResponseWindow() {
   } = useGenerationContext();
 
   const [isMaximized, setIsMaximized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevChunkLengthRef = useRef(0);
 
@@ -315,8 +319,26 @@ export function StreamingResponseWindow() {
       resetGeneration();
     } else {
       hideStreamWindow();
+      hideWidget();
+      setIsMaximized(false);
+      setIsMinimized(false);
     }
-  }, [isCompleted, isFailed, resetGeneration, hideStreamWindow]);
+  }, [isCompleted, isFailed, resetGeneration, hideStreamWindow, hideWidget]);
+
+  const handleMinimizeToTab = useCallback(() => {
+    setIsMaximized(false);
+    setIsMinimized(true);
+  }, []);
+
+  const handleRestoreFromTab = useCallback(() => {
+    setIsMinimized(false);
+    setIsMaximized(false);
+  }, []);
+
+  const handleMaximize = useCallback(() => {
+    setIsMinimized(false);
+    setIsMaximized(true);
+  }, []);
 
   if (!isStreamWindowVisible) return null;
 
@@ -324,6 +346,7 @@ export function StreamingResponseWindow() {
   const statusMessage =
     progress?.message ||
     (isStreaming ? "Streaming AI output..." : "Waiting for response...");
+  const courseName = progress?.data?.courseName || "Course Generation";
 
   const streamContent = (
     <div className="flex flex-col h-full">
@@ -420,6 +443,59 @@ export function StreamingResponseWindow() {
     </div>
   );
 
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-4 right-4 z-50">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0, y: 16 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 16 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Card className="w-[320px] shadow-xl border-2 px-3 py-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate">{courseName}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {Math.round(progressPercent)}% · {statusMessage}
+                </p>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={handleRestoreFromTab}
+                  title="Restore"
+                >
+                  <Minimize2 className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={handleMaximize}
+                  title="Maximize"
+                >
+                  <Maximize2 className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={handleClose}
+                  title="Close"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (isMaximized) {
     return (
       <Dialog
@@ -432,16 +508,27 @@ export function StreamingResponseWindow() {
         >
           <DialogHeader className="px-4 py-3 border-b flex-shrink-0">
             <div className="flex items-center justify-between">
-        
+              <DialogTitle className="text-base font-semibold truncate">
+                {courseName}
+              </DialogTitle>
               <div className="flex gap-1">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8"
                   onClick={() => setIsMaximized(false)}
-                  title="Minimize"
+                  title="Restore"
                 >
                   <Minimize2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={handleMinimizeToTab}
+                  title="Minimize"
+                >
+                  <Minus className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -475,16 +562,27 @@ export function StreamingResponseWindow() {
           <Card className="w-[420px] h-[500px] shadow-2xl border-2 flex flex-col overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 border-b flex-shrink-0">
-            
+              <p className="text-sm font-semibold truncate py-2">
+                {courseName}
+              </p>
               <div className="flex gap-1">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={() => setIsMaximized(true)}
+                  onClick={handleMaximize}
                   title="Maximize"
                 >
                   <Maximize2 className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={handleMinimizeToTab}
+                  title="Minimize"
+                >
+                  <Minus className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   variant="ghost"

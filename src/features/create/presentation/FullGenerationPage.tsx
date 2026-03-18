@@ -6,23 +6,18 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { GenerationStatus } from "@/server/features/course/types";
 import { CheckCircle2, Sparkles, Info } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useFullGeneration } from "../application/useFullGeneration";
-import { useGenerationContext } from '../application/GenerationContext'; 
+import { useGenerationContext } from "../application/GenerationContext";
 import { FullGenerationForm } from "../presentation/FullGenerationForm";
 import { MockStreamButton } from "./MockStreamButton";
 
 export default function FullGenerationPage() {
-  const router = useRouter();
   const { progress, isGenerating, startGeneration, resetGeneration } =
     useFullGeneration();
-  const { setIsMinimized } = useGenerationContext();
-
-  const isCompleted = progress?.status === GenerationStatus.COMPLETED;
-  const isFailed = progress?.status === GenerationStatus.FAILED;
+  const { showStreamWindow } = useGenerationContext();
 
   const handleViewWidget = () => {
-    setIsMinimized(false);
+    showStreamWindow();
   };
 
   const handleCreateAnother = () => {

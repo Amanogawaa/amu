@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import type { FullGenerationRequest } from '@/server/features/course/types';
-import { useGenerationContext } from './GenerationContext';
+import type { FullGenerationRequest } from "@/server/features/course/types";
+import { useGenerationContext } from "./GenerationContext";
 
 interface UseFullGenerationReturn {
-  progress: ReturnType<typeof useGenerationContext>['progress'];
+  progress: ReturnType<typeof useGenerationContext>["progress"];
   isGenerating: boolean;
   error: string | null;
   startGeneration: (request: FullGenerationRequest) => Promise<void>;

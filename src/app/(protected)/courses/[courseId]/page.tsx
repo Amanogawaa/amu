@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import CourseDetailPage from '@/features/course/presentation/components/CourseDetailPage';
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import React from 'react';
+import { CapstoneGuidelineCard } from "@/features/capstone/presentation/card/CapstoneGuidelineCard";
+import { useGetCourse } from "@/features/course/application/useGetCourses";
+import CourseDetailPage from "@/features/course/presentation/components/CourseDetailPage";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import React from "react";
 
 const CoursePage = () => {
   const params = useParams();
@@ -29,6 +30,10 @@ const CoursePage = () => {
         </nav>
 
         <CourseDetailPage courseId={courseId} />
+
+        <div className="mt-3">
+          <CapstoneGuidelineCard courseId={courseId} />
+        </div>
       </div>
     </section>
   );
