@@ -200,6 +200,8 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
           },
         });
 
+        if (data.data?.courseId) router.push(`/courses/${data.data.courseId}`);
+
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
           timeoutRef.current = null;

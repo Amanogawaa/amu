@@ -21,7 +21,6 @@ import {
   FolderTree,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import normalizeCapstoneGuideline from "@/utils/transform";
 
 interface CapstoneGuidelineCardProps {
   courseId: string;
@@ -183,7 +182,7 @@ export function CapstoneGuidelineCard({
                       {guideline.gettingStarted.prerequisites.map(
                         (prereq, index) => (
                           <li key={index}>{prereq}</li>
-                        )
+                        ),
                       )}
                     </ul>
                   </div>
@@ -201,7 +200,7 @@ export function CapstoneGuidelineCard({
                           <li key={index} className="leading-relaxed">
                             {instruction}
                           </li>
-                        )
+                        ),
                       )}
                     </ol>
                   </div>
@@ -322,7 +321,7 @@ export function CapstoneGuidelineCard({
                     >
                       {requirement}
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </div>
@@ -371,7 +370,7 @@ export function CapstoneGuidelineCard({
                           <Badge key={index} variant="secondary">
                             {lang}
                           </Badge>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -386,7 +385,7 @@ export function CapstoneGuidelineCard({
                           <Badge key={index} variant="secondary">
                             {fw}
                           </Badge>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -401,7 +400,7 @@ export function CapstoneGuidelineCard({
                           <Badge key={index} variant="secondary">
                             {tool}
                           </Badge>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -436,7 +435,7 @@ export function CapstoneGuidelineCard({
                         description: string;
                         weight?: number;
                       },
-                      index: number
+                      index: number,
                     ) => (
                       <li
                         key={index}
@@ -450,7 +449,7 @@ export function CapstoneGuidelineCard({
                         )}
                         {criteria.description && <>: {criteria.description}</>}
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>
@@ -499,7 +498,7 @@ export function CapstoneGuidelineCard({
                       skills: string[];
                       application: string;
                     },
-                    index: number
+                    index: number,
                   ) => (
                     <div
                       key={index}
@@ -527,7 +526,7 @@ export function CapstoneGuidelineCard({
                         </p>
                       )}
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -553,7 +552,7 @@ export function CapstoneGuidelineCard({
                       >
                         {feature}
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>
@@ -578,7 +577,7 @@ export function CapstoneGuidelineCard({
                     >
                       {deliverable}
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </div>
