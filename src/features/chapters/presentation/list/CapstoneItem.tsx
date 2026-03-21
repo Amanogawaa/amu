@@ -1,14 +1,10 @@
 "use client";
 
-import { Lock, Target, ChevronDownIcon } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CapstoneGuidelineCard } from "@/features/capstone/presentation/card/CapstoneGuidelineCard";
-import { useState, useMemo } from "react";
+import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Lock, Target } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 interface CapstoneItemProps {
   courseId: string;
@@ -26,6 +22,7 @@ export const CapstoneItem = ({
   isEnrolled,
 }: CapstoneItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   // Calculate if locked with proper validation
   const isLocked = useMemo(() => {
@@ -50,6 +47,7 @@ export const CapstoneItem = ({
     <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
       <div className="rounded-md border bg-white">
         <CollapsibleTrigger
+          onClick={() => router.push(`/courses/${courseId}/capstone`)}
           className={`flex w-full items-center justify-between px-4 py-3 text-left transition-colors ${
             isLocked
               ? "cursor-not-allowed opacity-60 hover:bg-red-50/50"
@@ -68,12 +66,9 @@ export const CapstoneItem = ({
               Capstone Project Guidelines
             </p>
           </div>
-          {!isLocked && (
-            <ChevronDownIcon className="h-4 w-4 text-muted-foreground transition-transform flex-shrink-0 ml-4" />
-          )}
         </CollapsibleTrigger>
 
-        {isLocked ? (
+        {isLocked && (
           <div className="px-4 pb-3">
             <Alert className="border-yellow-200 bg-yellow-50">
               <Lock className="h-4 w-4 text-yellow-600" />
@@ -86,12 +81,6 @@ export const CapstoneItem = ({
               </AlertDescription>
             </Alert>
           </div>
-        ) : (
-          <CollapsibleContent className="px-2 pb-2">
-            <div className="p-4">
-              <CapstoneGuidelineCard courseId={courseId} />
-            </div>
-          </CollapsibleContent>
         )}
       </div>
     </Collapsible>

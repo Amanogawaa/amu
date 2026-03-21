@@ -1,28 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  ChevronDownIcon,
-  Video,
-  FileText,
-  CheckCircle2Icon,
-  BookOpenIcon,
-  PlayCircle,
-} from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { useGetLessons } from "@/features/lessons/application/useGetLesson";
+import { useProgressForCourse } from "@/features/progress/application/useProgress";
+import { useResourceEvents } from "@/hooks/use-socket-events";
+import { ChevronDownIcon, PlayCircle, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { useGetChapters } from "../../application/useGetChapters";
-import { useGetLessons } from "@/features/lessons/application/useGetLesson";
-import { useResourceEvents } from "@/hooks/use-socket-events";
-import { useProgressForCourse } from "@/features/progress/application/useProgress";
-import { Progress } from "@/components/ui/progress";
-import { useRouter } from "next/navigation";
 import { CapstoneItem } from "./CapstoneItem";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ChapterListProps {
   courseId: string;
@@ -34,11 +26,13 @@ const ChapterItem = ({
   courseId,
   progress,
   chapterIndex,
+  isEnrolled,
 }: {
   chapter: any;
   courseId: string;
   progress: any;
   chapterIndex: number;
+  isEnrolled?: boolean;
 }) => {
   const { data: lessons } = useGetLessons(chapter.id);
   const router = useRouter();
@@ -53,19 +47,6 @@ const ChapterItem = ({
 
     return Math.round((completedLessons / lessons.length) * 100);
   }, [lessons, progress]);
-
-  // const getLessonIcon = (type: string) => {
-  //   switch (type) {
-  //     case "video":
-  //       return <Video className="h-4 w-4 text-primary" />;
-  //     case "article":
-  //       return <FileText className="h-4 w-4 text-primary" />;
-  //     case "quiz":
-  //       return <CheckCircle2Icon className="h-4 w-4 text-primary" />;
-  //     default:
-  //       return <BookOpenIcon className="h-4 w-4 text-primary" />;
-  //   }
-  // };
 
   return (
     <Collapsible defaultOpen>
@@ -93,7 +74,7 @@ const ChapterItem = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent className="px-2 pb-2">
-          {lessons && lessons.length > 0 ? (
+          {lessons && isEnrolled ? (
             <div className="space-y-1">
               {lessons.map((lesson, lessonIndex) => {
                 const isCompleted = progress?.lessonsCompleted?.includes(
@@ -127,8 +108,13 @@ const ChapterItem = ({
               })}
             </div>
           ) : (
-            <div className="px-3 py-2 text-sm text-muted-foreground">
-              No lessons available yet
+            <div className="px-4 pb-3">
+              <Alert className="border-yellow-200 bg-yellow-50">
+                <Lock className="h-4 w-4 text-yellow-600" />
+                <AlertDescription className="text-sm text-yellow-800">
+                  Please enroll in the course to access the lessons.
+                </AlertDescription>
+              </Alert>
             </div>
           )}
         </CollapsibleContent>
@@ -154,7 +140,6 @@ export const ChapterList = ({
     return [...chapters].sort((a, b) => a.chapterOrder - b.chapterOrder);
   }, [chapters]);
 
-  // Calculate total and completed lessons
   const lessonStats = useMemo(() => {
     const total = progress?.totalLessons || 0;
     const completed = progress?.lessonsCompleted?.length || 0;
@@ -176,10 +161,10 @@ export const ChapterList = ({
               courseId={courseId}
               progress={progress}
               chapterIndex={index}
+              isEnrolled={isEnrolled}
             />
           ))}
 
-          {/* Capstone Project Item */}
           <CapstoneItem
             courseId={courseId}
             progress={progress}

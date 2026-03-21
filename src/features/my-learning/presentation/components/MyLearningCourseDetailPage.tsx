@@ -15,6 +15,7 @@ import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatus
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
 import { MyLearningCourseHeader } from "./MyLearningCourseHeader";
 import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
+import { CourseHeader } from "@/features/course/presentation/components/CourseHeader";
 
 const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -60,8 +61,8 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <MyLearningCourseHeader
+    <div>
+      <CourseHeader
         courseId={courseId}
         name={data.name}
         subtitle={data.subtitle}
@@ -70,13 +71,9 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
         ownerId={data.uid}
         isPublished={data.publish}
         isDrafted={data.draft}
-      />
-
-      <CourseInfoCard
         duration={data.duration}
         noOfChapters={data.noOfChapters}
         language={data.language}
-        level={data.level}
       />
 
       {!progressLoading &&
@@ -114,8 +111,8 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
         prerequisites={data.prerequisites}
       />
 
-      <ChapterList 
-        courseId={courseId} 
+      <ChapterList
+        courseId={courseId}
         isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
       />
 

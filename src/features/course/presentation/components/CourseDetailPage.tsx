@@ -2,22 +2,18 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CheckCircle2Icon } from "lucide-react";
 import { useAuth } from "@/features/auth/application/AuthContext";
+import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
 import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
 import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
 import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
-import { usePublicProfile } from "@/features/user/application/useUser";
-import { AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { AlertCircle, CheckCircle2Icon } from "lucide-react";
 import { useGetCourse } from "../../application/useGetCourses";
 import { CourseContent } from "./CourseContent";
-import { CourseHeader } from "./CourseHeader";
-import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
 import { CourseCreatorCard } from "./CourseCreatorCard";
+import { CourseHeader } from "./CourseHeader";
 
 const CourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -86,8 +82,8 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
             learningOutcomes={data.learning_outcomes}
             prerequisites={data.prerequisites}
           />
-          <ChapterList 
-            courseId={courseId} 
+          <ChapterList
+            courseId={courseId}
             isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
           />
         </div>
