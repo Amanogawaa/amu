@@ -22,9 +22,11 @@ import { useResourceEvents } from "@/hooks/use-socket-events";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import { CapstoneItem } from "./CapstoneItem";
 
 interface ChapterListProps {
   courseId: string;
+  isEnrolled?: boolean;
 }
 
 const ChapterItem = ({
@@ -135,7 +137,10 @@ const ChapterItem = ({
   );
 };
 
-export const ChapterList = ({ courseId }: ChapterListProps) => {
+export const ChapterList = ({
+  courseId,
+  isEnrolled = false,
+}: ChapterListProps) => {
   const { data: chapters } = useGetChapters(courseId);
   const { data: progress } = useProgressForCourse(courseId);
 
@@ -148,6 +153,13 @@ export const ChapterList = ({ courseId }: ChapterListProps) => {
     if (!chapters) return [];
     return [...chapters].sort((a, b) => a.chapterOrder - b.chapterOrder);
   }, [chapters]);
+
+  // Calculate total and completed lessons
+  const lessonStats = useMemo(() => {
+    const total = progress?.totalLessons || 0;
+    const completed = progress?.lessonsCompleted?.length || 0;
+    return { total, completed };
+  }, [progress]);
 
   return (
     <>
@@ -166,6 +178,15 @@ export const ChapterList = ({ courseId }: ChapterListProps) => {
               chapterIndex={index}
             />
           ))}
+
+          {/* Capstone Project Item */}
+          <CapstoneItem
+            courseId={courseId}
+            progress={progress}
+            totalLessons={lessonStats.total}
+            completedLessons={lessonStats.completed}
+            isEnrolled={isEnrolled}
+          />
         </div>
       )}
     </>

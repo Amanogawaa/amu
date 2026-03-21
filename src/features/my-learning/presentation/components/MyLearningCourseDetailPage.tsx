@@ -14,6 +14,7 @@ import { useProgressForCourse } from "@/features/progress/application/useProgres
 import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
 import { MyLearningCourseHeader } from "./MyLearningCourseHeader";
+import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
 
 const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -113,7 +114,10 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
         prerequisites={data.prerequisites}
       />
 
-      {/* <ModuleList courseId={courseId} /> */}
+      <ChapterList 
+        courseId={courseId} 
+        isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
+      />
 
       <Card>
         <CardContent className="pt-6">

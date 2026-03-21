@@ -86,7 +86,10 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
             learningOutcomes={data.learning_outcomes}
             prerequisites={data.prerequisites}
           />
-          <ChapterList courseId={courseId} />
+          <ChapterList 
+            courseId={courseId} 
+            isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
+          />
         </div>
 
         {/* Sidebar */}

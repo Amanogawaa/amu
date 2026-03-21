@@ -1,23 +1,25 @@
-'use client';
+"use client";
 
-import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
-import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
-import CourseCard from '@/features/course/presentation/card/CourseCard';
-import { FilterAndSortPanel } from '@/features/course/presentation/FilterAndSortPanel';
-import { SearchBar } from '@/features/course/presentation/SearchBar';
-import { useResourceEvents } from '@/hooks/use-socket-events';
-import { CourseFilters } from '@/server/features/course/types/request';
-import { StarsIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import CourseCardSkeleton from "@/components/states/CourseCardSkeleton";
+import { EnhancedEmptyState } from "@/components/states/EnhancedEmptyState";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { useInfiniteListCourses } from "@/features/course/application/useGetCourses";
+import CourseCard from "@/features/course/presentation/card/CourseCard";
+import { FilterAndSortPanel } from "@/features/course/presentation/FilterAndSortPanel";
+import { SearchBar } from "@/features/course/presentation/SearchBar";
+import { useResourceEvents } from "@/hooks/use-socket-events";
+import { CourseFilters } from "@/server/features/course/types/request";
+import { StarsIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 const ExplorePage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
-    undefined
+    undefined,
   );
-  const [selectedSort, setSelectedSort] = useState('newest');
+  const [selectedSort, setSelectedSort] = useState("newest");
 
   const filters: CourseFilters = {
     publish: true,
@@ -38,13 +40,18 @@ const ExplorePage = () => {
   const filteredCourses = useMemo(() => {
     let result = [...flatData];
 
+    // Filter out current user's own courses
+    if (user?.uid) {
+      result = result.filter((course) => course.uid !== user.uid);
+    }
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (course) =>
           course.name.toLowerCase().includes(query) ||
           course.topic?.toLowerCase().includes(query) ||
-          course.description?.toLowerCase().includes(query)
+          course.description?.toLowerCase().includes(query),
       );
     }
 
@@ -54,34 +61,34 @@ const ExplorePage = () => {
 
     // Apply sorting
     switch (selectedSort) {
-      case 'oldest':
+      case "oldest":
         result.sort(
           (a, b) =>
             new Date(a.createdAt || 0).getTime() -
-            new Date(b.createdAt || 0).getTime()
+            new Date(b.createdAt || 0).getTime(),
         );
         break;
-      case 'name-asc':
+      case "name-asc":
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name-desc':
+      case "name-desc":
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case 'newest':
+      case "newest":
       default:
         result.sort(
           (a, b) =>
             new Date(b.createdAt || 0).getTime() -
-            new Date(a.createdAt || 0).getTime()
+            new Date(a.createdAt || 0).getTime(),
         );
     }
 
     return result;
-  }, [flatData, searchQuery, selectedLevel, selectedSort]);
+  }, [flatData, searchQuery, selectedLevel, selectedSort, user?.uid]);
 
   const { ref: sentinelRef, inView } = useInView({
     threshold: 0,
-    rootMargin: '200px',
+    rootMargin: "200px",
   });
 
   useEffect(() => {
@@ -91,8 +98,8 @@ const ExplorePage = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useResourceEvents({
-    resourceType: 'course',
-    queryKey: ['courses'],
+    resourceType: "course",
+    queryKey: ["courses"],
   });
 
   const handleSearch = (query: string) => {
@@ -136,7 +143,7 @@ const ExplorePage = () => {
                 </div>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight uppercase">
-                    EXPLORE
+                    LEARN
                   </h1>
                   <p className="text-muted-foreground text-lg">
                     Discover courses tailored to your interests

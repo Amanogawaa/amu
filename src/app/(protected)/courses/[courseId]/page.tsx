@@ -1,6 +1,5 @@
 "use client";
 
-import { CapstoneGuidelineCard } from "@/features/capstone/presentation/card/CapstoneGuidelineCard";
 import { useGetCourse } from "@/features/course/application/useGetCourses";
 import CourseDetailPage from "@/features/course/presentation/components/CourseDetailPage";
 import { ChevronRight } from "lucide-react";
@@ -30,10 +29,6 @@ const CoursePage = () => {
         </nav>
 
         <CourseDetailPage courseId={courseId} />
-
-        <div className="mt-3">
-          <CapstoneGuidelineCard courseId={courseId} />
-        </div>
       </div>
     </section>
   );
