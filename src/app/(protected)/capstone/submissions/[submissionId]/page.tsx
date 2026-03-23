@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useGetCapstoneSubmission } from '@/features/capstone/application/useGetCapstoneSubmission';
-import { useToggleCapstoneLike } from '@/features/capstone/application/useToggleCapstoneLike';
-import { useGetCapstoneLikeStatus } from '@/features/capstone/application/useGetCapstoneLikeStatus';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React from "react";
+import { useGetCapstoneSubmission } from "@/features/capstone/application/useGetCapstoneSubmission";
+import { useToggleCapstoneLike } from "@/features/capstone/application/useToggleCapstoneLike";
+import { useGetCapstoneLikeStatus } from "@/features/capstone/application/useGetCapstoneLikeStatus";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Github,
   ExternalLink,
@@ -24,15 +24,15 @@ import {
   MessageSquare,
   ArrowLeft,
   AlertCircle,
-} from 'lucide-react';
-import Link from 'next/link';
-import { CapstoneReviewForm } from '@/features/capstone/presentation';
-import { CapstoneReviewList } from '@/features/capstone/presentation';
-import { ScreenshotManager } from '@/features/capstone/presentation/ScreenshotManager';
-import { GitHubRepoViewer } from '@/features/github/presentation';
-import { useRouter } from 'next/navigation';
-import { useDeleteCapstoneReview } from '@/features/capstone/application/useDeleteCapstoneReview';
-import { useDeleteCapstoneSubmission } from '@/features/capstone/application/useDeleteCapstoneSubmission';
+} from "lucide-react";
+import Link from "next/link";
+import { CapstoneReviewForm } from "@/features/capstone/presentation";
+import { CapstoneReviewList } from "@/features/capstone/presentation";
+import { ScreenshotManager } from "@/features/capstone/presentation/ScreenshotManager";
+import { GitHubRepoViewer } from "@/features/github/presentation";
+import { useRouter } from "next/navigation";
+import { useDeleteCapstoneReview } from "@/features/capstone/application/useDeleteCapstoneReview";
+import { useDeleteCapstoneSubmission } from "@/features/capstone/application/useDeleteCapstoneSubmission";
 
 interface CapstoneSubmissionPageProps {
   params: Promise<{
@@ -97,10 +97,10 @@ export default function CapstoneSubmissionPage({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -112,13 +112,13 @@ export default function CapstoneSubmissionPage({
           Back to Gallery
         </Button>
         {isOwner && (
-                <Button
-                  variant="outline"
-                  onClick={handleDeleteSubmission}
-                  className="w-fit text-red-600 hover:text-red-700"
-                >
-                  Delete Submission
-                </Button>
+          <Button
+            variant="outline"
+            onClick={handleDeleteSubmission}
+            className="w-fit text-red-600 hover:text-red-700"
+          >
+            Delete Submission
+          </Button>
           // <div className="space-y-6">
           //   {/* Actions for Owner */}
           //   <Card>
@@ -190,13 +190,13 @@ export default function CapstoneSubmissionPage({
                     </a>
                   </Button>
                   <Button
-                    variant={isLiked ? 'default' : 'outline'}
+                    variant={isLiked ? "default" : "outline"}
                     size="icon"
                     onClick={handleLike}
                     disabled={toggleLike.isPending}
                   >
                     <Heart
-                      className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`}
+                      className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`}
                     />
                   </Button>
                 </div>
@@ -224,7 +224,7 @@ export default function CapstoneSubmissionPage({
           />
 
           {/* GitHub Repository Viewer */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Github className="h-5 w-5" />
@@ -239,7 +239,7 @@ export default function CapstoneSubmissionPage({
                 />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <Card>
             <CardHeader>
@@ -268,8 +268,6 @@ export default function CapstoneSubmissionPage({
             </CardContent>
           </Card>
         </div>
-
-       
       </div>
     </div>
   );
