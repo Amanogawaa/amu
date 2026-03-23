@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useGetCourse } from '@/features/course/application/useGetCourses';
-import MyLearningCourseDetailPage from '@/features/my-learning/presentation/components/MyLearningCourseDetailPage';
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useGetCourse } from "@/features/course/application/useGetCourses";
+import CourseDetailPage from "@/features/course/presentation/components/CourseDetailPage";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const MyLearningCoursePage = () => {
   const params = useParams();
@@ -19,7 +19,7 @@ const MyLearningCoursePage = () => {
             href="/my-learning"
             className="hover:text-foreground transition-colors font-medium"
           >
-            Courses
+            My Learning
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <span className=" font-medium truncate text-foreground">
@@ -27,7 +27,7 @@ const MyLearningCoursePage = () => {
           </span>
         </nav>
 
-        <MyLearningCourseDetailPage courseId={courseId} />
+        <CourseDetailPage courseId={courseId} context="my-learning" />
       </div>
     </section>
   );

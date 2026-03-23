@@ -2,26 +2,34 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/features/auth/application/AuthContext";
 import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
-import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
 import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
 import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
 import { AlertCircle, CheckCircle2Icon } from "lucide-react";
+import { useCourseContext } from "../../application/useCourseContext";
 import { useGetCourse } from "../../application/useGetCourses";
 import { CourseContent } from "./CourseContent";
 import { CourseCreatorCard } from "./CourseCreatorCard";
 import { CourseHeader } from "./CourseHeader";
+import { CommentList } from "@/features/comments/presentation/CommentList";
 
-const CourseDetailPage = ({ courseId }: { courseId: string }) => {
+type CourseDetailContext = "course" | "my-learning" | "learn";
+
+interface CourseDetailPageProps {
+  courseId: string;
+  context?: CourseDetailContext;
+}
+
+const CourseDetailPage = ({
+  courseId,
+  context = "course",
+}: CourseDetailPageProps) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
-  const { user } = useAuth();
+  const courseCtx = useCourseContext(courseId);
   const { data: progress, isLoading: progressLoading } =
     useProgressForCourse(courseId);
-  const { data: enrollmentStatus, isLoading: enrollmentLoading } =
-    useEnrollmentStatus(courseId);
 
   if (isLoading) {
     return (
@@ -58,6 +66,19 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
     );
   }
 
+  // Determine if we should show progress bar
+  const showProgressBar =
+    context === "my-learning"
+      ? !progressLoading &&
+        progress &&
+        (courseCtx.isEnrolled || courseCtx.isOwner)
+      : context === "course"
+        ? !progressLoading && progress && courseCtx.isEnrolled
+        : false;
+
+  // Determine if we should show comments (my-learning view only)
+  const showComments = context === "my-learning";
+
   return (
     <div>
       <CourseHeader
@@ -74,6 +95,7 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
         language={data.language}
       />
 
+      {/* Grid layout with sidebar - visible in all contexts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
@@ -82,44 +104,49 @@ const CourseDetailPage = ({ courseId }: { courseId: string }) => {
             learningOutcomes={data.learning_outcomes}
             prerequisites={data.prerequisites}
           />
-          <ChapterList
-            courseId={courseId}
-            isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
-          />
+          <ChapterList courseId={courseId} courseOwnerId={data.uid} />
+
+          {showComments && (
+            <Card>
+              <CardContent className="pt-6">
+                <CommentList courseId={courseId} />
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-4">
-          {!progressLoading && progress && enrollmentStatus?.isEnrolled && (
+          {showProgressBar && (
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-lg">Your Progress</h3>
                     <CourseStatusBadge
-                      percentComplete={progress.percentComplete}
+                      percentComplete={progress!.percentComplete}
                     />
                   </div>
                   <ProgressBar
-                    percent={progress.percentComplete}
+                    percent={progress!.percentComplete}
                     showLabel
                     size="lg"
                   />
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>
-                      {progress.lessonsCompleted.length} of{" "}
-                      {progress.totalLessons} lessons completed
+                      {progress!.lessonsCompleted.length} of{" "}
+                      {progress!.totalLessons} lessons completed
                     </span>
-                    <span>{progress.percentComplete}%</span>
+                    <span>{progress!.percentComplete}%</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {!enrollmentLoading &&
-            !enrollmentStatus?.isEnrolled &&
-            user?.uid !== data.uid && (
+          {!courseCtx.isLoading &&
+            !courseCtx.isEnrolled &&
+            !courseCtx.isOwner && (
               <EnrollmentPrompt courseId={courseId} variant="card" />
             )}
 

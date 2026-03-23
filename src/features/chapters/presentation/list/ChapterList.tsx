@@ -8,6 +8,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useGetLessons } from "@/features/lessons/application/useGetLesson";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
+import { useChapterLock } from "@/features/chapters/application/useChapterLock";
 import { useResourceEvents } from "@/hooks/use-socket-events";
 import { ChevronDownIcon, PlayCircle, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,7 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ChapterListProps {
   courseId: string;
-  isEnrolled?: boolean;
+  courseOwnerId?: string;
 }
 
 const ChapterItem = ({
@@ -26,13 +27,15 @@ const ChapterItem = ({
   courseId,
   progress,
   chapterIndex,
-  isEnrolled,
+  canAccessChapters,
+  lockReason,
 }: {
   chapter: any;
   courseId: string;
   progress: any;
   chapterIndex: number;
-  isEnrolled?: boolean;
+  canAccessChapters: boolean;
+  lockReason: string | null;
 }) => {
   const { data: lessons } = useGetLessons(chapter.id);
   const router = useRouter();
@@ -74,7 +77,7 @@ const ChapterItem = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent className="px-2 pb-2">
-          {lessons && isEnrolled ? (
+          {lessons && canAccessChapters ? (
             <div className="space-y-1">
               {lessons.map((lesson, lessonIndex) => {
                 const isCompleted = progress?.lessonsCompleted?.includes(
@@ -112,7 +115,7 @@ const ChapterItem = ({
               <Alert className="border-yellow-200 bg-yellow-50">
                 <Lock className="h-4 w-4 text-yellow-600" />
                 <AlertDescription className="text-sm text-yellow-800">
-                  Please enroll in the course to access the lessons.
+                  {lockReason}
                 </AlertDescription>
               </Alert>
             </div>
@@ -123,12 +126,14 @@ const ChapterItem = ({
   );
 };
 
-export const ChapterList = ({
-  courseId,
-  isEnrolled = false,
-}: ChapterListProps) => {
+export const ChapterList = ({ courseId, courseOwnerId }: ChapterListProps) => {
   const { data: chapters } = useGetChapters(courseId);
   const { data: progress } = useProgressForCourse(courseId);
+  const { canAccessChapters, lockReason, totalLessons, completedLessons } =
+    useChapterLock({
+      courseId,
+      courseOwnerId,
+    });
 
   useResourceEvents({
     resourceType: "chapter",
@@ -139,12 +144,6 @@ export const ChapterList = ({
     if (!chapters) return [];
     return [...chapters].sort((a, b) => a.chapterOrder - b.chapterOrder);
   }, [chapters]);
-
-  const lessonStats = useMemo(() => {
-    const total = progress?.totalLessons || 0;
-    const completed = progress?.lessonsCompleted?.length || 0;
-    return { total, completed };
-  }, [progress]);
 
   return (
     <>
@@ -161,17 +160,12 @@ export const ChapterList = ({
               courseId={courseId}
               progress={progress}
               chapterIndex={index}
-              isEnrolled={isEnrolled}
+              canAccessChapters={canAccessChapters}
+              lockReason={lockReason}
             />
           ))}
 
-          <CapstoneItem
-            courseId={courseId}
-            progress={progress}
-            totalLessons={lessonStats.total}
-            completedLessons={lessonStats.completed}
-            isEnrolled={isEnrolled}
-          />
+          <CapstoneItem courseId={courseId} courseOwnerId={courseOwnerId} />
         </div>
       )}
     </>

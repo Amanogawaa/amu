@@ -5,9 +5,8 @@ import CourseDetailPage from "@/features/course/presentation/components/CourseDe
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React from "react";
 
-const CoursePage = () => {
+const LearnCoursePage = () => {
   const params = useParams();
   const courseId = params.courseId as string;
   const { data } = useGetCourse(courseId);
@@ -17,10 +16,10 @@ const CoursePage = () => {
       <div className="container mx-auto max-w-5xl">
         <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
           <Link
-            href="/courses"
+            href="/learn"
             className="hover:text-foreground transition-colors font-medium"
           >
-            Courses
+            Explore Courses
           </Link>
           <ChevronRight className="h-4 w-4 mx-2" />
           <span className=" font-medium truncate text-foreground">
@@ -28,10 +27,10 @@ const CoursePage = () => {
           </span>
         </nav>
 
-        <CourseDetailPage courseId={courseId} context="course" />
+        <CourseDetailPage courseId={courseId} context="learn" />
       </div>
     </section>
   );
 };
 
-export default CoursePage;
+export default LearnCoursePage;

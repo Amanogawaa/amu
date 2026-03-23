@@ -177,7 +177,7 @@ const ExplorePage = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                 {filteredCourses.map((course) => (
-                  <CourseCard course={course} key={course.id} />
+                  <CourseCard course={course} key={course.id} context="learn" />
                 ))}
 
                 {isFetchingNextPage &&

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
-import { useCommentsForCourse } from '../application/useComments';
-import { CommentForm } from './CommentForm';
-import { CommentItem } from './CommentItem';
-import { MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { useCommentsForCourse } from "../application/useComments";
+import { CommentForm } from "./CommentForm";
+import { CommentItem } from "./CommentItem";
+import { MessageCircle, Zap } from "lucide-react";
+import { useState } from "react";
 
 interface CommentListProps {
   courseId: string;
@@ -27,9 +27,13 @@ export function CommentList({ courseId }: CommentListProps) {
 
   if (error) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        Failed to load comments. Please try again.
-      </div>
+      <Card className="border-red-200/50 bg-red-50/30">
+        <CardContent className="pt-6">
+          <p className="text-center text-sm text-red-600">
+            Failed to load comments. Please try again.
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -39,62 +43,103 @@ export function CommentList({ courseId }: CommentListProps) {
   const hasComments = comments.length > 0;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          Comments ({total})
-        </h3>
-        {(hasComments || showCommentForm) && (
-          <div data-comment-form>
-            <CommentForm courseId={courseId} />
+    <Card className="border-0 shadow-sm">
+      <CardContent className="border-0 shadow-none">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <MessageCircle className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">
+                Discussion
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {total === 0
+                  ? "Be the first to share"
+                  : `${total} ${total === 1 ? "comment" : "comments"}`}
+              </p>
+            </div>
           </div>
-        )}
-      </div>
 
-      <div className="space-y-4">
-        {isLoading ? (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="p-4 border rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-                <Skeleton className="h-16 w-full" />
-              </div>
-            ))}
-          </>
-        ) : comments.length === 0 ? (
-          <EnhancedEmptyState
-            type="no-comments"
-            customAction={() => setShowCommentForm(true)}
-            customActionLabel="Start the Discussion"
-          />
-        ) : (
-          <>
-            {comments.map((comment) => (
-              <CommentItem
-                key={comment.id}
-                comment={comment}
-                courseId={courseId}
-              />
-            ))}
+          {/* Comment Form - Always visible when there are comments or form is open */}
+          {(hasComments || showCommentForm) && (
+            <div className="mt-4" data-comment-form>
+              <CommentForm courseId={courseId} />
+            </div>
+          )}
+        </div>
 
-            {hasMore && (
-              <div className="flex justify-center pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setPage(page + 1)}
-                  disabled={isLoading}
+        {/* Comments or Empty State */}
+        <div className="space-y-4">
+          {isLoading ? (
+            <>
+              {[...Array(2)].map((_, i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-lg border border-muted bg-muted/30"
                 >
-                  Load More Comments
-                </Button>
+                  <div className="flex gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : comments.length === 0 ? (
+            <div className="py-12 px-4 text-center">
+              <div className="inline-flex p-4 bg-primary/5 rounded-full mb-4">
+                <Zap className="h-8 w-8 text-primary/40" />
               </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+              <h4 className="font-semibold text-foreground mb-2">
+                Start the Conversation
+              </h4>
+              <p className="text-sm text-muted-foreground mb-6">
+                Share your thoughts, ask questions, or help fellow learners
+                grow. Be the first to jump in!
+              </p>
+              <Button
+                onClick={() => setShowCommentForm(true)}
+                className="bg-primary hover:bg-primary/90"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Share Your Thoughts
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                {comments.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    courseId={courseId}
+                  />
+                ))}
+              </div>
+
+              {hasMore && (
+                <div className="flex justify-center pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPage(page + 1)}
+                    disabled={isLoading}
+                    size="sm"
+                    className="text-xs"
+                  >
+                    Load More Comments
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

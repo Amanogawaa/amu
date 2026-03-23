@@ -2,42 +2,28 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useCapstoneAccess } from "@/features/capstone/application/useCapstoneAccess";
 import { Lock, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 interface CapstoneItemProps {
   courseId: string;
-  progress: any;
-  totalLessons: number;
-  completedLessons: number;
-  isEnrolled: boolean;
+  courseOwnerId?: string;
 }
 
 export const CapstoneItem = ({
   courseId,
-  progress,
-  totalLessons,
-  completedLessons,
-  isEnrolled,
+  courseOwnerId,
 }: CapstoneItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-
-  // Calculate if locked with proper validation
-  const isLocked = useMemo(() => {
-    // If not enrolled, always locked
-    if (!isEnrolled) return true;
-
-    // If no lessons, can't unlock
-    if (!totalLessons || totalLessons === 0) return true;
-
-    // Locked if not all lessons are completed
-    return completedLessons < totalLessons;
-  }, [isEnrolled, totalLessons, completedLessons]);
+  const { isLocked, lockMessage } = useCapstoneAccess({
+    courseId,
+    courseOwnerId,
+  });
 
   const handleOpenChange = (open: boolean) => {
-    // Only allow opening if not locked
     if (!isLocked) {
       setIsOpen(open);
     }
@@ -47,7 +33,11 @@ export const CapstoneItem = ({
     <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
       <div className="rounded-md border bg-white">
         <CollapsibleTrigger
-          onClick={() => router.push(`/courses/${courseId}/capstone`)}
+          onClick={() => {
+            if (!isLocked) {
+              router.push(`/courses/${courseId}/capstone`);
+            }
+          }}
           className={`flex w-full items-center justify-between px-4 py-3 text-left transition-colors ${
             isLocked
               ? "cursor-not-allowed opacity-60 hover:bg-red-50/50"
@@ -68,16 +58,12 @@ export const CapstoneItem = ({
           </div>
         </CollapsibleTrigger>
 
-        {isLocked && (
+        {isLocked && lockMessage && (
           <div className="px-4 pb-3">
             <Alert className="border-yellow-200 bg-yellow-50">
               <Lock className="h-4 w-4 text-yellow-600" />
               <AlertDescription className="text-sm text-yellow-800">
-                {!isEnrolled
-                  ? "Enroll in this course to unlock the capstone project."
-                  : `Complete all ${totalLessons} lesson${
-                      totalLessons !== 1 ? "s" : ""
-                    } to unlock this capstone project. Progress: ${completedLessons}/${totalLessons}`}
+                {lockMessage}
               </AlertDescription>
             </Alert>
           </div>

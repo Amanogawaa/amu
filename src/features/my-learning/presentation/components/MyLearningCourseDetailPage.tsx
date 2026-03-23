@@ -113,7 +113,7 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
 
       <ChapterList
         courseId={courseId}
-        isEnrolled={enrollmentStatus?.isEnrolled || user?.uid === data.uid}
+        courseOwnerId={data.uid}
       />
 
       <Card>

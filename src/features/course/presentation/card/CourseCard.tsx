@@ -23,6 +23,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 interface CourseCardProps {
   course: Course;
   href?: string;
+  context?: "course" | "learn" | "my-learning";
 }
 
 type FirestoreTimestamp = {
@@ -60,11 +61,32 @@ const normalizeDate = (value: unknown): Date | null => {
 
 dayjs.extend(relativeTime);
 
-const CourseCard = ({ course, href }: CourseCardProps) => {
+const CourseCard = ({ course, href, context = "course" }: CourseCardProps) => {
   const { data: enrollmentCount } = useEnrollmentCount(course.id);
   const { user } = useAuth();
   const isOwner = user?.uid === course.uid;
   const createdAtDate = normalizeDate(course.createdAt as unknown);
+
+  // Determine button href and text based on context
+  const getButtonHref = (): string => {
+    if (href) return href;
+
+    switch (context) {
+      case "learn":
+        return `/learn/${course.id}`;
+      case "my-learning":
+        return `/my-learning/${course.id}`;
+      case "course":
+      default:
+        return `/courses/${course.id}`;
+    }
+  };
+
+  const getButtonText = (): string => {
+    if (isOwner && context === "course") return "Manage Course";
+    if (context === "my-learning") return "Continue Learning";
+    return "View Course";
+  };
 
   const levelColors = {
     beginner:
@@ -153,8 +175,8 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           variant="outline"
           asChild
         >
-          <Link href={`/courses/${course.id}`}>
-            {isOwner ? "Manage Course" : "View Course"}
+          <Link href={getButtonHref()}>
+            {getButtonText()}
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
