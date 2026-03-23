@@ -8,7 +8,6 @@ export interface CreateLessonPayload {
   estimatedDuration: string;
   estimatedLessonCount: number;
   courseName: string;
-  moduleName: string;
   level: string;
   language: string;
 }

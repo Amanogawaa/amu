@@ -14,15 +14,7 @@ import { useAuth } from "@/features/auth/application/AuthContext";
 import { useEnrollmentCount } from "@/features/enrollment/application/useEnrollment";
 import { LikeButton } from "@/features/likes/presentation/LikeButton";
 import { Course } from "@/server/features/course/types";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock,
-  GraduationCap,
-  Layers,
-  User2,
-  Calendar,
-} from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 import { CourseValidationBadge } from "../components/CourseValidationBadge";
 import dayjs from "dayjs";
@@ -31,15 +23,70 @@ import relativeTime from "dayjs/plugin/relativeTime";
 interface CourseCardProps {
   course: Course;
   href?: string;
+  context?: "course" | "learn" | "my-learning";
 }
 
-const CourseCard = ({ course, href }: CourseCardProps) => {
+type FirestoreTimestamp = {
+  _seconds: number;
+  _nanoseconds?: number;
+};
+
+const isFirestoreTimestamp = (value: unknown): value is FirestoreTimestamp => {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "_seconds" in value &&
+    typeof (value as FirestoreTimestamp)._seconds === "number"
+  );
+};
+
+const normalizeDate = (value: unknown): Date | null => {
+  if (!value) return null;
+
+  if (isFirestoreTimestamp(value)) {
+    return new Date(value._seconds * 1000);
+  }
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  return null;
+};
+
+dayjs.extend(relativeTime);
+
+const CourseCard = ({ course, href, context = "course" }: CourseCardProps) => {
   const { data: enrollmentCount } = useEnrollmentCount(course.id);
   const { user } = useAuth();
   const isOwner = user?.uid === course.uid;
+  const createdAtDate = normalizeDate(course.createdAt as unknown);
 
-  // Extend dayjs with relativeTime plugin
-  dayjs.extend(relativeTime);
+  // Determine button href and text based on context
+  const getButtonHref = (): string => {
+    if (href) return href;
+
+    switch (context) {
+      case "learn":
+        return `/learn/${course.id}`;
+      case "my-learning":
+        return `/my-learning/${course.id}`;
+      case "course":
+      default:
+        return `/courses/${course.id}`;
+    }
+  };
+
+  const getButtonText = (): string => {
+    if (isOwner && context === "course") return "Manage Course";
+    if (context === "my-learning") return "Continue Learning";
+    return "View Course";
+  };
 
   const levelColors = {
     beginner:
@@ -82,10 +129,10 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
         </p>
 
         {/* Date Generated Indicator */}
-        {course.createdAt && (
+        {createdAtDate && (
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
             <Calendar className="h-3.5 w-3.5" />
-            <span>Generated {dayjs(course.createdAt).fromNow()}</span>
+            <span>Generated {dayjs(createdAtDate).fromNow()}</span>
           </div>
         )}
 
@@ -128,8 +175,8 @@ const CourseCard = ({ course, href }: CourseCardProps) => {
           variant="outline"
           asChild
         >
-          <Link href={`/courses/${course.id}`}>
-            {isOwner ? "Manage Course" : "View Course"}
+          <Link href={getButtonHref()}>
+            {getButtonText()}
             <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>

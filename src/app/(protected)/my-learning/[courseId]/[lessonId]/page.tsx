@@ -22,15 +22,15 @@ const LessonPage = () => {
           lessonId={lessonId}
         />
 
-        <div className="flex-1 flex justify-center p-6">
+        <div className="flex-1 w-full px-4 pb-8 pt-6 md:px-8 lg:px-10">
           <LessonContent lessonId={lessonId} />
         </div>
 
-        <LessonAssistant
+        {/* <LessonAssistant
           lessonId={lessonId}
           courseId={courseId}
           lessonTitle={course?.name}
-        />
+        /> */}
       </div>
     </>
   );

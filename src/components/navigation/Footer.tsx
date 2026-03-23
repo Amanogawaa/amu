@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -8,9 +8,6 @@ export default function Footer() {
           <p className="text-2xl font-bold mb-4 text-primary">CourseCraft</p>
           <p className="text-sm text-gray-300">
             Built by Dominic Molino • CSP411 Project • March 2025
-          </p>
-          <p className="text-xs mt-2 text-gray-400">
-            Powered by AI • Made for First-Year Coders
           </p>
         </div>
 

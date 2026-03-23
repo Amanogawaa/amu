@@ -35,6 +35,8 @@ import {
   ArchiveIcon,
   BookOpenIcon,
   CheckCircle2Icon,
+  ClockIcon,
+  LanguagesIcon,
   LogOutIcon,
   MoreHorizontalIcon,
   SendIcon,
@@ -58,6 +60,9 @@ interface CourseHeaderProps {
   ownerId: string;
   isPublished?: boolean;
   isDrafted?: boolean;
+  duration?: string;
+  noOfChapters?: number;
+  language?: string;
 }
 
 export const CourseHeader = ({
@@ -69,6 +74,9 @@ export const CourseHeader = ({
   ownerId,
   isPublished = false,
   isDrafted = false,
+  duration,
+  noOfChapters,
+  language,
 }: CourseHeaderProps) => {
   const { user } = useAuth();
   const isOwner = user?.uid === ownerId;
@@ -136,52 +144,38 @@ export const CourseHeader = ({
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
-        <div className="space-y-4 flex-1">
-          <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
-              <BookOpenIcon className="h-8 w-8 text-primary" />
-            </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-xs">
-                  {category}
+      <div className="rounded-xl overflow-hidden mb-8 bg-foreground text-background">
+        <div className="px-8 py-10 space-y-5">
+          {/* Top row: Badges left, Actions right */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="bg-background/15 text-background border-background/20 hover:bg-background/20">
+                {category}
+              </Badge>
+              <Badge
+                className={`capitalize bg-background/15 text-background border-background/20`}
+              >
+                {level}
+              </Badge>
+              {isEnrolled && (
+                <Badge className="bg-emerald-400/20 text-emerald-300 border-emerald-400/20">
+                  <CheckCircle2Icon className="h-3 w-3 mr-1" />
+                  Enrolled
                 </Badge>
-                <Badge
-                  variant="outline"
-                  className={`text-xs capitalize ${getLevelColor(level)}`}
-                >
-                  {level}
-                </Badge>
-                {isEnrolled && (
-                  <Badge
-                    variant="outline"
-                    className="text-xs bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
-                  >
-                    <CheckCircle2Icon className="h-3 w-3 mr-1" />
-                    Enrolled
-                  </Badge>
-                )}
-              </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                {name}
-              </h1>
-              {subtitle && (
-                <p className="text-muted-foreground text-base mt-2">
-                  {subtitle}
-                </p>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Actions in top right */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               {!isOwner && <LikeButton courseId={courseId} showCount={true} />}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     aria-label="More Options"
+                    className="text-background hover:bg-background/10 hover:text-background"
                   >
                     <MoreHorizontalIcon />
                   </Button>
@@ -278,6 +272,57 @@ export const CourseHeader = ({
               </DropdownMenu>
             </div>
           </div>
+
+          {/* Title & subtitle */}
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+              {name}
+            </h1>
+            {subtitle && (
+              <p className="text-background/65 text-base max-w-2xl leading-relaxed">
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Stats row */}
+          {(duration || noOfChapters !== undefined || language) && (
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-background/60">
+              {duration && (
+                <span className="flex items-center gap-1.5">
+                  <ClockIcon className="h-4 w-4" />
+                  {duration}
+                </span>
+              )}
+              {noOfChapters !== undefined && (
+                <span className="flex items-center gap-1.5">
+                  <BookOpenIcon className="h-4 w-4" />
+                  {noOfChapters} {noOfChapters === 1 ? "Chapter" : "Chapters"}
+                </span>
+              )}
+              {language && (
+                <span className="flex items-center gap-1.5">
+                  <LanguagesIcon className="h-4 w-4" />
+                  {language}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Enroll button */}
+          {!isOwner && !isLoadingEnrollment && !isEnrolled && (
+            <div className="pt-2">
+              <Button
+                onClick={handleEnroll}
+                disabled={isEnrolling}
+                size="lg"
+                className="bg-background text-foreground hover:bg-background/90 font-semibold"
+              >
+                <UserPlusIcon className="h-4 w-4 mr-2" />
+                {isEnrolling ? "Enrolling..." : "Enroll Now — Free"}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

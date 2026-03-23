@@ -1,11 +1,11 @@
-import apiRequest from '@/server/helpers/apiRequest';
+import apiRequest from "@/server/helpers/apiRequest";
 import type {
   GitHubTreeResponse,
   GitHubFileContent,
   GitHubFileContentDecoded,
   GitHubBranch,
   GitHubRepoViewerParams,
-} from './types';
+} from "./types";
 
 /**
  * Get repository tree structure
@@ -13,18 +13,18 @@ import type {
 export async function getGitHubRepoTree(
   owner: string,
   repo: string,
-  ref?: string
+  ref?: string,
 ): Promise<GitHubTreeResponse> {
   const params = new URLSearchParams();
-  if (ref) params.append('ref', ref);
+  if (ref) params.append("ref", ref);
 
   const queryString = params.toString();
-  const url = `/github/repos/${owner}/${repo}/tree${queryString ? `?${queryString}` : ''}`;
+  const url = `/repos/${owner}/${repo}/tree${queryString ? `?${queryString}` : ""}`;
 
-  const response = await apiRequest<null, { data: GitHubTreeResponse; message: string }>(
-    url,
-    'get'
-  );
+  const response = await apiRequest<
+    null,
+    { data: GitHubTreeResponse; message: string }
+  >(url, "get");
 
   return response.data;
 }
@@ -36,19 +36,19 @@ export async function getGitHubRepoContents(
   owner: string,
   repo: string,
   path?: string,
-  ref?: string
+  ref?: string,
 ): Promise<GitHubFileContent | GitHubFileContent[]> {
   const params = new URLSearchParams();
-  if (path) params.append('path', path);
-  if (ref) params.append('ref', ref);
+  if (path) params.append("path", path);
+  if (ref) params.append("ref", ref);
 
   const queryString = params.toString();
-  const url = `/github/repos/${owner}/${repo}/contents${queryString ? `?${queryString}` : ''}`;
+  const url = `/repos/${owner}/${repo}/contents${queryString ? `?${queryString}` : ""}`;
 
   const response = await apiRequest<
     null,
     { data: GitHubFileContent | GitHubFileContent[]; message: string }
-  >(url, 'get');
+  >(url, "get");
 
   return response.data;
 }
@@ -60,19 +60,19 @@ export async function getGitHubFileContent(
   owner: string,
   repo: string,
   path: string,
-  ref?: string
+  ref?: string,
 ): Promise<GitHubFileContentDecoded> {
   const params = new URLSearchParams();
-  if (ref) params.append('ref', ref);
+  if (ref) params.append("ref", ref);
 
-  params.append('path', path);
+  params.append("path", path);
   const queryString = params.toString();
-  const url = `/github/repos/${owner}/${repo}/file${queryString ? `?${queryString}` : ''}`;
+  const url = `/repos/${owner}/${repo}/file${queryString ? `?${queryString}` : ""}`;
 
   const response = await apiRequest<
     null,
     { data: GitHubFileContentDecoded; message: string }
-  >(url, 'get');
+  >(url, "get");
 
   return response.data;
 }
@@ -82,15 +82,14 @@ export async function getGitHubFileContent(
  */
 export async function getGitHubBranches(
   owner: string,
-  repo: string
+  repo: string,
 ): Promise<GitHubBranch[]> {
-  const url = `/github/repos/${owner}/${repo}/branches`;
+  const url = `/repos/${owner}/${repo}/branches`;
 
-  const response = await apiRequest<null, { data: GitHubBranch[]; message: string }>(
-    url,
-    'get'
-  );
+  const response = await apiRequest<
+    null,
+    { data: GitHubBranch[]; message: string }
+  >(url, "get");
 
   return response.data;
 }
-

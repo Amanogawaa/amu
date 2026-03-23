@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   SidebarMenuItem,
@@ -6,14 +6,14 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-} from '@/components/ui/sidebar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useGetLessons } from '@/features/lessons/application/useGetLesson';
+} from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetLessons } from "@/features/lessons/application/useGetLesson";
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from '@radix-ui/react-collapsible';
+} from "@radix-ui/react-collapsible";
 import {
   PlayCircle,
   FileText,
@@ -21,9 +21,9 @@ import {
   BookOpen,
   ChevronRight,
   CheckCircle2,
-} from 'lucide-react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+} from "lucide-react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 interface ChapterItemProps {
   chapter: {
@@ -44,7 +44,7 @@ const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
   const selectedLessonId = params.lessonId as string | undefined;
 
   const linkTo = useMemo(() => {
-    if (pathName.includes('/my-learning/')) {
+    if (pathName.includes("/my-learning/")) {
       return `/my-learning/${courseId}/modules/${moduleId}/lessons/`;
     } else {
       return `/courses/${courseId}/modules/${moduleId}/lessons/`;
@@ -52,7 +52,7 @@ const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
   }, [pathName, courseId, moduleId]);
 
   const { data: lessons, isLoading: lessonsLoading } = useGetLessons(
-    chapter.id
+    chapter.id,
   );
 
   const handleLessonClick = (lessonId: string) => {
@@ -60,14 +60,16 @@ const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
     router.push(url);
   };
 
-  const getLessonIcon = (type: 'video' | 'article' | 'quiz') => {
+  const getLessonIcon = (type: "video" | "article" | "quiz" | "exercise") => {
     switch (type) {
-      case 'video':
+      case "video":
         return PlayCircle;
-      case 'article':
+      case "article":
         return FileText;
-      case 'quiz':
+      case "quiz":
         return HelpCircle;
+      case "exercise":
+        return CheckCircle2;
       default:
         return FileText;
     }
@@ -87,7 +89,7 @@ const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
               <span className="text-xs text-muted-foreground">
                 Ch. {chapter.chapterOrder}
               </span>
-              {' - '}
+              {" - "}
               {chapter.chapterName}
             </span>
             <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -123,7 +125,7 @@ const ChapterItem = ({ chapter, completedLessons = [] }: ChapterItemProps) => {
                         <span className="flex-1 text-left">
                           <span className="text-xs text-muted-foreground">
                             {lesson.lessonOrder}.
-                          </span>{' '}
+                          </span>{" "}
                           {lesson.lessonName}
                         </span>
                         <span className="text-xs text-muted-foreground">

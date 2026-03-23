@@ -93,7 +93,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="mx-auto w-full max-w-6xl space-y-4">
         <Skeleton className="h-8 w-3/4" />
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-96 w-full" />
@@ -103,7 +103,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
 
   if (isError || !lesson) {
     return (
-      <Card className="border-red-500/20 bg-red-500/5">
+      <Card className="mx-auto w-full max-w-6xl border-red-500/20 bg-red-500/5">
         <CardContent className="pt-6">
           <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
             <AlertCircle className="h-5 w-5" />
@@ -120,7 +120,7 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
   }
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="mx-auto w-full max-w-6xl space-y-8">
       <LessonHeader
         lesson={lesson}
         lessonId={lessonId}

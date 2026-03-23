@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ModuleList } from "@/features/modules/presentation/list/ModuleList";
 import { AlertCircle } from "lucide-react";
 
 import { useAuth } from "@/features/auth/application/AuthContext";
@@ -10,13 +9,13 @@ import { CommentList } from "@/features/comments/presentation/CommentList";
 import { useGetCourse } from "@/features/course/application/useGetCourses";
 import { CourseInfoCard } from "@/features/course/presentation/card/CourseInfoCard";
 import { CourseContent } from "@/features/course/presentation/components/CourseContent";
-import { CourseHeader } from "@/features/course/presentation/components/CourseHeader";
 import { useEnrollmentStatus } from "@/features/enrollment/application/useEnrollment";
-import { EnrollmentPrompt } from "@/features/enrollment/presentation/EnrollmentPrompt";
 import { useProgressForCourse } from "@/features/progress/application/useProgress";
 import { CourseStatusBadge } from "@/features/progress/presentation/CourseStatusBadge";
 import { ProgressBar } from "@/features/progress/presentation/ProgressBar";
 import { MyLearningCourseHeader } from "./MyLearningCourseHeader";
+import { ChapterList } from "@/features/chapters/presentation/list/ChapterList";
+import { CourseHeader } from "@/features/course/presentation/components/CourseHeader";
 
 const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   const { data, isLoading, isError } = useGetCourse(courseId);
@@ -62,8 +61,8 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <MyLearningCourseHeader
+    <div>
+      <CourseHeader
         courseId={courseId}
         name={data.name}
         subtitle={data.subtitle}
@@ -72,13 +71,9 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
         ownerId={data.uid}
         isPublished={data.publish}
         isDrafted={data.draft}
-      />
-
-      <CourseInfoCard
         duration={data.duration}
         noOfChapters={data.noOfChapters}
         language={data.language}
-        level={data.level}
       />
 
       {!progressLoading &&
@@ -113,10 +108,13 @@ const MyLearningCourseDetailPage = ({ courseId }: { courseId: string }) => {
       <CourseContent
         description={data.description}
         learningOutcomes={data.learning_outcomes}
-        prerequisites={data.prequisites}
+        prerequisites={data.prerequisites}
       />
 
-      <ModuleList courseId={courseId} />
+      <ChapterList
+        courseId={courseId}
+        courseOwnerId={data.uid}
+      />
 
       <Card>
         <CardContent className="pt-6">

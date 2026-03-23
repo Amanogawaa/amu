@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,32 +11,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
-import { useAuth } from '@/features/auth/application/AuthContext';
-import type { CapstoneSubmission } from '@/server/features/capstone/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ExternalLink, Loader2 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { useCreateCapstoneSubmission } from '../../application/useCreateCapstoneSubmission';
-import { useUpdateCapstoneSubmission } from '../../application/useUpdateCapstoneSubmission';
-import { useGetCapstoneSubmission } from '../../application/useGetCapstoneSubmission';
-import { GitHubConnectionRequired } from '../GitHubConnectionRequired';
-import { ScreenshotManager } from '../ScreenshotManager';
-import Link from 'next/link';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import type { CapstoneSubmission } from "@/server/features/capstone/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ExternalLink, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useCreateCapstoneSubmission } from "../../application/useCreateCapstoneSubmission";
+import { useUpdateCapstoneSubmission } from "../../application/useUpdateCapstoneSubmission";
+import { useGetCapstoneSubmission } from "../../application/useGetCapstoneSubmission";
+import { GitHubConnectionRequired } from "../GitHubConnectionRequired";
+import { ScreenshotManager } from "../ScreenshotManager";
+import Link from "next/link";
 
 const submissionFormSchema = z.object({
-  title: z.string().min(10, 'Title must be at least 10 characters'),
-  description: z.string().min(50, 'Description must be at least 50 characters'),
+  title: z.string().min(10, "Title must be at least 10 characters"),
+  description: z.string().min(25, "Description must be at least 25 characters"),
   githubRepoUrl: z
     .string()
-    .url('Must be a valid URL')
+    .url("Must be a valid URL")
     .refine(
-      (url) => url.includes('github.com'),
-      'Must be a GitHub repository URL'
+      (url) => url.includes("github.com"),
+      "Must be a GitHub repository URL",
     ),
 });
 
@@ -61,18 +61,16 @@ export function CapstoneSubmissionForm({
 
   const isEditing = !!submission;
   const [submissionId, setSubmissionId] = useState<string | null>(
-    submission?.id || null
+    submission?.id || null,
   );
 
   const { data: submissionData } = useGetCapstoneSubmission(
-    submissionId || '',
-    { enabled: !!submissionId }
+    submissionId || "",
+    { enabled: !!submissionId },
   );
 
   const currentScreenshots =
-    submissionData?.data.screenshots ||
-    submission?.screenshots ||
-    [];
+    submissionData?.data.screenshots || submission?.screenshots || [];
 
   useEffect(() => {
     if (submission) {
@@ -81,17 +79,17 @@ export function CapstoneSubmissionForm({
   }, [submission]);
 
   const githubProvider = user?.providerData.find(
-    (p: any) => p.providerId === 'github.com'
+    (p: any) => p.providerId === "github.com",
   );
   const githubUsername =
-    githubProvider?.displayName || githubProvider?.email?.split('@')[0];
+    githubProvider?.displayName || githubProvider?.email?.split("@")[0];
 
   const form = useForm<SubmissionFormValues>({
     resolver: zodResolver(submissionFormSchema),
     defaultValues: {
-      title: submission?.title || '',
-      description: submission?.description || '',
-      githubRepoUrl: submission?.githubRepoUrl || '',
+      title: submission?.title || "",
+      description: submission?.description || "",
+      githubRepoUrl: submission?.githubRepoUrl || "",
     },
   });
 
@@ -137,7 +135,7 @@ export function CapstoneSubmissionForm({
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditing ? 'Edit Submission' : 'Submit Your Capstone Project'}
+            {isEditing ? "Edit Submission" : "Submit Your Capstone Project"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -154,7 +152,8 @@ export function CapstoneSubmissionForm({
                         placeholder="My Awesome Project"
                         {...field}
                         disabled={
-                          createSubmission.isPending || updateSubmission.isPending
+                          createSubmission.isPending ||
+                          updateSubmission.isPending
                         }
                       />
                     </FormControl>
@@ -178,7 +177,8 @@ export function CapstoneSubmissionForm({
                         className="min-h-[120px]"
                         {...field}
                         disabled={
-                          createSubmission.isPending || updateSubmission.isPending
+                          createSubmission.isPending ||
+                          updateSubmission.isPending
                         }
                       />
                     </FormControl>
@@ -244,10 +244,10 @@ export function CapstoneSubmissionForm({
                   {createSubmission.isPending || updateSubmission.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isEditing ? 'Updating...' : 'Submitting...'}
+                      {isEditing ? "Updating..." : "Submitting..."}
                     </>
                   ) : (
-                    <>{isEditing ? 'Update Submission' : 'Submit Project'}</>
+                    <>{isEditing ? "Update Submission" : "Submit Project"}</>
                   )}
                 </Button>
               </div>
@@ -261,9 +261,14 @@ export function CapstoneSubmissionForm({
           <ScreenshotManager
             submissionId={submissionId}
             screenshots={currentScreenshots}
-            canEdit={true} />
+            canEdit={true}
+          />
 
-          <Link href={`/capstone/submissions/${submissionId}`}>View Submission</Link>
+          <Button asChild>
+            <Link href={`/capstone/submissions/${submissionId}`}>
+              View Submission
+            </Link>
+          </Button>
         </>
       )}
     </div>

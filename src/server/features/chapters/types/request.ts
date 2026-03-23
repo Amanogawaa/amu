@@ -1,13 +1,13 @@
 export interface CreateChapterPayload {
-  moduleId: string;
-  moduleName: string;
-  moduleDescription: string;
-  moduleLearningObjectives: string[];
-  moduleKeySkills: string[];
-  estimatedDuration: string;
-  estimatedChapterCount: number;
+  courseId: string;
   courseName: string;
   level: string;
+  noOfChapters: number;
+  duration: string;
   language: string;
-  moduleOrder: number;
+  description: string;
+  learningOutcomes: string[];
+  skillsGained: string[];
+  prerequisites: string;
+  userInstructions?: string;
 }

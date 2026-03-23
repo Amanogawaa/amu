@@ -1,22 +1,25 @@
-'use client';
+"use client";
 
-import CourseCardSkeleton from '@/components/states/CourseCardSkeleton';
-import { EnhancedEmptyState } from '@/components/states/EnhancedEmptyState';
-import { useInfiniteListCourses } from '@/features/course/application/useGetCourses';
-import CourseCard from '@/features/course/presentation/card/CourseCard';
-import { LevelFilterPanel } from '@/features/course/presentation/LevelFilterPanel';
-import { SearchBar } from '@/features/course/presentation/SearchBar';
-import { useResourceEvents } from '@/hooks/use-socket-events';
-import { CourseFilters } from '@/server/features/course/types/request';
-import { StarsIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import CourseCardSkeleton from "@/components/states/CourseCardSkeleton";
+import { EnhancedEmptyState } from "@/components/states/EnhancedEmptyState";
+import { useAuth } from "@/features/auth/application/AuthContext";
+import { useInfiniteListCourses } from "@/features/course/application/useGetCourses";
+import CourseCard from "@/features/course/presentation/card/CourseCard";
+import { FilterAndSortPanel } from "@/features/course/presentation/FilterAndSortPanel";
+import { SearchBar } from "@/features/course/presentation/SearchBar";
+import { useResourceEvents } from "@/hooks/use-socket-events";
+import { CourseFilters } from "@/server/features/course/types/request";
+import { StarsIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 const ExplorePage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
-    undefined
+    undefined,
   );
+  const [selectedSort, setSelectedSort] = useState("newest");
 
   const filters: CourseFilters = {
     publish: true,
@@ -37,13 +40,18 @@ const ExplorePage = () => {
   const filteredCourses = useMemo(() => {
     let result = [...flatData];
 
+    // Filter out current user's own courses
+    if (user?.uid) {
+      result = result.filter((course) => course.uid !== user.uid);
+    }
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (course) =>
           course.name.toLowerCase().includes(query) ||
           course.topic?.toLowerCase().includes(query) ||
-          course.description?.toLowerCase().includes(query)
+          course.description?.toLowerCase().includes(query),
       );
     }
 
@@ -51,12 +59,36 @@ const ExplorePage = () => {
       result = result.filter((course) => course.level === selectedLevel);
     }
 
+    // Apply sorting
+    switch (selectedSort) {
+      case "oldest":
+        result.sort(
+          (a, b) =>
+            new Date(a.createdAt || 0).getTime() -
+            new Date(b.createdAt || 0).getTime(),
+        );
+        break;
+      case "name-asc":
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-desc":
+        result.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "newest":
+      default:
+        result.sort(
+          (a, b) =>
+            new Date(b.createdAt || 0).getTime() -
+            new Date(a.createdAt || 0).getTime(),
+        );
+    }
+
     return result;
-  }, [flatData, searchQuery, selectedLevel]);
+  }, [flatData, searchQuery, selectedLevel, selectedSort, user?.uid]);
 
   const { ref: sentinelRef, inView } = useInView({
     threshold: 0,
-    rootMargin: '200px',
+    rootMargin: "200px",
   });
 
   useEffect(() => {
@@ -66,8 +98,8 @@ const ExplorePage = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useResourceEvents({
-    resourceType: 'course',
-    queryKey: ['courses'],
+    resourceType: "course",
+    queryKey: ["courses"],
   });
 
   const handleSearch = (query: string) => {
@@ -76,6 +108,10 @@ const ExplorePage = () => {
 
   const handleLevelChange = (level: string | undefined) => {
     setSelectedLevel(level);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSelectedSort(sort);
   };
 
   if (isPending) {
@@ -107,7 +143,7 @@ const ExplorePage = () => {
                 </div>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight uppercase">
-                    EXPLORE
+                    LEARN
                   </h1>
                   <p className="text-muted-foreground text-lg">
                     Discover courses tailored to your interests
@@ -118,14 +154,19 @@ const ExplorePage = () => {
           </div>
 
           <div className="mt-8 space-y-4">
-            <SearchBar
-              onSearch={handleSearch}
-              placeholder="Search courses by title or topic..."
-            />
-            <LevelFilterPanel
-              selectedLevel={selectedLevel}
-              onLevelChange={handleLevelChange}
-            />
+            <div className="flex gap-3">
+              <SearchBar
+                onSearch={handleSearch}
+                placeholder="Search courses by title or topic..."
+              />
+              <FilterAndSortPanel
+                selectedLevel={selectedLevel}
+                onLevelChange={handleLevelChange}
+                selectedSort={selectedSort}
+                onSortChange={handleSortChange}
+                showStatus={false}
+              />
+            </div>
           </div>
 
           {filteredCourses.length === 0 ? (
@@ -136,7 +177,7 @@ const ExplorePage = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                 {filteredCourses.map((course) => (
-                  <CourseCard course={course} key={course.id} />
+                  <CourseCard course={course} key={course.id} context="learn" />
                 ))}
 
                 {isFetchingNextPage &&

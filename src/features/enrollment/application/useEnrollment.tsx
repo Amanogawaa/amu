@@ -20,20 +20,22 @@ export function useEnrollCourse() {
     onSuccess: (data, courseId) => {
       toast.success('Successfully enrolled in course!');
 
+      // ✅ Invalidate only specific affected queries, not broad ones
       queryClient.invalidateQueries({
         queryKey: queryKeys.enrollments.status(courseId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.enrollments.all,
+        exact: true, // Only exact matches
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.enrollments.count(courseId),
+        exact: true,
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.detail(courseId),
+        exact: true,
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.progress.course(courseId),
+        exact: true,
       });
     },
     onError: (error: any) => {
@@ -54,17 +56,18 @@ export function useUnenrollCourse() {
     onSuccess: (data, courseId) => {
       toast.success('Successfully unenrolled from course');
 
+      // ✅ Use exact: true to avoid invalidating parent query keys
       queryClient.invalidateQueries({
         queryKey: queryKeys.enrollments.status(courseId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.enrollments.all,
+        exact: true,
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.enrollments.count(courseId),
+        exact: true,
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.detail(courseId),
+        exact: true,
       });
     },
     onError: (error: any) => {

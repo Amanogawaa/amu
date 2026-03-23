@@ -15,28 +15,25 @@ export function useManualChapterGeneration(courseId: string) {
 
   return useMutation({
     mutationFn: (payload: CreateChapterPayload) => createChapter(payload),
-    onSuccess: (_, variables) => {
-      toast.success(`Chapters generated for ${variables.moduleName}`);
+    onSuccess: () => {
+      toast.success("Chapters generated successfully");
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.modules.list(courseId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.modules.detail(variables.moduleId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.chapters.list(variables.moduleId),
+        queryKey: queryKeys.chapters.list(courseId),
       });
       queryClient.invalidateQueries({ queryKey: ["all-chapters"] });
       queryClient.invalidateQueries({ queryKey: ["all-lessons"] });
       queryClient.invalidateQueries({
         queryKey: queryKeys.courses.validation(courseId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.courses.detail(courseId),
+      });
     },
     onError: (error) => {
       showErrorToast(
         error,
-        "Failed to generate chapters. Please try again in a moment."
+        "Failed to generate chapters. Please try again in a moment.",
       );
     },
   });
@@ -61,7 +58,7 @@ export function useManualLessonGeneration(courseId: string) {
     onError: (error) => {
       showErrorToast(
         error,
-        "Failed to generate lessons. Please try again in a moment."
+        "Failed to generate lessons. Please try again in a moment.",
       );
     },
   });

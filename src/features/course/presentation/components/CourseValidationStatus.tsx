@@ -63,20 +63,6 @@ export function CourseValidationStatus({
       <CardContent className="space-y-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between py-2 border-b">
-            <span className="text-sm font-medium">Modules</span>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                {validationData.details.modulesCount}
-              </span>
-              {validationData.details.hasModules ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-              ) : (
-                <XCircle className="h-4 w-4 text-red-600" />
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between py-2 border-b">
             <span className="text-sm font-medium">Chapters</span>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
