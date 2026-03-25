@@ -155,4 +155,23 @@ export const queryKeys = {
       [...queryKeys.leaderboards.all, "user", userId || "me"] as const,
     myStats: () => [...queryKeys.leaderboards.all, "user", "me"] as const,
   },
+
+  // Recommendations
+  recommendations: {
+    all: ["recommendations"] as const,
+    lists: () => [...queryKeys.recommendations.all, "list"] as const,
+    learningContinuity: (courseId: string, limit?: number) =>
+      [
+        ...queryKeys.recommendations.lists(),
+        "learning-continuity",
+        courseId,
+        limit || 10,
+      ] as const,
+    likedBased: (limit?: number) =>
+      [
+        ...queryKeys.recommendations.lists(),
+        "liked-based",
+        limit || 10,
+      ] as const,
+  },
 } as const;

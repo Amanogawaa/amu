@@ -6,6 +6,9 @@ import { Leaderboard } from "@/features/dashboard/presentation/Leaderboard";
 import { CourseCard } from "@/features/dashboard/presentation/CourseCard";
 import { QuickActions } from "@/features/dashboard/presentation/QuickActions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
+import { Button } from "@/components/ui/button";
+import { useRefreshRecommendations } from "@/features/recommendations/application";
 
 const DashboardPage = () => {
   // Mock data for generated courses
@@ -47,6 +50,8 @@ const DashboardPage = () => {
       isGenerated: true,
     },
   ];
+
+  const { mutate: refresh, isPending } = useRefreshRecommendations();
 
   // Mock data for enrolled courses
   const enrolledCourses = [
@@ -108,15 +113,13 @@ const DashboardPage = () => {
         </div>
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="space-y-8">
           {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             {/* Stats */}
             {/* <DashboardStats /> */}
-
             {/* Quick Actions */}
             <QuickActions />
-
             {/* Courses Tabs */}
             <Tabs defaultValue="enrolled" className="w-full">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
@@ -158,14 +161,25 @@ const DashboardPage = () => {
                 </div>
               </TabsContent>
             </Tabs>
-
-            {/* Streak Calendar */}
-            <StreakCalendar />
+            <Button
+              onClick={() => refresh({ type: "liked-based" })}
+              disabled={isPending}
+            >
+              Refresh Recommendations
+            </Button>
           </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="lg:col-span-1">
-            <Leaderboard />
+          {/* Recommendations Section */}
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-semibold mb-2">
+                Recommended for You
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Courses based on your interests
+              </p>
+            </div>
+            <RecommendationList type="liked-based" context="learn" />
           </div>
         </div>
       </div>
