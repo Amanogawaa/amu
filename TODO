@@ -87,3 +87,5 @@ SOLUTIONS:
 
     ADDITIONAL FIX:
         ☐ how do i avoid reaching the quota limit of the gemini api - maybe limit the tokens for every user?
+
+        ☐ implement recommendation system for course continuity - like-based recommendation is done but need more checking 

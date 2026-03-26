@@ -12,7 +12,6 @@ import { RecommendationCard } from "./cards/RecommendationCard";
 interface RecommendationListProps {
   type: "learning-continuity" | "liked-based";
   courseId?: string;
-  limit?: number;
   context?: "learn" | "dashboard";
   className?: string;
 }
@@ -20,13 +19,12 @@ interface RecommendationListProps {
 export function RecommendationList({
   type,
   courseId,
-  limit = 10,
+
   context = "learn",
   className = "",
 }: RecommendationListProps) {
   const learnQuery = useLearningContinuityRecommendations(
     courseId || "",
-    limit,
     type === "learning-continuity" && !!courseId,
   );
   const likedQuery = useLikedBasedRecommendations(type === "liked-based");
@@ -44,7 +42,7 @@ export function RecommendationList({
       <div
         className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${className}`}
       >
-        {Array.from({ length: limit }).map((_, i) => (
+        {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} className="h-96 rounded-lg" />
         ))}
       </div>

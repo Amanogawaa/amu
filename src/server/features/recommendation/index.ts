@@ -17,7 +17,7 @@ export async function getLearningContinuityRecommendations({
   limit = 10,
 }: GetLearningContinuityParams): Promise<RecommendationResponse> {
   return apiRequest<null, RecommendationResponse>(
-    `/learning-continuity/${courseId}?limit=${limit}`,
+    `/learning-continuity/${courseId}`,
     "get",
   );
 }

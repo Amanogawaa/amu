@@ -1,18 +1,13 @@
 "use client";
 
-import { queryKeys } from "@/lib/queryKeys";
 import { showErrorToast } from "@/lib/errorHandling";
+import { queryKeys } from "@/lib/queryKeys";
 import {
   getLearningContinuityRecommendations,
   getLikedBasedRecommendations,
   refreshRecommendations,
 } from "@/server/features/recommendation";
-import type {
-  RecommendationWithCourse,
-  RecommendationResponse,
-  RefreshRecommendationsPayload,
-  RefreshRecommendationsResponse,
-} from "@/server/features/recommendation/types";
+import type { RefreshRecommendationsPayload } from "@/server/features/recommendation/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -21,15 +16,13 @@ import { toast } from "sonner";
  */
 export function useLearningContinuityRecommendations(
   courseId: string,
-  limit = 10,
   enabled = true,
 ) {
   return useQuery({
-    queryKey: queryKeys.recommendations.learningContinuity(courseId, limit),
+    queryKey: queryKeys.recommendations.learningContinuity(courseId),
     queryFn: async () => {
       const response = await getLearningContinuityRecommendations({
         courseId,
-        limit,
       });
       return response.recommendations;
     },

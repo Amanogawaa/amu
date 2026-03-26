@@ -14,6 +14,7 @@ import { CourseContent } from "./CourseContent";
 import { CourseCreatorCard } from "./CourseCreatorCard";
 import { CourseHeader } from "./CourseHeader";
 import { CommentList } from "@/features/comments/presentation/CommentList";
+import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 
 type CourseDetailContext = "course" | "my-learning" | "learn";
 
@@ -183,6 +184,11 @@ const CourseDetailPage = ({
               </CardContent>
             </Card>
           )}
+
+          <RecommendationList
+            courseId={data.uid}
+            type={"learning-continuity"}
+          />
         </div>
       </div>
     </div>
