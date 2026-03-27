@@ -19,7 +19,6 @@ interface RecommendationListProps {
 export function RecommendationList({
   type,
   courseId,
-
   context = "learn",
   className = "",
 }: RecommendationListProps) {

@@ -179,7 +179,7 @@ const DashboardPage = () => {
                 Courses based on your interests
               </p>
             </div>
-            <RecommendationList type="liked-based" context="learn" />
+            <RecommendationList type="liked-based" context="dashboard" />
           </div>
         </div>
       </div>

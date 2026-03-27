@@ -1,24 +1,25 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/features/auth/application/AuthContext';
-import EnrolledCoursesGrid from '@/features/enrollment/presentation/EnrolledCoursesGrid';
-import { CapstoneGallery } from '@/features/capstone/presentation';
-import { SearchBar } from '@/features/course/presentation/SearchBar';
-import { FilterAndSortPanel } from '@/features/course/presentation/FilterAndSortPanel';
-import { BookOpenIcon, Sparkles } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import { useState } from 'react';
+import { useAuth } from "@/features/auth/application/AuthContext";
+import EnrolledCoursesGrid from "@/features/enrollment/presentation/EnrolledCoursesGrid";
+import { CapstoneGallery } from "@/features/capstone/presentation";
+import { SearchBar } from "@/features/course/presentation/SearchBar";
+import { FilterAndSortPanel } from "@/features/course/presentation/FilterAndSortPanel";
+import { BookOpenIcon, Sparkles } from "lucide-react";
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import { DiscoverSection } from "@/features/my-learning/presentation/DiscoverSection";
 
 const MyLearningPage = () => {
   const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState<string | undefined>(
-    undefined
+    undefined,
   );
-  const [selectedSort, setSelectedSort] = useState('newest');
+  const [selectedSort, setSelectedSort] = useState("newest");
 
   if (!user) {
-    throw redirect('/');
+    throw redirect("/");
   }
 
   const handleSearch = (query: string) => {
@@ -90,6 +91,11 @@ const MyLearningPage = () => {
             </div>
           </div>
           <CapstoneGallery limit={12} />
+        </div>
+
+        {/* Discover Section - Recommendations */}
+        <div className="mt-16">
+          <DiscoverSection showContinuityPath={false} showExplore={true} />
         </div>
       </div>
     </section>

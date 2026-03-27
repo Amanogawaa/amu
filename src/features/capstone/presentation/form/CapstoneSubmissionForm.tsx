@@ -26,6 +26,8 @@ import { useUpdateCapstoneSubmission } from "../../application/useUpdateCapstone
 import { useGetCapstoneSubmission } from "../../application/useGetCapstoneSubmission";
 import { GitHubConnectionRequired } from "../GitHubConnectionRequired";
 import { ScreenshotManager } from "../ScreenshotManager";
+import { SubmissionCompletionScreen } from "../SubmissionCompletionScreen";
+import { useGetCourse } from "@/features/course/application/useGetCourses";
 import Link from "next/link";
 
 const submissionFormSchema = z.object({
@@ -58,11 +60,16 @@ export function CapstoneSubmissionForm({
   const { user, githubLinked, loading: authLoading } = useAuth();
   const createSubmission = useCreateCapstoneSubmission();
   const updateSubmission = useUpdateCapstoneSubmission();
+  const { data: courseData } = useGetCourse(courseId);
 
   const isEditing = !!submission;
   const [submissionId, setSubmissionId] = useState<string | null>(
     submission?.id || null,
   );
+  const [successfulSubmission, setSuccessfulSubmission] = useState<{
+    title: string;
+    courseId: string;
+  } | null>(null);
 
   const { data: submissionData } = useGetCapstoneSubmission(
     submissionId || "",
@@ -107,6 +114,11 @@ export function CapstoneSubmissionForm({
       });
       // Set submission ID from response so screenshot manager can be shown
       setSubmissionId(response.data.id);
+      // Trigger completion screen
+      setSuccessfulSubmission({
+        title: values.title,
+        courseId: response.data.courseId,
+      });
     }
     onSuccess?.();
   };
@@ -128,6 +140,17 @@ export function CapstoneSubmissionForm({
 
   if (!githubLinked) {
     return <GitHubConnectionRequired />;
+  }
+
+  // Show completion screen after successful submission
+  if (successfulSubmission && courseData) {
+    return (
+      <SubmissionCompletionScreen
+        courseId={successfulSubmission.courseId}
+        courseName={courseData.name}
+        projectTitle={successfulSubmission.title}
+      />
+    );
   }
 
   return (
