@@ -8,7 +8,7 @@ import { FilterAndSortPanel } from "@/features/course/presentation/FilterAndSort
 import { BookOpenIcon, Sparkles } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
-import { DiscoverSection } from "@/features/my-learning/presentation/DiscoverSection";
+
 
 const MyLearningPage = () => {
   const { user } = useAuth();
@@ -76,27 +76,6 @@ const MyLearningPage = () => {
           level={selectedLevel}
           sortBy={selectedSort}
         />
-        <div className="mt-12 space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
-              <Sparkles className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-foreground">
-                Capstone Gallery
-              </h2>
-              <p className="text-muted-foreground">
-                Explore standout projects from fellow learners
-              </p>
-            </div>
-          </div>
-          <CapstoneGallery limit={12} />
-        </div>
-
-        {/* Discover Section - Recommendations */}
-        <div className="mt-16">
-          <DiscoverSection showContinuityPath={false} showExplore={true} />
-        </div>
       </div>
     </section>
   );

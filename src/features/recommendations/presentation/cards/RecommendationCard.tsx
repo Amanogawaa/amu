@@ -18,12 +18,10 @@ import { useAuth } from "@/features/auth/application/AuthContext";
 
 interface RecommendationCardProps {
   recommendation: RecommendationWithCourse;
-  context?: "learn" | "dashboard";
 }
 
 export function RecommendationCard({
   recommendation,
-  context = "learn",
 }: RecommendationCardProps) {
   const { user } = useAuth();
   const course = recommendation.course;
@@ -38,8 +36,6 @@ export function RecommendationCard({
   };
 
   const isOwner = user?.uid === course.authorId;
-  const courseHref =
-    context === "dashboard" ? `/learn/${course.name}` : `/learn/${course.name}`;
 
   return (
     <Card className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full ">
@@ -121,7 +117,7 @@ export function RecommendationCard({
 
       <CardFooter className="pt-3 flex gap-2">
         <Button variant="default" size="sm" className="flex-1" asChild>
-          <Link href={courseHref}>
+          <Link href={`/courses/${course.courseId}`}>
             View Course
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

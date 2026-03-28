@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 import { Button } from "@/components/ui/button";
 import { useRefreshRecommendations } from "@/features/recommendations/application";
+import { CapstoneGallery } from "@/features/capstone/presentation";
+import { Sparkles } from "lucide-react";
 
 const DashboardPage = () => {
   // Mock data for generated courses
@@ -161,12 +163,29 @@ const DashboardPage = () => {
                 </div>
               </TabsContent>
             </Tabs>
-            <Button
+
+            <div className="mt-12 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-semibold text-foreground">
+                    Capstone Gallery
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Explore standout projects from fellow learners
+                  </p>
+                </div>
+              </div>
+              <CapstoneGallery limit={12} />
+            </div>
+            {/* <Button
               onClick={() => refresh({ type: "liked-based" })}
               disabled={isPending}
             >
               Refresh Recommendations
-            </Button>
+            </Button> */}
           </div>
 
           {/* Recommendations Section */}

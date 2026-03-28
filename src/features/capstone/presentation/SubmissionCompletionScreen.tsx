@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 import { CheckCircle2, ArrowRight, Home } from "lucide-react";
 import Link from "next/link";
 
@@ -23,11 +24,6 @@ export function SubmissionCompletionScreen({
       <div className="max-w-2xl w-full space-y-8">
         {/* Success Icon & Message */}
         <div className="flex flex-col items-center text-center space-y-4">
-          <div className="relative">
-            <div className="absolute inset-0 bg-green-500/20 blur-2xl rounded-full" />
-            <CheckCircle2 className="w-20 h-20 text-green-500 relative" />
-          </div>
-
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">
               Capstone Submitted! 🎉
@@ -73,6 +69,12 @@ export function SubmissionCompletionScreen({
           </div>
         </div>
 
+        <RecommendationList
+          type={"learning-continuity"}
+          courseId={courseId}
+          context={"learn"}
+        />
+
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Button asChild variant="outline" className="flex-1 h-11">
@@ -82,7 +84,7 @@ export function SubmissionCompletionScreen({
             </Link>
           </Button>
           <Button asChild className="flex-1 h-11">
-            <Link href="/my-learning">
+            <Link href="/learn">
               Explore More Courses
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>

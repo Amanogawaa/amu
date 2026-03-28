@@ -8,12 +8,14 @@ interface DiscoverSectionProps {
   courseId?: string;
   showContinuityPath?: boolean;
   showExplore?: boolean;
+  hasUserActivity?: boolean;
 }
 
 export function DiscoverSection({
   courseId,
   showContinuityPath = true,
   showExplore = true,
+  hasUserActivity = true,
 }: DiscoverSectionProps) {
   return (
     <div className="space-y-8">
@@ -25,7 +27,7 @@ export function DiscoverSection({
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-foreground">
-              Continue Discovering
+              Recommended for You
             </h2>
             <p className="text-muted-foreground">
               Personalized recommendations based on your learning journey
@@ -35,10 +37,10 @@ export function DiscoverSection({
       </div>
 
       {/* Recommendations Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className=" gap-8 w-full">
         {/* Continue Your Path */}
         {showContinuityPath && courseId && (
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             <div className="flex items-center gap-2">
               <Navigation className="w-5 h-5 text-blue-500" />
               <h3 className="text-lg font-semibold">Continue Your Path</h3>
@@ -51,14 +53,14 @@ export function DiscoverSection({
               type="learning-continuity"
               courseId={courseId}
               context="dashboard"
-              className="grid-cols-1 sm:grid-cols-2"
+              className="grid-cols-1 sm:grid-cols-2 w-full"
             />
           </div>
         )}
 
         {/* Explore Your Interests */}
         {showExplore && (
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             <div className="flex items-center gap-2">
               <Compass className="w-5 h-5 text-amber-500" />
               <h3 className="text-lg font-semibold">Explore Your Interests</h3>
@@ -70,7 +72,7 @@ export function DiscoverSection({
             <RecommendationList
               type="liked-based"
               context="dashboard"
-              className="grid-cols-1 sm:grid-cols-2"
+              className="grid-cols-1 sm:grid-cols-2 w-full"
             />
           </div>
         )}

@@ -12,6 +12,7 @@ export type Recommendation = {
 };
 
 export type RecommendationCourse = {
+  courseId: string;
   name: string;
   topic: string;
   level: string;
