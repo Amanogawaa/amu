@@ -112,18 +112,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-
-      if (user) {
-        try {
+      try {
+        if (user) {
           await refreshToken(user);
-        } catch (err) {
-          logger.error("Error getting ID token:", err);
+          setUser(user);
+        } else {
+          Cookies.remove("auth-token");
+          setUser(null);
         }
-      } else {
-        Cookies.remove("auth-token");
+      } catch (err) {
+        logger.error("Error during auth state change:", err);
+        setUser(user); // Still update user state even if token refresh fails
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;

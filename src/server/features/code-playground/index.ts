@@ -1,9 +1,10 @@
-import apiRequest from '@/server/helpers/apiRequest';
+import apiRequest from "@/server/helpers/apiRequest";
 import {
   ExecutionRequest,
   ExecutionResult,
   SaveWorkspaceRequest,
-} from './types';
+  ExerciseGuideline,
+} from "./types";
 
 /* 
 
@@ -32,17 +33,17 @@ interface PistonRunResult {
 }
 
 export async function pistonExecuteCode(
-  request: PistonExecutionRequest
+  request: PistonExecutionRequest,
 ): Promise<PistonExecutionResponse> {
   return apiRequest<PistonExecutionRequest, PistonExecutionResponse>(
-    '/piston/execute',
-    'post',
-    request
+    "/piston/execute",
+    "post",
+    request,
   );
 }
 
 export async function pistonGetSupportedLanguages() {
-  return apiRequest<null, any>('/piston/languages', 'get');
+  return apiRequest<null, any>("/piston/languages", "get");
 }
 
 /* 
@@ -54,22 +55,22 @@ export async function pistonGetSupportedLanguages() {
 
 export async function executeCode(request: ExecutionRequest): Promise<any> {
   return apiRequest<ExecutionRequest, ExecutionResult>(
-    '/code/execute',
-    'post',
-    request
+    "/code/execute",
+    "post",
+    request,
   );
 }
 
 export async function executeAndSaveCode(request: ExecutionRequest) {
   return apiRequest<ExecutionRequest, null>(
-    '/code/execute-and-save',
-    'post',
-    request
+    "/code/execute-and-save",
+    "post",
+    request,
   );
 }
 
 export async function getWorkspace(lessonId: string) {
-  return apiRequest<string, any>(`/code/workspace/${lessonId}`, 'get');
+  return apiRequest<string, any>(`/code/workspace/${lessonId}`, "get");
 }
 
 export async function saveWorkspace(data: {
@@ -86,9 +87,81 @@ export async function saveWorkspace(data: {
       language: string;
     },
     null
-  >('/code/workspace', 'post', data);
+  >("/code/workspace", "post", data);
 }
 
 export async function getSupportedLanguages() {
-  return apiRequest<null, { data: string[] }>('/code/languages', 'get');
+  return apiRequest<null, { data: string[] }>("/code/languages", "get");
+}
+
+// ==================== EXERCISE GUIDELINES ====================
+// NEW: Replaces code execution with comprehensive guidelines
+// Users will use their own editors instead of the built-in playground
+
+export async function generateExerciseGuideline(
+  lessonId: string,
+): Promise<ExerciseGuideline> {
+  const data = await apiRequest<null, any>(
+    `/guidelines/generate/${lessonId}`,
+    "post",
+  );
+  return normalizeExerciseGuideline(data);
+}
+
+export async function getExerciseGuidelineByLessonId(
+  lessonId: string,
+): Promise<ExerciseGuideline | null> {
+  try {
+    const data = await apiRequest<null, any>(
+      `/guidelines/lesson/${lessonId}`,
+      "get",
+    );
+    return normalizeExerciseGuideline(data);
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function getExerciseGuidelineById(
+  id: string,
+): Promise<ExerciseGuideline> {
+  const data = await apiRequest<null, any>(`/guidelines/${id}`, "get");
+  return normalizeExerciseGuideline(data);
+}
+
+export async function getExerciseGuidelinesByCourseId(
+  courseId: string,
+): Promise<ExerciseGuideline[]> {
+  const data = await apiRequest<null, any>(
+    `/guidelines/course/${courseId}`,
+    "get",
+  );
+
+  if (Array.isArray(data)) {
+    return data.map(normalizeExerciseGuideline);
+  }
+
+  if (data.data && Array.isArray(data.data)) {
+    return data.data.map(normalizeExerciseGuideline);
+  }
+
+  return [];
+}
+
+/**
+ * Normalize exercise guideline data from API response
+ * Ensures dates are properly typed
+ */
+function normalizeExerciseGuideline(data: any): ExerciseGuideline {
+  return {
+    ...data,
+    createdAt:
+      typeof data.createdAt === "string"
+        ? data.createdAt
+        : data.createdAt?.toISOString?.() || new Date().toISOString(),
+    updatedAt:
+      typeof data.updatedAt === "string"
+        ? data.updatedAt
+        : data.updatedAt?.toISOString?.() || new Date().toISOString(),
+  } as ExerciseGuideline;
 }
