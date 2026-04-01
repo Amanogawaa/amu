@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
 
-  // Enable SWC minification for better performance
-  swcMinify: true,
-
   // Enable standalone output for better bundle size
   output: isDevelopment ? undefined : "standalone",
 

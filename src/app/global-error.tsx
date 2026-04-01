@@ -16,10 +16,6 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
-      <body>
-        <ErrorFallback error={error} reset={reset} />
-      </body>
-    </html>
+    <ErrorFallback error={error} reset={reset} />
   );
 }
