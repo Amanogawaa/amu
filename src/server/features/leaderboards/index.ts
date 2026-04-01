@@ -26,9 +26,7 @@ export async function getLeaderboards(
   }
 
   const queryString = params.toString();
-  const endpoint = queryString
-    ? `/leaderboards?${queryString}`
-    : "/leaderboards";
+  const endpoint = queryString ? `?${queryString}` : "";
 
   return apiRequest<null, LeaderboardResponse>(endpoint, "get");
 }
@@ -36,30 +34,25 @@ export async function getLeaderboards(
 export async function getUserStats(
   userId?: string,
 ): Promise<UserStatsResponse> {
-  const endpoint = userId
-    ? `/leaderboards/user/${userId}`
-    : "/leaderboards/user";
+  const endpoint = userId ? `/user/${userId}` : "/user";
 
   return apiRequest<null, UserStatsResponse>(endpoint, "get");
 }
 
-export async function getMyStats(): Promise<UserStatsResponse> {
-  return apiRequest<null, UserStatsResponse>("/leaderboards/user", "get");
+export async function getMyStats(userId: string): Promise<UserStatsResponse> {
+  return apiRequest<null, UserStatsResponse>(`/my-stats/${userId}`, "get");
 }
 
 export async function updateStreak(
   payload?: UpdateStreakPayload,
 ): Promise<StreakResponse> {
   return apiRequest<UpdateStreakPayload, StreakResponse>(
-    "/leaderboards/streak",
+    "/streak",
     "post",
     payload || {},
   );
 }
 
 export async function getLeaderboardStats(): Promise<LeaderboardStatsResponse> {
-  return apiRequest<null, LeaderboardStatsResponse>(
-    "/leaderboards/stats",
-    "get",
-  );
+  return apiRequest<null, LeaderboardStatsResponse>("/stats", "get");
 }

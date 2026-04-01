@@ -30,11 +30,11 @@ export function useLeaderboards(filters?: LeaderboardFilters) {
   });
 }
 
-export function useMyStats() {
+export function useMyStats(userId: string) {
   return useQuery<UserStats>({
     queryKey: queryKeys.leaderboards.myStats(),
     queryFn: async () => {
-      const response = await getMyStats();
+      const response = await getMyStats(userId);
       return response.data;
     },
     staleTime: 1000 * 60 * 2, // 2 minutes
@@ -83,4 +83,22 @@ export function useUpdateStreak() {
       showErrorToast(error, "Failed to update streak. Please try again.");
     },
   });
+}
+
+/**
+ * Hook to easily trigger streak updates from any component.
+ * Automatically handles mutations and shows success/error toasts.
+ *
+ * Usage:
+ * const trackStreak = useStreakTracker();
+ * trackStreak(); // Updates streak for today
+ * trackStreak(new Date('2024-01-01')); // Updates streak for specific date
+ */
+export function useStreakTracker() {
+  const updateStreakMutation = useUpdateStreak();
+
+  return (activityDate?: Date | string) => {
+    const payload = activityDate ? { activityDate } : undefined;
+    return updateStreakMutation.mutate(payload);
+  };
 }
