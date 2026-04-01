@@ -143,4 +143,23 @@ export const queryKeys = {
     likeStatus: (submissionId: string) =>
       [...queryKeys.capstone.all, "like-status", submissionId] as const,
   },
+
+  // Recommendations
+  recommendations: {
+    all: ["recommendations"] as const,
+    lists: () => [...queryKeys.recommendations.all, "list"] as const,
+    learningContinuity: (courseId: string, limit?: number) =>
+      [
+        ...queryKeys.recommendations.lists(),
+        "learning-continuity",
+        courseId,
+        limit || 10,
+      ] as const,
+    likedBased: (limit?: number) =>
+      [
+        ...queryKeys.recommendations.lists(),
+        "liked-based",
+        limit || 10,
+      ] as const,
+  },
 } as const;

@@ -12,6 +12,9 @@ import { CourseFilters } from "@/server/features/course/types/request";
 import { StarsIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { DiscoverSection } from "@/features/my-learning/presentation/DiscoverSection";
+import { useAllProgress } from "@/features/progress/application/useProgress";
+import { useMyLikes } from "@/features/likes/application/useLikes";
 
 const ExplorePage = () => {
   const { user } = useAuth();
@@ -20,6 +23,13 @@ const ExplorePage = () => {
     undefined,
   );
   const [selectedSort, setSelectedSort] = useState("newest");
+
+  const { data: userProgress } = useAllProgress();
+  const { data: userLikes } = useMyLikes();
+
+  const hasUserActivity =
+    (userProgress && userProgress.length > 0) ||
+    (userLikes && userLikes.length > 0);
 
   const filters: CourseFilters = {
     publish: true,
@@ -185,6 +195,16 @@ const ExplorePage = () => {
                     <CourseCardSkeleton key={`loading-${index}`} />
                   ))}
               </div>
+
+              {hasUserActivity && (
+                <div className="mt-20">
+                  <DiscoverSection
+                    showContinuityPath={true}
+                    showExplore={true}
+                    hasUserActivity={hasUserActivity}
+                  />
+                </div>
+              )}
 
               {hasNextPage && (
                 <div

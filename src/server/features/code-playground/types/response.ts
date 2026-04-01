@@ -10,7 +10,7 @@ export interface CodeWorkspace {
     output: string;
     error?: string;
     executionTime: number;
-    status: 'success' | 'error' | 'timeout';
+    status: "success" | "error" | "timeout";
   };
   createdAt: Date;
   updatedAt: Date;
@@ -43,6 +43,89 @@ export interface Judge0ResultResponse {
   time: string | null;
   memory: number | null;
   compile_output: string | null;
+}
+
+// ==================== EXERCISE GUIDELINES ====================
+// NEW: Replaces code execution with comprehensive guidelines
+
+export interface ExerciseGuideline {
+  id: string;
+  lessonId: string;
+  courseId: string;
+  title: string;
+  description: string;
+  objectives: string[];
+  gettingStarted: {
+    editorOptions: Array<{
+      name: string;
+      description: string;
+      url: string;
+      difficulty: "beginner" | "intermediate" | "advanced";
+      pros: string[];
+      cons: string[];
+    }>;
+    environmentSetup: string[];
+    recommendedApproach: string;
+  };
+  problemStatement: {
+    description: string;
+    constraints: string[];
+    acceptanceCriteria: string[];
+  };
+  technicalRequirements: {
+    languages: string[];
+    frameworks?: string[];
+    tools: string[];
+    runtime?: string;
+  };
+  solutionApproach: {
+    steps: string[];
+    pseudocode?: string;
+    keyAlgorithms?: string[];
+  };
+  projectStructure: {
+    description: string;
+    fileStructure: Record<string, string>;
+  };
+  testingGuidelines: {
+    whatToTest: string[];
+    sampleTestCases?: Array<{
+      input: string;
+      expectedOutput: string;
+    }>;
+    testingTools: string[];
+    bestPractices: string[];
+  };
+  commonMistakes: Array<{
+    mistake: string;
+    correction: string;
+    prevention: string;
+  }>;
+  bestPractices: string[];
+  resources: string[];
+  examples: {
+    description: string;
+    links: string[];
+  };
+  estimatedTime: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  submissionGuidelines: {
+    format: string;
+    requiredFiles: string[];
+    instructions: string[];
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExerciseGuidelineResponse {
+  data: ExerciseGuideline;
+  message: string;
+}
+
+export interface ExerciseGuidelinesListResponse {
+  data: ExerciseGuideline[];
+  message: string;
 }
 
 // export interface LanguageMap {
