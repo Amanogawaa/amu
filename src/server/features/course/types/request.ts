@@ -48,9 +48,6 @@ export interface GenerationProgress {
   data?: {
     courseId?: string;
     courseName?: string;
-    moduleId?: string;
-    moduleName?: string;
-    modulesCount?: number;
     chaptersCount?: number;
     lessonsCount?: number;
   };
@@ -62,7 +59,6 @@ export interface GenerationProgress {
 
 export interface FullCourseGenerationResult {
   courseId: string;
-  modulesCount: number;
   chaptersCount: number;
   lessonsCount: number;
   totalDuration: string;

@@ -1,15 +1,11 @@
 "use client";
 
-import { DashboardStats } from "@/features/dashboard/presentation/DashboardStats";
-import { StreakCalendar } from "@/features/dashboard/presentation/StreakCalendar";
-import { Leaderboard } from "@/features/dashboard/presentation/Leaderboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CapstoneGallery } from "@/features/capstone/presentation";
 import { CourseCard } from "@/features/dashboard/presentation/CourseCard";
 import { QuickActions } from "@/features/dashboard/presentation/QuickActions";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
-import { Button } from "@/components/ui/button";
 import { useRefreshRecommendations } from "@/features/recommendations/application";
-import { CapstoneGallery } from "@/features/capstone/presentation";
+import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 import { Sparkles } from "lucide-react";
 
 const DashboardPage = () => {
@@ -180,12 +176,6 @@ const DashboardPage = () => {
               </div>
               <CapstoneGallery limit={12} />
             </div>
-            {/* <Button
-              onClick={() => refresh({ type: "liked-based" })}
-              disabled={isPending}
-            >
-              Refresh Recommendations
-            </Button> */}
           </div>
 
           {/* Recommendations Section */}
