@@ -1,8 +1,6 @@
 "use client";
 
 import { DashboardStats } from "@/features/dashboard/presentation/DashboardStats";
-import { StreakCalendar } from "@/features/dashboard/presentation/StreakCalendar";
-import { Leaderboard } from "@/features/dashboard/presentation/Leaderboard";
 import { CourseCard } from "@/features/dashboard/presentation/CourseCard";
 import { QuickActions } from "@/features/dashboard/presentation/QuickActions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -158,14 +156,6 @@ const DashboardPage = () => {
                 </div>
               </TabsContent>
             </Tabs>
-
-            {/* Streak Calendar */}
-            <StreakCalendar />
-          </div>
-
-          {/* Right Column - Sidebar */}
-          <div className="lg:col-span-1">
-            <Leaderboard />
           </div>
         </div>
       </div>
