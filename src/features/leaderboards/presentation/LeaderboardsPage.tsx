@@ -27,7 +27,7 @@ export function LeaderboardsPage() {
   const { user } = useAuth();
   const [sortBy, setSortBy] = useState<LeaderboardFilters["sortBy"]>("score");
   const { data, isLoading, isError } = useLeaderboards({ limit: 50, sortBy });
-  const { data: myStats } = useMyStats();
+  // const { data: myStats } = useMyStats();
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -142,7 +142,7 @@ export function LeaderboardsPage() {
         </div>
 
         {/* User Stats */}
-        {myStats && (
+        {/* {myStats && (
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardContent className="p-6">
@@ -197,7 +197,7 @@ export function LeaderboardsPage() {
               </CardContent>
             </Card>
           </div>
-        )}
+        )} */}
 
         {/* Sorting Tabs */}
         <Card>
