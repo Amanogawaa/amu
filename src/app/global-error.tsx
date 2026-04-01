@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { ErrorFallback } from '@/components/errors/ErrorFallback';
+import { useEffect } from "react";
+import { ErrorFallback } from "@/components/errors/ErrorFallback";
 
 export default function GlobalError({
   error,
@@ -12,10 +12,8 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     // Log critical error
-    console.error('Global Error:', error);
+    console.error("Global Error:", error);
   }, [error]);
 
-  return (
-    <ErrorFallback error={error} reset={reset} />
-  );
+  return <ErrorFallback error={error} reset={reset} />;
 }
