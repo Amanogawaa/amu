@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   usePublishCourse,
   useUnpublishCourse,
   useValidateCourse,
-} from '@/features/create/application/usePublishCourse';
-import { CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
+} from "@/features/create/application/usePublishCourse";
+import { CheckCircle2, XCircle, Loader2, AlertCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,9 +14,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
 interface PublishCourseButtonProps {
   courseId: string;
@@ -139,29 +139,16 @@ export function PublishCourseButton({
                     <h4 className="text-sm font-semibold">Course Status:</h4>
                     <div className="space-y-1 text-sm">
                       <div className="flex items-center justify-between">
-                        <span>Modules:</span>
-                        <span
-                          className={
-                            validationData.details.hasModules
-                              ? 'text-green-600'
-                              : 'text-red-600'
-                          }
-                        >
-                          {validationData.details.modulesCount} module(s)
-                          {validationData.details.hasModules ? ' ✓' : ' ✗'}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
                         <span>Chapters:</span>
                         <span
                           className={
                             validationData.details.hasChapters
-                              ? 'text-green-600'
-                              : 'text-red-600'
+                              ? "text-green-600"
+                              : "text-red-600"
                           }
                         >
                           {validationData.details.chaptersCount} chapter(s)
-                          {validationData.details.hasChapters ? ' ✓' : ' ✗'}
+                          {validationData.details.hasChapters ? " ✓" : " ✗"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -169,12 +156,12 @@ export function PublishCourseButton({
                         <span
                           className={
                             validationData.details.hasLessons
-                              ? 'text-green-600'
-                              : 'text-red-600'
+                              ? "text-green-600"
+                              : "text-red-600"
                           }
                         >
                           {validationData.details.lessonsCount} lesson(s)
-                          {validationData.details.hasLessons ? ' ✓' : ' ✗'}
+                          {validationData.details.hasLessons ? " ✓" : " ✗"}
                         </span>
                       </div>
                     </div>
