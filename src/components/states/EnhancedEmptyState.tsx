@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
 import {
   BookOpen,
   GraduationCap,
@@ -13,18 +13,18 @@ import {
   ArrowRight,
   Search,
   Sparkles,
-} from 'lucide-react';
-import Link from 'next/link';
+} from "lucide-react";
+import Link from "next/link";
 
 type EmptyStateType =
-  | 'no-courses'
-  | 'no-enrolled-courses'
-  | 'no-modules'
-  | 'no-lessons'
-  | 'no-comments'
-  | 'no-enrollments'
-  | 'no-search-results'
-  | 'no-published-courses';
+  | "no-courses"
+  | "no-enrolled-courses"
+  | "no-modules"
+  | "no-lessons"
+  | "no-comments"
+  | "no-enrollments"
+  | "no-search-results"
+  | "no-published-courses";
 
 interface EmptyStateProps {
   type: EmptyStateType;
@@ -52,119 +52,119 @@ const emptyStateConfigs: Record<
     };
   }
 > = {
-  'no-courses': {
+  "no-courses": {
     icon: BookOpen,
-    title: 'No Courses Yet',
+    title: "No Courses Yet",
     description:
       "You haven't created any courses yet. Start building your first AI-powered course in minutes!",
     suggestions: [
-      'Create your first course with AI assistance',
-      'Choose from various topics and difficulty levels',
-      'Customize content to match your teaching style',
+      "Create your first course with AI assistance",
+      "Choose from various topics and difficulty levels",
+      "Customize content to match your teaching style",
     ],
     primaryAction: {
-      label: 'Create Your First Course',
-      href: '/create',
+      label: "Create Your First Course",
+      href: "/create",
     },
     secondaryAction: {
-      label: 'Explore Courses',
-      href: '/explore',
+      label: "Explore Courses",
+      href: "/explore",
     },
   },
-  'no-enrolled-courses': {
+  "no-enrolled-courses": {
     icon: BookMarked,
-    title: 'No Enrolled Courses',
+    title: "No Enrolled Courses",
     description:
       "You haven't enrolled in any courses yet. Discover amazing courses tailored to your learning goals!",
     suggestions: [
-      'Browse our extensive course catalog',
-      'Enroll in courses that match your interests',
-      'Track your learning progress',
+      "Browse our extensive course catalog",
+      "Enroll in courses that match your interests",
+      "Track your learning progress",
     ],
     primaryAction: {
-      label: 'Explore Courses',
-      href: '/explore',
+      label: "Explore Courses",
+      href: "/explore",
     },
   },
-  'no-modules': {
+  "no-modules": {
     icon: Layers,
-    title: 'No Modules Available',
+    title: "No Modules Available",
     description:
       "This course doesn't have any modules yet. Modules help organize your course content into manageable sections.",
     suggestions: [
-      'AI will generate modules automatically',
-      'Each module focuses on a specific topic',
-      'Modules can contain multiple lessons',
+      "AI will generate modules automatically",
+      "Each module focuses on a specific topic",
+      "Modules can contain multiple lessons",
     ],
   },
-  'no-lessons': {
+  "no-lessons": {
     icon: GraduationCap,
-    title: 'No Lessons Yet',
+    title: "No Lessons Yet",
     description:
       "This module doesn't contain any lessons. Lessons are the building blocks of your course content.",
     suggestions: [
-      'Lessons contain the actual learning material',
-      'Each lesson covers a specific concept',
-      'Includes text, examples, and quizzes',
+      "Lessons contain the actual learning material",
+      "Each lesson covers a specific concept",
+      "Includes text, examples, and quizzes",
     ],
   },
-  'no-comments': {
+  "no-comments": {
     icon: MessageSquare,
-    title: 'No Comments Yet',
+    title: "No Comments Yet",
     description:
-      'Be the first to start a discussion! Share your thoughts, ask questions, or help others learn.',
+      "Be the first to start a discussion! Share your thoughts, ask questions, or help others learn.",
     suggestions: [
-      'Ask questions about the content',
-      'Share insights and experiences',
-      'Help other learners',
+      "Ask questions about the content",
+      "Share insights and experiences",
+      "Help other learners",
     ],
     primaryAction: {
-      label: 'Start the Discussion',
+      label: "Start the Discussion",
     },
   },
-  'no-enrollments': {
+  "no-enrollments": {
     icon: UserCircle,
-    title: 'No Students Enrolled',
+    title: "No Students Enrolled",
     description:
       "This course doesn't have any students yet. Share your course to attract learners!",
     suggestions: [
-      'Publish your course to make it discoverable',
-      'Share the course link with your network',
-      'Ensure course content is complete and engaging',
+      "Publish your course to make it discoverable",
+      "Share the course link with your network",
+      "Ensure course content is complete and engaging",
     ],
   },
-  'no-search-results': {
+  "no-search-results": {
     icon: Search,
-    title: 'No Results Found',
+    title: "No Results Found",
     description:
       "We couldn't find any courses matching your search. Try different keywords or browse all courses.",
     suggestions: [
-      'Try using different keywords',
-      'Check for spelling mistakes',
-      'Use broader search terms',
+      "Try using different keywords",
+      "Check for spelling mistakes",
+      "Use broader search terms",
     ],
     primaryAction: {
-      label: 'Clear Search',
+      label: "Clear Search",
       onClick: () => window.location.reload(),
     },
     secondaryAction: {
-      label: 'Browse All Courses',
-      href: '/explore',
+      label: "Browse All Courses",
+      href: "/explore",
     },
   },
-  'no-published-courses': {
+  "no-published-courses": {
     icon: BookOpen,
-    title: 'No Published Courses',
+    title: "No Published Courses",
     description:
-      'There are no published courses available at the moment. Check back soon for new content!',
+      "There are no published courses available at the moment. Check back soon for new content!",
     suggestions: [
-      'New courses are added regularly',
-      'Create your own course to share knowledge',
-      'Explore draft courses in your dashboard',
+      "New courses are added regularly",
+      "Create your own course to share knowledge",
+      "Explore draft courses in your dashboard",
     ],
     primaryAction: {
-      label: 'Create a Course',
-      href: '/create',
+      label: "Create a Course",
+      href: "/create",
     },
   },
 };
@@ -205,9 +205,9 @@ export function EnhancedEmptyState({
             {/* Suggestions */}
             <div className="w-full max-w-md space-y-2">
               <p className="text-sm font-medium text-foreground/70">
-                {type === 'no-search-results'
-                  ? 'Try these tips:'
-                  : 'What you can do:'}
+                {type === "no-search-results"
+                  ? "Try these tips:"
+                  : "What you can do:"}
               </p>
               <ul className="space-y-2">
                 {config.suggestions.map((suggestion, index) => (
@@ -257,7 +257,7 @@ export function EnhancedEmptyState({
 
               {config.secondaryAction && (
                 <Link
-                  href={config.secondaryAction.href || '/'}
+                  href={config.secondaryAction.href || "/"}
                   className="flex-1"
                 >
                   <Button variant="outline" className="w-full">

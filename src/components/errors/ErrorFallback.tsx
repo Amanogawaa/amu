@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { AlertCircle, Home, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertCircle, Home, RefreshCw } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
 
 interface ErrorFallbackProps {
   error?: Error;
@@ -32,7 +32,7 @@ export function ErrorFallback({
             notified and we're working on a fix.
           </p>
 
-          {error && process.env.NODE_ENV === 'development' && (
+          {error && process.env.NODE_ENV === "development" && (
             <div className="p-3 bg-muted rounded-lg">
               <p className="text-xs font-mono text-destructive break-all">
                 {error.message}
@@ -50,7 +50,7 @@ export function ErrorFallback({
             {showHome && (
               <Button
                 variant="outline"
-                onClick={() => (window.location.href = '/')}
+                onClick={() => (window.location.href = "/")}
                 className="flex-1 gap-2"
               >
                 <Home className="h-4 w-4" />

@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 import {
   LucideIcon,
   FileQuestion,
   BookOpen,
   GraduationCap,
   Layers,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "lucide-react";
+import { Button } from "../ui/button";
 
 interface GeneralEmptyPageProps {
   icon?: LucideIcon;
@@ -14,35 +14,35 @@ interface GeneralEmptyPageProps {
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
-  type?: 'course' | 'lesson' | 'chapter' | 'default' | 'publish';
+  type?: "course" | "lesson" | "chapter" | "default" | "publish";
 }
 
 const emptyStateConfig = {
   publish: {
     icon: BookOpen,
-    title: 'No published courses',
-    description: 'There are no published courses available at the moment.',
+    title: "No published courses",
+    description: "There are no published courses available at the moment.",
   },
   course: {
     icon: BookOpen,
-    title: 'No courses found',
-    description: 'Start creating your first AI-powered course to get started.',
+    title: "No courses found",
+    description: "Start creating your first AI-powered course to get started.",
   },
   lesson: {
     icon: GraduationCap,
-    title: 'No lessons available',
+    title: "No lessons available",
     description:
-      'Add lessons to this chapter to begin building your course content.',
+      "Add lessons to this chapter to begin building your course content.",
   },
   chapter: {
     icon: Layers,
-    title: 'No chapters found',
-    description: 'Create chapters to organize your course content effectively.',
+    title: "No chapters found",
+    description: "Create chapters to organize your course content effectively.",
   },
   default: {
     icon: FileQuestion,
-    title: 'No data available',
-    description: 'There is no content to display at the moment.',
+    title: "No data available",
+    description: "There is no content to display at the moment.",
   },
 };
 
@@ -52,7 +52,7 @@ const GeneralEmptyPage = ({
   description,
   actionLabel,
   onAction,
-  type = 'default',
+  type = "default",
 }: GeneralEmptyPageProps) => {
   const config = emptyStateConfig[type];
   const Icon = icon || config.icon;

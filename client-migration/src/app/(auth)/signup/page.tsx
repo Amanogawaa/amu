@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import RegistrationForm from '@/features/auth/presentation/RegistrationForm';
-import { AuthRedirect } from '@/utils/AuthRedirect';
+import { AuthRedirect } from "@/utils/AuthRedirect";
+import RegistrationForm from "../../../../CONVEX_REGISTRATION_FORM_EXAMPLE";
 
 const SignupPage = () => {
   return (
@@ -9,6 +9,7 @@ const SignupPage = () => {
       <AuthRedirect />
       <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
         <div className="w-full max-w-lg">
+          {/* <RegistrationForm /> */}
           <RegistrationForm />
         </div>
       </div>

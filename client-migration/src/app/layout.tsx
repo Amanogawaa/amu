@@ -1,0 +1,72 @@
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/features/auth/application/AuthContext";
+import ReactQueryProvider from "@/provider/ReactQueryProvider";
+import { SocketProvider } from "@/provider/SocketProvider";
+
+import type { Metadata } from "next";
+import { Montserrat, Poppins } from "next/font/google";
+import { ThemeProvider } from "@/provider/ThemeProvider";
+import { FloatingGenerationWidget } from "@/features/create/presentation/FloatingGenerationWidget";
+import { GenerationProvider } from "@/features/create/application/GenerationContext";
+import { ConvexReactClient } from "convex/react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-poppins",
+  display: "swap",
+  preload: true,
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-montserrat",
+  display: "swap",
+  preload: true,
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
+});
+
+export const metadata: Metadata = {
+  title: "CourseCraft",
+  description: "Your personal AI assistant for all things CourseCraft",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const convex = new ConvexReactClient(
+    process.env.NEXT_PUBLIC_CONVEX_URL as string,
+  );
+
+  return (
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body
+        className={`${poppins.variable} ${montserrat.variable} font-sans antialiased`}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ReactQueryProvider>
+            <ConvexAuthProvider client={convex}>
+              <AuthProvider>
+                <SocketProvider>
+                  <GenerationProvider>
+                    {children}
+                    <FloatingGenerationWidget />
+                  </GenerationProvider>
+                </SocketProvider>
+              </AuthProvider>
+            </ConvexAuthProvider>
+          </ReactQueryProvider>
+          <Toaster />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

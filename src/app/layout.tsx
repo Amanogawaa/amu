@@ -1,38 +1,42 @@
-import { Toaster } from '@/components/ui/sonner';
-import { AuthProvider } from '@/features/auth/application/AuthContext';
-import ReactQueryProvider from '@/provider/ReactQueryProvider';
-import { SocketProvider } from '@/provider/SocketProvider';
+import type { Metadata } from "next";
+import { Montserrat, Poppins, Roboto, Manrope, Inter } from "next/font/google";
+import "./globals.css";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 
-import type { Metadata } from 'next';
-import { Montserrat, Poppins } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/provider/ThemeProvider';
-import { FloatingGenerationWidget } from '@/features/create/presentation/FloatingGenerationWidget';
-import { GenerationProvider } from '@/features/create/application/GenerationContext';
+import { cn } from "@/src/lib/utils";
+import ConvexClientProvider from "@/src/provider/ConvexProvider";
+import { AuthProvider } from "../context/AuthContext";
+
+const interHeading = Inter({subsets:['latin'],variable:'--font-heading'});
+
+const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-poppins',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-poppins",
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
   adjustFontFallback: true,
 });
 
 const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-montserrat',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-montserrat",
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
   adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
-  title: 'CourseCraft',
-  description: 'Your personal AI assistant for all things CourseCraft',
+  title: "CourseCraft",
+  description: "Your personal AI assistant for all things CourseCraft",
+  icons: {
+    icon: "/coursecraft.svg",
+  },
 };
 
 export default function RootLayout({
@@ -41,24 +45,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={`${poppins.variable} ${montserrat.variable} font-sans antialiased`}
+    <ConvexAuthNextjsServerProvider>
+      <html
+        lang="en"
+        className={cn(
+          poppins.variable,
+          "font-sans",
+          roboto.variable,
+          interHeading.variable,
+        )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ReactQueryProvider>
-            <AuthProvider>
-              <SocketProvider>
-                <GenerationProvider>
-                  {children}
-                  <FloatingGenerationWidget />
-                </GenerationProvider>
-              </SocketProvider>
-            </AuthProvider>
-          </ReactQueryProvider>
-          <Toaster />
-        </ThemeProvider>
-      </body>
-    </html>
+        <body
+          className={`${poppins.variable} ${montserrat.variable} font-sans antialiased`}
+        >
+          <ConvexClientProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </ConvexClientProvider>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }

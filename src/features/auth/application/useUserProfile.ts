@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { db } from '@/utils/firebase';
-import { useAuth } from './AuthContext';
+import { useEffect, useState } from "react";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "@/utils/firebase";
+import { useAuth } from "./AuthContext";
 
 export interface UserProfile {
   uid: string;
@@ -30,7 +30,7 @@ export const useUserProfile = () => {
     }
 
     setLoading(true);
-    const userDocRef = doc(db, 'users', user.uid);
+    const userDocRef = doc(db, "users", user.uid);
 
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(
@@ -45,10 +45,10 @@ export const useUserProfile = () => {
         setError(null);
       },
       (err) => {
-        console.error('Error fetching user profile:', err);
+        console.error("Error fetching user profile:", err);
         setError(err.message);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();

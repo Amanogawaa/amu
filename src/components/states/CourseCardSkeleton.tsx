@@ -1,11 +1,6 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 
 const CourseCardSkeleton = () => {
   return (

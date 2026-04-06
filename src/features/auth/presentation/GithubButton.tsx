@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/features/auth/application/AuthContext';
-import { GithubIcon, Check, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useAuth } from "@/src/context/AuthContext";
+import { GithubIcon, Check, X } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
+import { Badge } from "@/src/components/ui/badge";
 
 export function GitHubConnectButton() {
   const { user, githubLinked, linkGithub, unlinkGithub, error } = useAuth();
@@ -12,7 +12,7 @@ export function GitHubConnectButton() {
 
   if (githubLinked) {
     const githubData = user.providerData.find(
-      (p) => p.providerId === 'github.com'
+      (p) => p.providerId === "github.com",
     );
 
     return (
@@ -20,7 +20,7 @@ export function GitHubConnectButton() {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
           <GithubIcon className="h-4 w-4 text-green-600" />
           <span className="text-sm font-medium text-green-600">
-            {githubData?.displayName || githubData?.email || 'Connected'}
+            {githubData?.displayName || githubData?.email || "Connected"}
           </span>
           <Check className="h-4 w-4 text-green-600" />
         </div>

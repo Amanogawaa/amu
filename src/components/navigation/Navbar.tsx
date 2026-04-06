@@ -1,24 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { NavigationBarUser } from "./NavbarUser";
+import { useAuth } from "@/src/context/AuthContext";
+import { cn } from "@/src/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useAuth } from "@/features/auth/application/AuthContext";
-import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
-import Image from "next/image";
-import { NavigationBarUser } from "./NavbarUser";
+} from "../ui/navigation-menu";
+import { Button } from "../ui/button";
 
 export interface MenuItem {
   title: string;
@@ -62,16 +54,16 @@ const Navbar = ({
     { title: "Glossary", url: "/glossary" },
   ],
   auth = {
-    login: { title: "Login", url: "/signin" },
-    signup: { title: "Sign up", url: "/signup" },
+    login: { title: "Login", url: "/sign-in" },
+    signup: { title: "Sign up", url: "/sign-up" },
   },
 }: NavbarProps) => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   return (
     <section
       className={cn(
-        "py-4 sticky top-0 border-b border-border/40 z-50 shadow-sm backdrop-blur-lg bg-background/30",
+        "py-3 sticky top-0 border-b border-border/40 z-50 shadow-sm backdrop-blur-lg bg-background/30",
       )}
     >
       <div className="container max-w-7xl mx-auto">
@@ -105,7 +97,7 @@ const Navbar = ({
             )}
           </div>
           <div className="flex items-center gap-2">
-            {loading ? (
+            {isLoading ? (
               <>
                 <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
                 <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
@@ -114,10 +106,10 @@ const Navbar = ({
               <NavigationBarUser />
             ) : (
               <>
-                <Button type="button" asChild variant="outline" size="sm">
+                <Button type="button" variant="outline" size="sm">
                   <a href={auth.login.url}>{auth.login.title}</a>
                 </Button>
-                <Button type="button" asChild size="sm">
+                <Button type="button" size="sm">
                   <a href={auth.signup.url}>{auth.signup.title}</a>
                 </Button>
               </>

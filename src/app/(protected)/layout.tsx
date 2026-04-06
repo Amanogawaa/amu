@@ -1,4 +1,4 @@
-import Footer from '@/components/navigation/Footer';
+import { Navbar } from "@/src/components/navigation/Navbar";
 
 export default function Layout({
   children,
@@ -7,7 +7,7 @@ export default function Layout({
 }>) {
   return (
     <>
-      {/* <NavigationBar /> */}
+      <Navbar />
       {children}
       {/* <Footer /> */}
     </>

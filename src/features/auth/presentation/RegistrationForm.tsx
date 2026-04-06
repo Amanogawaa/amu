@@ -1,20 +1,7 @@
-import GeneralLoadingPage from "@/components/states/GeneralLoadingPage";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/src/components/ui/button";
+
+import GeneralLoadingPage from "@/src/components/states/GeneralLoadingPage";
+import { Checkbox } from "@/src/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -22,40 +9,54 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { logger } from "@/lib/loggers";
-import { cn } from "@/lib/utils";
+} from "@/src/components/ui/dialog";
 import {
-  Calendar,
-  Eye,
-  EyeClosed,
-  GraduationCap,
-  Lock,
-  Mail,
-  User,
-  User2,
-} from "lucide-react";
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/src/components/ui/field";
+import { Input } from "@/src/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import { cn } from "@/src/lib/utils";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { Eye, EyeClosed, GraduationCap, Lock, User2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useAuth } from "../application/AuthContext";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
 
 const RegistrationForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [showTermsDialog, setShowTermsDialog] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<any>(null);
-  const { loading, signUp, user, signInWithGoogle } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuthActions();
 
-  const form = useForm({
+  const formSchema = z.object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    program: z.string().min(1, "Program is required"),
+    yearLevel: z.string().min(1, "Year level is required"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -66,26 +67,36 @@ const RegistrationForm = ({
     },
   });
 
-  useEffect(() => {
-    if (!loading && user) {
-      const redirect = searchParams.get("redirect") || "/dashboard";
-      router.push(redirect);
-    }
-  }, [user, loading, router, searchParams]);
+  const formSubmit = (values: z.infer<typeof formSchema>) => {
+    setPendingFormData(values);
+    setShowTermsDialog(true);
+  };
 
-  const handleSignUp = () => {
+  const handleAcceptTerms = () => {
     if (!pendingFormData) return;
 
-    signUp(pendingFormData.email, pendingFormData.password, {
-      firstName: pendingFormData.firstName,
-      lastName: pendingFormData.lastName,
-      program: pendingFormData.program,
-      yearLevel: pendingFormData.yearLevel,
-    });
-
+    setLoading(true);
+    setError(null);
     setShowTermsDialog(false);
-    setAgreedToTerms(false);
-    setPendingFormData(null);
+
+    const formData = new FormData();
+
+    formData.set("firstName", pendingFormData.firstName);
+    formData.set("lastName", pendingFormData.lastName);
+    formData.set("email", pendingFormData.email);
+    formData.set("password", pendingFormData.password);
+    formData.set("program", pendingFormData.program);
+    formData.set("yearLevel", pendingFormData.yearLevel);
+    formData.set("flow", "signUp");
+
+    void signIn("password", formData)
+      .catch((err) => {
+        setError("Failed to create account. Please try again.");
+        setLoading(false);
+      })
+      .then(() => {
+        router.push("/");
+      });
   };
 
   if (loading) {
@@ -94,262 +105,248 @@ const RegistrationForm = ({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Form {...form}>
-        <form
-          method="post"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = form.getValues();
-
-            // Validate form
-            if (
-              !formData.firstName ||
-              !formData.lastName ||
-              !formData.email ||
-              !formData.password
-            ) {
-              return;
-            }
-
-            // Store form data and show terms dialog
-            setPendingFormData(formData);
-            setShowTermsDialog(true);
-          }}
-          className="flex flex-col gap-6"
-        >
-          <div className="flex flex-col items-center gap-2 text-center">
-            <Link
-              href="#"
-              className="flex flex-col items-center gap-2 font-medium"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md">
-                <Image
-                  src="/coursecraft.png"
-                  width={64}
-                  height={64}
-                  alt="CourseCraft Logo"
-                />
-              </div>
-              <h1 className="sr-only">Acme Inc.</h1>
-            </Link>
-            <h1 className="text-xl font-bold text-primary">
-              Welcome to CourseCraft
-            </h1>
-            <p className="text-xs text-center">
-              Already have an account? <Link href={"/signin"}>Sign in</Link>
-            </p>
-          </div>
-          <div className="relative grid gap-4 ">
-            <div className="grid gap-2 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <User2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="text"
-                          placeholder="Juan"
-                          required
-                          {...field}
-                          className={cn(
-                            "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
-                          )}
-                        />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <User2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="text"
-                          placeholder="Dela Cruz"
-                          required
-                          {...field}
-                          className={cn(
-                            "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
-                          )}
-                        />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
+      <form
+        className="flex flex-col gap-6"
+        onSubmit={form.handleSubmit(formSubmit)}
+      >
+        <div className="flex flex-col items-center gap-2 text-center">
+          <Link
+            href="#"
+            className="flex flex-col items-center gap-2 font-medium"
+          >
+            <div className="flex size-8 items-center justify-center rounded-md">
+              <Image
+                src="/coursecraft.png"
+                width={64}
+                height={64}
+                alt="CourseCraft Logo"
               />
             </div>
-
-            <div className="grid gap-2 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="program"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Program</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger
-                            className={cn(
-                              "rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
-                            )}
-                          >
-                            <SelectValue placeholder="Select program" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Computer Science">
-                              Computer Science
-                            </SelectItem>
-                            <SelectItem value="Information Technology">
-                              Information Technology
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="yearLevel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Year Level</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger
-                            className={cn(
-                              "rounded-lg border  w-full border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
-                            )}
-                          >
-                            <SelectValue placeholder="Select year level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1st Year">1st Year</SelectItem>
-                            <SelectItem value="2nd Year">2nd Year</SelectItem>
-                            <SelectItem value="3rd Year">3rd Year</SelectItem>
-                            <SelectItem value="4th Year">4th Year</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
+            <h1 className="sr-only">Acme Inc.</h1>
+          </Link>
+          <h1 className="text-xl font-bold text-primary">
+            Welcome to CourseCraft
+          </h1>
+          <p className="text-xs text-center">
+            Already have an account? <Link href={"/sign-in"}>Sign in</Link>
+          </p>
+        </div>
+        <FieldGroup className="relative grid gap-4 ">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Controller
+              name="firstName"
               control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="email"
-                        placeholder="user@gmail.com"
-                        required
-                        {...field}
-                        className={cn(
-                          "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
-                        )}
-                      />
-                    </div>
-                  </FormControl>
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="firstName" className="sr-only">
+                    First Name
+                  </FieldLabel>
+                  <div className="relative">
+                    <User2 className="w-5 h-5 absolute text-secondary left-3 top-1/2 -translate-y-1/2 p-0" />
+                    <Input
+                      {...field}
+                      id="firstName"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="First Name"
+                      autoComplete="off"
+                      {...field}
+                      className={cn(
+                        "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
+                      )}
+                    />
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
               )}
             />
-            <FormField
+
+            <Controller
+              name="lastName"
               control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="••••••••"
-                        required
-                        {...field}
-                        type={showPassword ? "text" : "password"}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="lastName" className="sr-only">
+                    Last Name
+                  </FieldLabel>
+                  <div className="relative">
+                    <User2 className="w-5 h-5 absolute text-secondary left-3 top-1/2 -translate-y-1/2 p-0" />
+                    <Input
+                      {...field}
+                      id="lastName"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Last Name"
+                      autoComplete="off"
+                      {...field}
+                      className={cn(
+                        "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
+                      )}
+                    />
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Controller
+              name="program"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="program" className="sr-only">
+                    Program
+                  </FieldLabel>
+
+                  <div className="relative">
+                    <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger
                         className={cn(
-                          "rounded-lg border border-secondary p-5 pl-10 font-satoshi placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
+                          "rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary flex items-center",
                         )}
-                      />
-                      <Button
-                        type="button"
-                        className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
-                        variant={"ghost"}
-                        onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeClosed /> : <Eye />}
-                      </Button>
-                    </div>
-                  </FormControl>
-                </FormItem>
+                        <SelectValue placeholder="Select program" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg">
+                        <SelectItem
+                          value="Computer Science"
+                          className="rounded-none"
+                        >
+                          Computer Science
+                        </SelectItem>
+                        <SelectItem
+                          value="Information Technology"
+                          className="rounded-none"
+                        >
+                          Information Technology
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </Field>
               )}
             />
-            <Button
-              className={cn(
-                "w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in",
+            <Controller
+              name="yearLevel"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="yearLevel" className="sr-only">
+                    Year Level
+                  </FieldLabel>
+
+                  <div className="relative">
+                    <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger
+                        className={cn(
+                          "rounded-lg w-full border border-secondary p-5 pl-10 font-satoshi focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary flex items-center",
+                        )}
+                      >
+                        <SelectValue placeholder="Select year level" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg">
+                        <SelectItem value="1st Year" className="rounded-none">
+                          1st Year
+                        </SelectItem>
+                        <SelectItem value="2nd Year" className="rounded-none">
+                          2nd Year
+                        </SelectItem>
+                        <SelectItem value="3rd Year" className="rounded-none">
+                          3rd Year
+                        </SelectItem>
+                        <SelectItem value="4th Year" className="rounded-none">
+                          4th Year
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </Field>
               )}
-              type="submit"
-            >
-              Sign up
-            </Button>
+            />
           </div>
-        </form>
-      </Form>
-      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-        <span className="relative z-10 bg-background px-2 text-muted-foreground">
-          Or
-        </span>
-      </div>
-      <div className="flex flex-col gap-4">
-        <Button
-          variant="outline"
-          className="w-full rounded-lg p-5 "
-          onClick={async () => {
-            try {
-              await signInWithGoogle();
-            } catch (err: any) {
-              if (!err?.cancelled) {
-                logger.error("Google sign-in error:", err);
-              }
-            }
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
-              d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-              fill="currentColor"
-            />
-          </svg>
-          Sign up with Google
-        </Button>
-      </div>
+
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="email" className="sr-only">
+                  Email
+                </FieldLabel>
+                <div className="relative">
+                  <User2 className="w-5 h-5 absolute text-secondary left-3 top-1/2 -translate-y-1/2 p-0" />
+                  <Input
+                    {...field}
+                    id="email"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="shanak.0@gmail.com"
+                    autoComplete="off"
+                    {...field}
+                    className={cn(
+                      "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
+                    )}
+                  />
+                </div>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="password" className="sr-only">
+                  Password
+                </FieldLabel>
+                <div className="relative">
+                  <Lock className="w-5 h-5 absolute text-secondary  left-3 top-1/2 -translate-y-1/2 p-0" />
+                  <Input
+                    {...field}
+                    id="password"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="••••••••"
+                    autoComplete="off"
+                    type={showPassword ? "text" : "password"}
+                    className={cn(
+                      "rounded-lg border border-secondary p-5 pl-10 placeholder:text-sm focus:border-secondary focus:outline-none focus-visible:ring-0 active:border-secondary",
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    className="absolute hover:bg-transparent text-secondary hover:text-secondary right-3 top-1/2 -translate-y-1/2 p-0"
+                    variant={"ghost"}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeClosed /> : <Eye />}
+                  </Button>
+                </div>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Button
+            className={cn(
+              "w-full cursor-pointer rounded-lg bg-primary p-5 font-inter text-sm font-semibold text-primary-foreground hover:bg-foreground/80 hover:ease-in",
+            )}
+            type="submit"
+          >
+            Sign up
+          </Button>
+        </FieldGroup>
+      </form>
+
       <div className="text-center text-xs text-muted-foreground">
         By signing up, you agree to our{" "}
         <Link
@@ -501,8 +498,8 @@ const RegistrationForm = ({
             </Button>
             <Button
               type="button"
-              onClick={handleSignUp}
               disabled={!agreedToTerms}
+              onClick={handleAcceptTerms}
               className="bg-primary hover:bg-primary/90"
             >
               Accept

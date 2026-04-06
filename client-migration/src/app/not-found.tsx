@@ -1,12 +1,12 @@
-import { Button } from '@/components/ui/button';
-import { FileQuestion, Home, Search, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-
+import { Button } from "@/components/ui/button";
+import { FileQuestion, Home, Search, ArrowRight } from "lucide-react";
+import Link from "next/link";
+export const dynamic = 'force-dynamic';
 export default function NotFound() {
   const popularCourses = [
-    { name: 'Introduction to Programming', href: '/explore' },
-    { name: 'Web Development Basics', href: '/explore' },
-    { name: 'Data Structures', href: '/explore' },
+    { name: "Introduction to Programming", href: "/explore" },
+    { name: "Web Development Basics", href: "/explore" },
+    { name: "Data Structures", href: "/explore" },
   ];
 
   return (
