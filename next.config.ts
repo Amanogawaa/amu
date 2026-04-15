@@ -12,10 +12,6 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
 
-  // Enable SWC minification for better performance
-  swcMinify: true,
-
-  // Enable standalone output for better bundle size
   output: isDevelopment ? undefined : "standalone",
 
   async rewrites() {
@@ -132,64 +128,6 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  },
-
-  webpack: (config, { isServer }) => {
-    // Optimize bundle splitting
-    if (!isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: "all",
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            // Vendor chunk
-            vendor: {
-              name: "vendor",
-              chunks: "all",
-              test: /node_modules/,
-              priority: 20,
-            },
-            // Firebase chunk (large library)
-            firebase: {
-              name: "firebase",
-              test: /[\\/]node_modules[\\/](firebase|@firebase)[\\/]/,
-              chunks: "all",
-              priority: 30,
-            },
-            // React/Next.js chunk
-            framework: {
-              name: "framework",
-              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
-              chunks: "all",
-              priority: 40,
-            },
-            // Common components
-            common: {
-              name: "common",
-              minChunks: 2,
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      };
-
-      // Bundle analyzer in production builds
-      if (!isDevelopment) {
-        const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-        config.plugins.push(
-          new BundleAnalyzerPlugin({
-            analyzerMode: "static",
-            reportFilename: "./bundle-analysis.html",
-            openAnalyzer: false,
-          }),
-        );
-      }
-    }
-
-    return config;
   },
 };
 
