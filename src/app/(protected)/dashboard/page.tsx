@@ -1,14 +1,12 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CapstoneGallery } from "@/features/capstone/presentation";
+import { useInfiniteListMyCourses } from "@/features/course/application/useGetCourses";
 import { QuickActions } from "@/features/dashboard/presentation/QuickActions";
+import { useUserEnrollments } from "@/features/enrollment/application/useEnrollment";
 import { useRefreshRecommendations } from "@/features/recommendations/application";
 import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 import { Sparkles } from "lucide-react";
-import { useInfiniteListMyCourses } from "@/features/course/application/useGetCourses";
-import { useUserEnrollments } from "@/features/enrollment/application/useEnrollment";
-import { CourseCard } from "@/features/dashboard/presentation";
 
 const DashboardPage = () => {
   // Fetch user's generated courses
@@ -54,7 +52,7 @@ const DashboardPage = () => {
             {/* Quick Actions */}
             <QuickActions />
             {/* Courses Tabs */}
-            <Tabs defaultValue="enrolled" className="w-full">
+            {/* <Tabs defaultValue="enrolled" className="w-full">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
                 <TabsTrigger value="enrolled">Enrolled Courses</TabsTrigger>
                 <TabsTrigger value="generated">My Generated</TabsTrigger>
@@ -139,7 +137,7 @@ const DashboardPage = () => {
                   )}
                 </div>
               </TabsContent>
-            </Tabs>
+            </Tabs> */}
 
             <div className="mt-12 space-y-6">
               <div className="flex items-center gap-3">
