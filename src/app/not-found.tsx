@@ -1,24 +1,8 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { FileQuestion, Home, Search, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/explore?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   const popularCourses = [
     { name: 'Introduction to Programming', href: '/explore' },
     { name: 'Web Development Basics', href: '/explore' },
@@ -46,26 +30,6 @@ export default function NotFound() {
             moved or deleted.
           </p>
         </div>
-
-        <Card>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSearch} className="space-y-4">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Search for courses..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <Button type="submit">Search</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg" className="gap-2">
