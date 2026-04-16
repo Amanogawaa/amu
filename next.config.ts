@@ -46,7 +46,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.google.com wss://* ws://localhost:* http://localhost:*",
+              "connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.google.com https://*.onrender.com wss://* ws://localhost:* http://localhost:*",
               "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://*.google.com",
               "object-src 'none'",
               "base-uri 'self'",
