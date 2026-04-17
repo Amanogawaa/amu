@@ -1,38 +1,39 @@
-import { Toaster } from '@/components/ui/sonner';
-import { AuthProvider } from '@/features/auth/application/AuthContext';
-import ReactQueryProvider from '@/provider/ReactQueryProvider';
-import { SocketProvider } from '@/provider/SocketProvider';
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/features/auth/application/AuthContext";
+import ReactQueryProvider from "@/provider/ReactQueryProvider";
+import { SocketProvider } from "@/provider/SocketProvider";
 
-import type { Metadata } from 'next';
-import { Montserrat, Poppins } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/provider/ThemeProvider';
-import { FloatingGenerationWidget } from '@/features/create/presentation/FloatingGenerationWidget';
-import { GenerationProvider } from '@/features/create/application/GenerationContext';
+import type { Metadata } from "next";
+import { Montserrat, Poppins } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/provider/ThemeProvider";
+import { FloatingGenerationWidget } from "@/features/create/presentation/FloatingGenerationWidget";
+import { GenerationProvider } from "@/features/create/application/GenerationContext";
+import { Analytics } from "@vercel/analytics/react";
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-poppins',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-poppins",
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
   adjustFontFallback: true,
 });
 
 const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-montserrat',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-montserrat",
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
   adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
-  title: 'CourseCraft',
-  description: 'Your personal AI assistant for all things CourseCraft',
+  title: "CourseCraft",
+  description: "Your personal AI assistant for all things CourseCraft",
 };
 
 export default function RootLayout({
@@ -57,6 +58,7 @@ export default function RootLayout({
             </AuthProvider>
           </ReactQueryProvider>
           <Toaster />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
