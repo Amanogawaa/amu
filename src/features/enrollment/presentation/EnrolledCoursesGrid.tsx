@@ -36,7 +36,7 @@ const EnrolledCoursesGrid = ({
         (enrollment) =>
           enrollment.course.name.toLowerCase().includes(query) ||
           enrollment.course.topic?.toLowerCase().includes(query) ||
-          enrollment.course.description?.toLowerCase().includes(query)
+          enrollment.course.description?.toLowerCase().includes(query),
       );
     }
 

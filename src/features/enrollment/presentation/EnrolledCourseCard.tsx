@@ -100,8 +100,8 @@ const EnrolledCourseCard = ({ enrollment }: EnrolledCourseCardProps) => {
             {status === "active"
               ? "📚 Learning"
               : status === "completed"
-              ? "✓ Completed"
-              : "Dropped"}
+                ? "✓ Completed"
+                : "Dropped"}
           </Badge>
         </div>
 

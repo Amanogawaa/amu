@@ -1,36 +1,36 @@
 "use client";
 
+import { EnhancedEmptyState } from "@/components/states/EnhancedEmptyState";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/features/auth/application/AuthContext";
 import { CapstoneGallery } from "@/features/capstone/presentation";
 import { useInfiniteListMyCourses } from "@/features/course/application/useGetCourses";
+import CourseCard from "@/features/course/presentation/card/CourseCard";
 import { QuickActions } from "@/features/dashboard/presentation/QuickActions";
 import { useUserEnrollments } from "@/features/enrollment/application/useEnrollment";
-import { useRefreshRecommendations } from "@/features/recommendations/application";
+import EnrolledCourseCard from "@/features/enrollment/presentation/EnrolledCourseCard";
 import { RecommendationList } from "@/features/recommendations/presentation/RecommendationList";
 import { Sparkles } from "lucide-react";
 
 const DashboardPage = () => {
-  // Fetch user's generated courses
+  const { user, loading: authLoading } = useAuth();
+  const {
+    data: enrollments,
+    isLoading: isEnrolledLoading,
+    isError: isEnrolledError,
+  } = useUserEnrollments(undefined, !!user && !authLoading);
+
   const {
     data: generatedCoursesData,
     isLoading: isGeneratedLoading,
     error: generatedError,
   } = useInfiniteListMyCourses({ draft: true }, true);
 
-  // Fetch user's enrolled courses
-  const {
-    data: enrolledData,
-    isLoading: isEnrolledLoading,
-    error: enrolledError,
-  } = useUserEnrollments({ status: "active" }, true);
-
-  const { mutate: refresh, isPending } = useRefreshRecommendations();
-
-  // Extract courses from paginated response
   const generatedCourses = generatedCoursesData?.pages?.[0]?.results || [];
 
-  // Extract enrolled courses from enrollment data
-  const enrolledCourses =
-    enrolledData?.map((enrollment) => enrollment.course) || [];
+  if (!enrollments) {
+    return null;
+  }
 
   return (
     <section className="flex flex-col min-h-screen w-full pb-10">
@@ -52,7 +52,7 @@ const DashboardPage = () => {
             {/* Quick Actions */}
             <QuickActions />
             {/* Courses Tabs */}
-            {/* <Tabs defaultValue="enrolled" className="w-full">
+            <Tabs defaultValue="enrolled" className="w-full">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
                 <TabsTrigger value="enrolled">Enrolled Courses</TabsTrigger>
                 <TabsTrigger value="generated">My Generated</TabsTrigger>
@@ -63,7 +63,7 @@ const DashboardPage = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-semibold">Your Courses</h2>
                     <p className="text-sm text-muted-foreground">
-                      {enrolledCourses.length} courses
+                      {enrollments!.length} courses
                     </p>
                   </div>
                   {isEnrolledLoading ? (
@@ -72,25 +72,25 @@ const DashboardPage = () => {
                         Loading your courses...
                       </p>
                     </div>
-                  ) : enrolledError ? (
+                  ) : isEnrolledError ? (
                     <div className="flex items-center justify-center py-12">
                       <p className="text-destructive">Failed to load courses</p>
                     </div>
-                  ) : enrolledCourses.length === 0 ? (
+                  ) : enrollments!.length === 0 ? (
                     <div className="flex items-center justify-center py-12">
                       <p className="text-muted-foreground">
                         No enrolled courses yet. Start learning!
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {enrolledCourses.map((course) => (
-                        <CourseCard
-                          key={course.id}
-                          course={course}
-                          context="learn"
-                        />
-                      ))}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {enrollments &&
+                        enrollments.map((enrollment) => (
+                          <EnrolledCourseCard
+                            key={enrollment.course.id}
+                            enrollment={enrollment}
+                          />
+                        ))}
                     </div>
                   )}
                 </div>
@@ -125,19 +125,15 @@ const DashboardPage = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {generatedCourses.map((course) => (
-                        <CourseCard
-                          key={course.id}
-                          course={course}
-                          context="course"
-                        />
+                        <CourseCard course={course} context="course" />
                       ))}
                     </div>
                   )}
                 </div>
               </TabsContent>
-            </Tabs> */}
+            </Tabs>
 
             <div className="mt-12 space-y-6">
               <div className="flex items-center gap-3">
@@ -157,18 +153,11 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Recommendations Section */}
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-2xl font-semibold mb-2">
-                Recommended for You
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Courses based on your interests
-              </p>
+          {
+            <div className="space-y-4">
+              <RecommendationList type="liked-based" context="dashboard" />
             </div>
-            <RecommendationList type="liked-based" context="dashboard" />
-          </div>
+          }
         </div>
       </div>
     </section>
