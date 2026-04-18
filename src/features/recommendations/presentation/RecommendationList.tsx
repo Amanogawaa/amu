@@ -72,6 +72,12 @@ export function RecommendationList({
 
   return (
     <div className={`w-full ${className}`}>
+      <div>
+        <h2 className="text-2xl font-semibold mb-2">Recommended for You</h2>
+        <p className="text-sm text-muted-foreground">
+          Courses based on your interests
+        </p>
+      </div>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full h-full">
         {recommendations.map((recommendation) => (
           <RecommendationCard

@@ -67,7 +67,6 @@ const CourseCard = ({ course, href, context = "course" }: CourseCardProps) => {
   const isOwner = user?.uid === course.uid;
   const createdAtDate = normalizeDate(course.createdAt as unknown);
 
-  // Determine button href and text based on context
   const getButtonHref = (): string => {
     if (href) return href;
 

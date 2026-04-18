@@ -12,7 +12,7 @@ export function QuickActions() {
     {
       label: "Generate Course",
       icon: Sparkles,
-      variant: "default" as const,
+      variant: "outline" as const,
       link: "/create",
       description: "Create a new AI-powered course",
     },
