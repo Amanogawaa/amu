@@ -50,6 +50,7 @@ import {
   useDraftCourse,
   useUndraftCourse,
 } from "@/features/create/application/useDraftCourse";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface CourseHeaderProps {
   courseId: string;
@@ -144,21 +145,20 @@ export const CourseHeader = ({
 
   return (
     <>
-      <div className="rounded-xl overflow-hidden mb-8 bg-foreground text-background">
-        <div className="px-8 py-10 space-y-5">
-          {/* Top row: Badges left, Actions right */}
+      <Card className="rounded-xl overflow-hidden mb-8">
+        <CardContent className="px-8  space-y-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge className="bg-background/15 text-background border-background/20 hover:bg-background/20">
+              <Badge className="bg-background/15 dark:bg-slate-700 text-background dark:text-slate-100 border-background/20 dark:border-slate-600 hover:bg-background/20 dark:hover:bg-slate-600">
                 {category}
               </Badge>
               <Badge
-                className={`capitalize bg-background/15 text-background border-background/20`}
+                className={`capitalize bg-background/15 dark:bg-slate-700 text-background dark:text-slate-100 border-background/20 dark:border-slate-600`}
               >
                 {level}
               </Badge>
               {isEnrolled && (
-                <Badge className="bg-emerald-400/20 text-emerald-300 border-emerald-400/20">
+                <Badge className="bg-emerald-400/20 dark:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 border-emerald-400/20 dark:border-emerald-500/50">
                   <CheckCircle2Icon className="h-3 w-3 mr-1" />
                   Enrolled
                 </Badge>
@@ -175,7 +175,7 @@ export const CourseHeader = ({
                     variant="ghost"
                     size="icon"
                     aria-label="More Options"
-                    className="text-background hover:bg-background/10 hover:text-background"
+                    className="text-background dark:text-slate-100 hover:bg-background/10 dark:hover:bg-slate-700"
                   >
                     <MoreHorizontalIcon />
                   </Button>
@@ -279,15 +279,13 @@ export const CourseHeader = ({
               {name}
             </h1>
             {subtitle && (
-              <p className="text-background/65 text-base max-w-2xl leading-relaxed">
-                {subtitle}
-              </p>
+              <p className="text-base max-w-2xl leading-relaxed">{subtitle}</p>
             )}
           </div>
 
           {/* Stats row */}
           {(duration || noOfChapters !== undefined || language) && (
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-background/60">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm ">
               {duration && (
                 <span className="flex items-center gap-1.5">
                   <ClockIcon className="h-4 w-4" />
@@ -323,8 +321,8 @@ export const CourseHeader = ({
               </Button>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <AlertDialog
         open={showUnenrollDialog}

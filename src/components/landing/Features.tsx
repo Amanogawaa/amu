@@ -1,31 +1,31 @@
 const features = [
   {
-    title: 'Prompt-based generator',
-    desc: 'Describe the skill you want to learn and CourseCraft drafts modules, lessons, and practice tasks automatically.',
-    icon: '⚡',
-    gradient: 'from-secondary/10 to-secondary/5',
-    borderColor: 'border-secondary/30',
+    title: "Prompt-based generator",
+    desc: "Describe the skill you want to learn and CourseCraft drafts modules, lessons, and practice tasks automatically.",
+    icon: "⚡",
+    gradient: "from-secondary/10 to-secondary/5",
+    borderColor: "border-secondary/30",
   },
   {
-    title: 'Modular planning canvas',
-    desc: 'Reorder sections, add context, and keep pacing notes without digging through multiple docs.',
-    icon: '🗂️',
-    gradient: 'from-primary/10 to-secondary/10',
-    borderColor: 'border-primary/30',
+    title: "Modular planning canvas",
+    desc: "Reorder sections, add context, and keep pacing notes without digging through multiple docs.",
+    icon: "🗂️",
+    gradient: "from-primary/10 to-secondary/10",
+    borderColor: "border-primary/30",
   },
   {
-    title: 'Vanilla practice editor',
-    desc: 'Teach with HTML, CSS, and JavaScript snippets directly in the lesson—perfect for lightweight demos.',
-    icon: '💻',
-    gradient: 'from-green-500/10 to-secondary/10',
-    borderColor: 'border-secondary/30',
+    title: "Vanilla practice editor",
+    desc: "Teach with HTML, CSS, and JavaScript snippets directly in the lesson—perfect for lightweight demos.",
+    icon: "💻",
+    gradient: "from-green-500/10 to-secondary/10",
+    borderColor: "border-secondary/30",
   },
   {
-    title: 'Capstone board',
-    desc: 'Collect submissions, screenshots, and reflections in one gallery so progress is always visible.',
-    icon: '📌',
-    gradient: 'from-orange-400/10 to-primary/10',
-    borderColor: 'border-primary/30',
+    title: "Capstone board",
+    desc: "Collect submissions, screenshots, and reflections in one gallery so progress is always visible.",
+    icon: "📌",
+    gradient: "from-orange-400/10 to-primary/10",
+    borderColor: "border-primary/30",
   },
 ];
 
@@ -33,7 +33,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+      className="py-24 px-4 bg-gradient-to-b from-background via-background/40 to-secondary/10 relative overflow-hidden"
     >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent" />
 
@@ -42,13 +42,13 @@ export default function Features() {
           <div className="inline-block px-4 py-2 mb-4 bg-secondary/10 rounded-full text-sm font-medium text-primary">
             Why Choose CourseCraft
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-custom-foreground mb-4">
-            Built for{' '}
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Built for{" "}
             <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
               Beginners
             </span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Everything you need to start your coding journey, all in one place
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function Features() {
           {features.map((f, i) => (
             <div
               key={i}
-              className="group relative bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
+              className="group relative bg-card/80 p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-border/60 overflow-hidden"
             >
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
@@ -68,10 +68,12 @@ export default function Features() {
                   {f.icon}
                 </div>
 
-                <h3 className="text-xl font-bold text-custom-foreground mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                   {f.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {f.desc}
+                </p>
 
                 <div className="mt-4 text-sm font-medium text-muted-foreground">
                   Built for real coursework—not marketing promises.

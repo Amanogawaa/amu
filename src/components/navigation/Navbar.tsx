@@ -18,7 +18,9 @@ import { useAuth } from "@/features/auth/application/AuthContext";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Image from "next/image";
+import React, { useState } from "react";
 import { NavigationBarUser } from "./NavbarUser";
+import { ModeToggle } from "../ThemeToggle";
 
 export interface MenuItem {
   title: string;
@@ -95,7 +97,7 @@ const Navbar = ({
               )}
             </a>
             {!user && (
-              <div className="flex items-center ">
+              <div className="hidden md:flex items-center">
                 <NavigationMenu>
                   <NavigationMenuList>
                     {menu.map((item) => renderMenuItem(item))}
@@ -104,7 +106,10 @@ const Navbar = ({
               </div>
             )}
           </div>
+          {/* <ModeToggle /> */}
+
           <div className="flex items-center gap-2">
+            {!user && <MobileMenu menu={menu} user={user} auth={auth} />}
             {loading ? (
               <>
                 <div className="h-9 w-20 bg-muted animate-pulse rounded-md" />
@@ -113,14 +118,14 @@ const Navbar = ({
             ) : user ? (
               <NavigationBarUser />
             ) : (
-              <>
+              <div className="hidden md:flex items-center gap-2">
                 <Button type="button" asChild variant="outline" size="sm">
                   <a href={auth.login.url}>{auth.login.title}</a>
                 </Button>
                 <Button type="button" asChild size="sm">
                   <a href={auth.signup.url}>{auth.signup.title}</a>
                 </Button>
-              </>
+              </div>
             )}
           </div>
         </nav>
@@ -144,9 +149,77 @@ const renderMenuItem = (item: MenuItem) => {
 
 const renderMobileMenuItem = (item: MenuItem) => {
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <a
+      key={item.title}
+      href={item.url}
+      className="block px-4 py-3 rounded-lg text-base font-semibold text-foreground hover:bg-secondary/10 transition-colors duration-200"
+    >
       {item.title}
     </a>
+  );
+};
+
+const MobileMenu = ({
+  menu,
+  user,
+  auth,
+}: {
+  menu: MenuItem[];
+  user: any;
+  auth?: any;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu className="h-5 w-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-72 p-0">
+        <SheetHeader className="px-6 py-4 border-b border-border/60">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/coursecraft.png"
+              className="max-h-6 dark:invert"
+              alt="CourseCraft"
+              width={24}
+              height={24}
+            />
+            <SheetTitle>CourseCraft</SheetTitle>
+          </div>
+        </SheetHeader>
+        <div className="flex flex-col h-full">
+          <div className="flex-1 px-2 py-6 space-y-1">
+            {menu.map((item) => renderMobileMenuItem(item))}
+          </div>
+          {auth && (
+            <div className="border-t border-border/60 px-4 py-6 space-y-3">
+              <Button
+                type="button"
+                asChild
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => setOpen(false)}
+              >
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+              <Button
+                type="button"
+                asChild
+                size="sm"
+                className="w-full"
+                onClick={() => setOpen(false)}
+              >
+                <a href={auth.signup.url}>{auth.signup.title}</a>
+              </Button>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

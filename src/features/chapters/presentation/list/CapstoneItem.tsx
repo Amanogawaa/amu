@@ -31,7 +31,7 @@ export const CapstoneItem = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
-      <div className="rounded-md border bg-white">
+      <div className="rounded-md border">
         <CollapsibleTrigger
           onClick={() => {
             if (!isLocked) {
@@ -60,7 +60,7 @@ export const CapstoneItem = ({
 
         {isLocked && lockMessage && (
           <div className="px-4 pb-3">
-            <Alert className="border-yellow-200 bg-yellow-50">
+            <Alert className="border-yellow-200 ">
               <Lock className="h-4 w-4 text-yellow-600" />
               <AlertDescription className="text-sm text-yellow-800">
                 {lockMessage}

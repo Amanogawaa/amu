@@ -27,7 +27,10 @@ export function NavigationBarUser() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none border border-secondary p-2 bg-white hover:bg-accent rounded-full focus:ring-2 focus:ring-offset-2 focus:ring-accent-foreground hover:text-white transition">
+      <DropdownMenuTrigger
+        className="outline-none border border-secondary p-2 
+       hover:bg-accent rounded-full focus:ring-2 focus:ring-offset-2 focus:ring-accent-foreground hover:text-white transition bg-transparent"
+      >
         <Menu className="w-5 h-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent

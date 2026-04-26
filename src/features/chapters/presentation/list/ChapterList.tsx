@@ -53,7 +53,7 @@ const ChapterItem = ({
 
   return (
     <Collapsible defaultOpen>
-      <div className="rounded-md border bg-white">
+      <div className="rounded-md border ">
         <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/10 transition-colors">
           <div className="flex-1 min-w-0">
             <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
@@ -112,7 +112,7 @@ const ChapterItem = ({
             </div>
           ) : (
             <div className="px-4 pb-3">
-              <Alert className="border-yellow-200 bg-yellow-50">
+              <Alert className="border-yellow-200 ">
                 <Lock className="h-4 w-4 text-yellow-600" />
                 <AlertDescription className="text-sm text-yellow-800">
                   {lockReason}

@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const highlights = [
-  'Prompt → full outline',
-  'Drag modules into order',
-  'Share capstones with one link',
+  "Prompt → full outline",
+  "Drag modules into order",
+  "Share capstones with one link",
 ];
 
 export default function Hero() {
@@ -16,16 +16,16 @@ export default function Hero() {
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 lg:flex-row lg:items-center">
         <div className="flex-1 space-y-6 text-center lg:text-left">
-        
           <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl md:text-6xl">
-            Draft a complete course in minutes, then refine every lesson your way.
+            Draft a complete course in minutes, then refine every lesson your
+            way.
           </h1>
           <p className="text-lg text-muted-foreground sm:text-xl">
-            CourseCraft keeps prompts, outlines, practice steps, and capstone submissions in
-            one workspace. It&apos;s built for student creators who want structure without a
-            huge production team.
+            CourseCraft keeps prompts, outlines, practice steps, and capstone
+            submissions in one workspace. It&apos;s built for student creators
+            who want structure without a huge production team.
           </p>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
             <Link
               href="/create"
               className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-base font-semibold text-primary-foreground shadow-lg transition hover:-translate-y-0.5 hover:bg-primary/90"
@@ -39,8 +39,6 @@ export default function Hero() {
               Learn the story
             </Link>
           </div>
-
-         
         </div>
 
         <div className="flex-1">
@@ -51,7 +49,9 @@ export default function Hero() {
             </div>
             <div className="space-y-4">
               <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
-                <p className="text-xs uppercase tracking-[0.3em] text-primary">Outline</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-primary">
+                  Outline
+                </p>
                 <p className="text-lg font-semibold text-foreground">
                   Build Your First Web Dashboard
                 </p>
@@ -60,7 +60,9 @@ export default function Hero() {
                 </p>
               </div>
               <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
-                <p className="text-xs font-semibold text-primary">Module 02 · Layouts</p>
+                <p className="text-xs font-semibold text-primary">
+                  Module 02 · Layouts
+                </p>
                 <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                   <li>• Lesson: CSS grid with live preview prompt</li>
                   <li>• Practice: Customize the navigation shell</li>
@@ -68,10 +70,13 @@ export default function Hero() {
                 </ul>
               </div>
               <div className="rounded-2xl border border-border/60 bg-background/90 p-4">
-                <p className="text-xs font-semibold text-primary">Capstone marker</p>
+                <p className="text-xs font-semibold text-primary">
+                  Capstone marker
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  Students submit final dashboards with notes and screenshots. Everything is
-                  stored in the same thread so you can review quickly.
+                  Students submit final dashboards with notes and screenshots.
+                  Everything is stored in the same thread so you can review
+                  quickly.
                 </p>
               </div>
             </div>
