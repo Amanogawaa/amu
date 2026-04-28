@@ -78,7 +78,7 @@ export function RecommendationList({
           Courses based on your interests
         </p>
       </div>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full h-full">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-full">
         {recommendations.map((recommendation) => (
           <RecommendationCard
             key={recommendation.courseId}

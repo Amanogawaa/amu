@@ -142,13 +142,13 @@ export function CapstoneSubmissionForm({
     return <GitHubConnectionRequired />;
   }
 
-  // Show completion screen after successful submission
   if (successfulSubmission && courseData) {
     return (
       <SubmissionCompletionScreen
         courseId={successfulSubmission.courseId}
         courseName={courseData.name}
         projectTitle={successfulSubmission.title}
+        submissionId={submissionId!}
       />
     );
   }
@@ -278,22 +278,6 @@ export function CapstoneSubmissionForm({
           </Form>
         </CardContent>
       </Card>
-
-      {submissionId && (
-        <>
-          <ScreenshotManager
-            submissionId={submissionId}
-            screenshots={currentScreenshots}
-            canEdit={true}
-          />
-
-          <Button asChild>
-            <Link href={`/capstone/submissions/${submissionId}`}>
-              View Submission
-            </Link>
-          </Button>
-        </>
-      )}
     </div>
   );
 }

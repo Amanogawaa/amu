@@ -1,10 +1,35 @@
+type Primitive = string | number | boolean | null | undefined;
+type SerializableRecord = Record<string, Primitive>;
+
+type CourseInfiniteFilters = SerializableRecord;
+type EnrollmentListFilters = SerializableRecord;
+type CapstoneListFilters = SerializableRecord;
+
+const normalizeFilters = <T extends SerializableRecord>(filters?: T) => {
+  if (!filters) return null;
+
+  const entries = Object.entries(filters)
+    .filter(([, value]) => value !== undefined)
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  if (entries.length === 0) return null;
+  return Object.fromEntries(entries) as Record<
+    string,
+    Exclude<Primitive, undefined>
+  >;
+};
+
 export const queryKeys = {
   courses: {
     all: ["courses"] as const,
     lists: () => [...queryKeys.courses.all, "list"] as const,
     list: (page: number) => [...queryKeys.courses.lists(), page] as const,
-    infinite: (filters?: any) =>
-      [...queryKeys.courses.all, "infinite", filters] as const,
+    infinite: (filters?: CourseInfiniteFilters) =>
+      [
+        ...queryKeys.courses.all,
+        "infinite",
+        normalizeFilters(filters),
+      ] as const,
     details: () => [...queryKeys.courses.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.courses.details(), id] as const,
     validation: (id: string) =>
@@ -46,8 +71,8 @@ export const queryKeys = {
   enrollments: {
     all: ["enrollments"] as const,
     lists: () => [...queryKeys.enrollments.all, "list"] as const,
-    list: (filters?: any) =>
-      [...queryKeys.enrollments.lists(), filters] as const,
+    list: (filters?: EnrollmentListFilters) =>
+      [...queryKeys.enrollments.lists(), normalizeFilters(filters)] as const,
     status: (courseId: string) =>
       [...queryKeys.enrollments.all, "status", courseId] as const,
     count: (courseId: string) =>
@@ -69,7 +94,7 @@ export const queryKeys = {
         courseId,
         limit,
         offset,
-        parentId,
+        parentId ?? null,
       ] as const,
     detail: (id: string) => [...queryKeys.comments.all, id] as const,
     my: () => [...queryKeys.comments.all, "my"] as const,
@@ -120,8 +145,11 @@ export const queryKeys = {
     submissions: {
       all: () => [...queryKeys.capstone.all, "submissions"] as const,
       lists: () => [...queryKeys.capstone.submissions.all(), "list"] as const,
-      list: (filters?: any) =>
-        [...queryKeys.capstone.submissions.lists(), filters] as const,
+      list: (filters?: CapstoneListFilters) =>
+        [
+          ...queryKeys.capstone.submissions.lists(),
+          normalizeFilters(filters),
+        ] as const,
       details: () =>
         [...queryKeys.capstone.submissions.all(), "detail"] as const,
       detail: (id: string) =>
@@ -132,8 +160,11 @@ export const queryKeys = {
     reviews: {
       all: () => [...queryKeys.capstone.all, "reviews"] as const,
       lists: () => [...queryKeys.capstone.reviews.all(), "list"] as const,
-      list: (filters?: any) =>
-        [...queryKeys.capstone.reviews.lists(), filters] as const,
+      list: (filters?: CapstoneListFilters) =>
+        [
+          ...queryKeys.capstone.reviews.lists(),
+          normalizeFilters(filters),
+        ] as const,
       details: () => [...queryKeys.capstone.reviews.all(), "detail"] as const,
       detail: (id: string) =>
         [...queryKeys.capstone.reviews.details(), id] as const,

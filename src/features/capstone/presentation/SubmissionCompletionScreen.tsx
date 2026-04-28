@@ -11,6 +11,7 @@ interface SubmissionCompletionScreenProps {
   courseName: string;
   projectTitle: string;
   onBackToDashboard?: () => void;
+  submissionId: string;
 }
 
 export function SubmissionCompletionScreen({
@@ -18,6 +19,7 @@ export function SubmissionCompletionScreen({
   courseName,
   projectTitle,
   onBackToDashboard,
+  submissionId,
 }: SubmissionCompletionScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[500px] py-8 px-4">
@@ -35,8 +37,8 @@ export function SubmissionCompletionScreen({
         </div>
 
         {/* Submission Details */}
-        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-          <CardContent className="pt-6 space-y-4">
+        <Card className="bg-linear-to-br from-primary/5 to-transparent border-primary/20">
+          <CardContent className=" space-y-4">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">
                 Course
@@ -49,6 +51,11 @@ export function SubmissionCompletionScreen({
               </p>
               <p className="text-lg font-semibold">{projectTitle}</p>
             </div>
+            <Button asChild>
+              <Link href={`/capstone/submissions/${submissionId}`}>
+                View Submission
+              </Link>
+            </Button>
             <div className="pt-2 border-t border-primary/10">
               <p className="text-sm text-muted-foreground">
                 Your project is now available for peer reviews. The community
