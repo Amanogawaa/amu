@@ -71,6 +71,7 @@ src/
 - Node.js 20+
 - npm 10+
 - Running CourseCraft backend API (default: `http://localhost:8080`)
+  - This repository contains the client only; get the matching backend service from your team/backend repository and run it before starting the frontend.
 
 ### 2) Install dependencies
 
@@ -115,8 +116,6 @@ Open `http://localhost:3000`.
 ## Important notes
 
 - This frontend depends on a separate backend service.
-- In this sandbox run, `npm run lint` reports pre-existing lint issues unrelated to this README update.
-- In this sandbox run, `npm run build` failed because Google Fonts could not be fetched (network-restricted environment).
 
 ## Status
 
