@@ -127,7 +127,7 @@ const DashboardPage = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {generatedCourses.map((course) => (
-                        <CourseCard course={course} context="course" />
+                        <CourseCard key={course.id} course={course} context="course" />
                       ))}
                     </div>
                   )}

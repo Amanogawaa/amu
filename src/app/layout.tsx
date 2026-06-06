@@ -46,7 +46,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${montserrat.variable} font-sans antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light">
           <ReactQueryProvider>
             <AuthProvider>
               <SocketProvider>

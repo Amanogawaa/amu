@@ -67,49 +67,44 @@ export function GenerationProvider({ children }: { children: ReactNode }) {
   const chunkBufferRef = useRef<Map<string, string>>(new Map());
   const flushIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [state, setState] = useState<GenerationState>({
-    progress: null,
-    isGenerating: false,
-    isMinimized: false,
-    isWidgetVisible: false,
-    error: null,
-    isStreamWindowVisible: false,
-    streamChunks: [],
-    currentStreamStep: null,
-  });
-
-  // Restore persisted state on mount
-  useEffect(() => {
-    const loadPersistedState = () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (
-            parsed.isGenerating &&
-            parsed.progress?.status === GenerationStatus.IN_PROGRESS
-          ) {
-            setState((prev) => ({
-              ...prev,
-              ...parsed,
-              isWidgetVisible: true,
-              // Don't restore stream chunks — they're ephemeral
-              streamChunks: [],
-              currentStreamStep: null,
-            }));
-            logger.info("Restored active generation from localStorage");
-          } else {
-            localStorage.removeItem(STORAGE_KEY);
-          }
-        }
-      } catch (error) {
-        logger.error("Failed to load persisted generation state:", error);
-        localStorage.removeItem(STORAGE_KEY);
-      }
+  const [state, setState] = useState<GenerationState>(() => {
+    const defaultState = {
+      progress: null,
+      isGenerating: false,
+      isMinimized: false,
+      isWidgetVisible: false,
+      error: null,
+      isStreamWindowVisible: false,
+      streamChunks: [],
+      currentStreamStep: null,
     };
-
-    loadPersistedState();
-  }, []);
+    if (typeof window === "undefined") return defaultState;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (
+          parsed.isGenerating &&
+          parsed.progress?.status === GenerationStatus.IN_PROGRESS
+        ) {
+          logger.info("Restored active generation from localStorage");
+          return {
+            ...defaultState,
+            ...parsed,
+            isWidgetVisible: true,
+            streamChunks: [],
+            currentStreamStep: null,
+          };
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }
+    } catch (error) {
+      logger.error("Failed to load persisted generation state:", error);
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    return defaultState;
+  });
 
   // Persist state (excluding stream chunks which are too large)
   useEffect(() => {

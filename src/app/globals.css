@@ -54,23 +54,30 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: #1f2a27; /* custom_foreground */
+  --foreground: #1f2a27;
+  /* custom_foreground */
   --card: oklch(1 0 0);
   --card-foreground: #1f2a27;
   --popover: oklch(1 0 0);
   --popover-foreground: #1f2a27;
-  --primary: #546e69; /* Evergreen_Dusk */
+  --primary: #546e69;
+  /* Evergreen_Dusk */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #7c9f9c; /* Winter_Teal */
-  --secondary-foreground: #132a28; /* Dark text for better readability */
+  --secondary: #7c9f9c;
+  /* Winter_Teal */
+  --secondary-foreground: #132a28;
+  /* Dark text for better readability */
   --muted: oklch(0.97 0 0);
-  --muted-foreground: #4d5f5d; /* Softer neutral text */
-  --accent: #7c9f9c; /* Winter_Teal */
+  --muted-foreground: #4d5f5d;
+  /* Softer neutral text */
+  --accent: #7c9f9c;
+  /* Winter_Teal */
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: #546e69; /* Evergreen_Dusk */
+  --ring: #546e69;
+  /* Evergreen_Dusk */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -93,9 +100,11 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: #7c9f9c; /* Winter_Teal for dark mode */
+  --primary: #7c9f9c;
+  /* Winter_Teal for dark mode */
   --primary-foreground: oklch(0.145 0 0);
-  --secondary: #546e69; /* Evergreen_Dusk for dark mode */
+  --secondary: #546e69;
+  /* Evergreen_Dusk for dark mode */
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: #7c9f9c;
@@ -198,6 +207,7 @@
 }
 
 @layer utilities {
+
   /* Custom animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
@@ -272,10 +282,12 @@
 
 /* Keyframe animations */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -285,6 +297,7 @@
   from {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
+
   to {
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
   }
@@ -294,6 +307,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -303,6 +317,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -313,6 +328,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -324,6 +340,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -363,7 +380,22 @@ input[type='number']::-webkit-outer-spin-button {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }

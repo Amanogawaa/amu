@@ -59,7 +59,7 @@ export function ErrorFallback({
             )}
           </div>
 
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-center text-muted-foreground" suppressHydrationWarning>
             Error ID: {Math.random().toString(36).substring(7)}
           </p>
         </CardContent>

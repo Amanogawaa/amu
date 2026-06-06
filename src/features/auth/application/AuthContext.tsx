@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import {
   User,
   onAuthStateChanged,
@@ -84,13 +84,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [githubLinked, setGithubLinked] = useState(false);
-  const [isMounted, setIsMounted] = useState(true);
+  const isMountedRef = useRef(true);
   const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true);
+    isMountedRef.current = true;
     return () => {
-      setIsMounted(false);
+      isMountedRef.current = false;
     };
   }, []);
 
@@ -282,7 +282,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
       await firebaseSignOut(auth);
       // Only navigate if component is still mounted
-      if (isMounted) {
+      if (isMountedRef.current) {
         router.push("/");
       }
     } catch (err) {

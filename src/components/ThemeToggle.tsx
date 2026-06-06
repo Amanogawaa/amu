@@ -2,19 +2,17 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Card, CardContent } from "./ui/card";
 
-export function ModeToggle() {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+const emptySubscribe = () => () => {};
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function ModeToggle() {
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const { theme, setTheme } = useTheme();
 
   if (!mounted) {
     return (
