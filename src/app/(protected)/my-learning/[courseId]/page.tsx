@@ -12,7 +12,7 @@ const MyLearningCoursePage = () => {
   const { data } = useGetCourse(courseId);
 
   return (
-    <section className="flex flex-col min-h-screen w-full pb-10 pt-6">
+    <section className="flex flex-col min-h-screen w-full pb-10 pt-6 px-4">
       <div className="container mx-auto max-w-5xl">
         <nav className="flex items-center text-sm text-muted-foreground mb-8 uppercase tracking-wider">
           <Link

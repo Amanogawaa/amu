@@ -174,13 +174,13 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
             <LessonArticleContent content={lesson.content!} />
           )}
 
-          {course?.supportsCodePlayground && lesson.type === "article" && (
+          {/* {course?.supportsCodePlayground && lesson.type === "article" && (
             <CodePlaygroundSection
               lesson={lesson}
               courseId={courseInfo?.courseId}
               courseLanguage={course?.language}
             />
-          )}
+          )} */}
 
           <LessonMetadata lesson={lesson} />
         </>

@@ -9,7 +9,6 @@ import { BookOpenIcon, Sparkles } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
-
 const MyLearningPage = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
