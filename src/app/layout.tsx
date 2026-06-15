@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/provider/ThemeProvider";
 import { FloatingGenerationWidget } from "@/features/create/presentation/FloatingGenerationWidget";
 import { GenerationProvider } from "@/features/create/application/GenerationContext";
 import { Analytics } from "@vercel/analytics/react";
+import { AppAssistant } from "@/features/app-assistant/presentation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -53,6 +54,8 @@ export default function RootLayout({
                 <GenerationProvider>
                   {children}
                   <FloatingGenerationWidget />
+                  <AppAssistant />
+
                 </GenerationProvider>
               </SocketProvider>
             </AuthProvider>

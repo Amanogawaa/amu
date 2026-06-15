@@ -21,7 +21,7 @@ export async function generateCapstoneGuideline(
   courseId: string,
 ): Promise<CapstoneGuideline> {
   const data = await apiRequest<null, any>(
-    `guidelines/generate/${courseId}`,
+    `capstone-guidelines/generate/${courseId}`,
     "post",
   );
   return normalizeCapstoneGuideline(data);
@@ -31,7 +31,7 @@ export async function getCapstoneGuidelineByCourseId(
   courseId: string,
 ): Promise<CapstoneGuideline> {
   const data = await apiRequest<null, any>(
-    `guidelines/course/${courseId}`,
+    `capstone-guidelines/course/${courseId}`,
     "get",
   );
   return normalizeCapstoneGuideline(data);
@@ -40,7 +40,7 @@ export async function getCapstoneGuidelineByCourseId(
 export async function getCapstoneGuidelineById(
   id: string,
 ): Promise<CapstoneGuideline> {
-  const data = await apiRequest<null, any>(`guidelines/${id}`, "get");
+  const data = await apiRequest<null, any>(`capstone-guidelines/${id}`, "get");
   return normalizeCapstoneGuideline(data);
 }
 

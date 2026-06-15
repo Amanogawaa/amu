@@ -34,7 +34,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   const isInitializedRef = useRef(false);
 
   useEffect(() => {
-    const initializeSocket = async () => {
+    const initializeSocket = async (user: NonNullable<typeof auth.currentUser>) => {
       if (isInitializedRef.current) {
         logger.debug('Socket already initialized, skipping re-initialization');
         return;
@@ -44,19 +44,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         logger.debug(
           'Socket instance already exists, skipping re-initialization'
         );
-        socketRef.current.disconnect();
-        socketRef.current = null;
+        return;
       }
 
       isInitializedRef.current = true;
 
       try {
-        const user = auth.currentUser;
-        if (!user) {
-          logger.log('No authenticated user, skipping socket connection');
-          return;
-        }
-
         const token = await user.getIdToken();
 
         const socketInstance = io(
@@ -92,14 +85,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         setSocket(socketInstance);
       } catch (error) {
         logger.error('Failed to initialize socket:', error);
-      } finally {
         isInitializedRef.current = false;
       }
     };
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        initializeSocket();
+        initializeSocket(user);
       } else {
         if (socketRef.current) {
           logger.debug('User logged out, disconnecting socket');
@@ -113,10 +105,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
     return () => {
       unsubscribe();
-      if (socket) {
+      if (socketRef.current) {
         logger.debug('Cleaning up socket on unmount');
-        socket.disconnect();
+        socketRef.current.disconnect();
         socketRef.current = null;
+        isInitializedRef.current = false;
       }
     };
   }, []);

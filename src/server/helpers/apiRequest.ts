@@ -1,5 +1,5 @@
 import serverConnectionSingleton from '@/server/ServerConnection';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, isAxiosError } from 'axios';
 
 export default async function apiRequest<TPayload, TResponse>(
   url: string,
@@ -9,7 +9,7 @@ export default async function apiRequest<TPayload, TResponse>(
 ): Promise<TResponse> {
   try {
     const config: AxiosRequestConfig = {
-      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL  ?? '/api',
+      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api',
       ...axiosConfigOverride,
     };
 
@@ -23,6 +23,17 @@ export default async function apiRequest<TPayload, TResponse>(
     });
     return response.data;
   } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      const data = error.response?.data as any;
+      if (data) {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        if (data.message) {
+          throw new Error(data.message);
+        }
+      }
+    }
     if (error instanceof Error) {
       throw new Error(error.message);
     }

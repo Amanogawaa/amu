@@ -95,20 +95,22 @@ export default function FullGenerationPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Start Another Generation?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    You currently have an active generation in progress. You can
-                    create another course once the current one is completed.
-                  </p>
-                  <Button onClick={handleCreateAnother} variant="outline">
-                    Cancel Current & Start New
-                  </Button>
-                </CardContent>
-              </Card>
+              // <Card>
+              //   <CardHeader>
+              //     <CardTitle>Start Another Generation?</CardTitle>
+              //   </CardHeader>
+              //   <CardContent>
+              //     <p className="text-sm text-muted-foreground mb-4">
+              //       You currently have an active generation in progress. You can
+              //       create another course once the current one is completed.
+              //     </p>
+              //     <Button onClick={handleCreateAnother} variant="outline">
+              //       Cancel Current & Start New
+              //     </Button>
+              //   </CardContent>
+              // </Card>
+
+              <></>
             )}
 
             <Card className="mt-6">

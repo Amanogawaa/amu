@@ -2,6 +2,7 @@ import { Navbar } from '@/components/navigation/Navbar';
 import Footer from '@/components/navigation/Footer';
 import { BookOpen } from 'lucide-react';
 import type { Metadata } from 'next';
+import { AppAssistant } from '@/features/app-assistant/presentation';
 
 export const metadata: Metadata = {
   title: 'Technical Glossary | CourseCraft',

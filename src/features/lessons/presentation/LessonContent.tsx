@@ -22,6 +22,7 @@ import { LessonQuizContent } from "./LessonQuizContent";
 import { LessonArticleContent } from "./LessonArticleContent";
 import { LessonMetadata } from "./LessonMetadata";
 import { CodePlaygroundSection } from "./CodePlaygroundSection";
+import { LessonExerciseContent } from "./LessonExerciseContent";
 
 interface LessonContentProps {
   lessonId: string;
@@ -172,6 +173,10 @@ export const LessonContent = ({ lessonId }: LessonContentProps) => {
 
           {lesson.type === "article" && (
             <LessonArticleContent content={lesson.content!} />
+          )}
+
+          {lesson.type === "exercise" && (
+            <LessonExerciseContent lessonId={lessonId} />
           )}
 
           {/* {course?.supportsCodePlayground && lesson.type === "article" && (

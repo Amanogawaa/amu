@@ -8,7 +8,7 @@ export interface Quiz {
 export interface QuizQuestion {
   questionId: string;
   questionText: string;
-  questionType: 'multiple-choice' | 'true-false';
+  questionType: 'multiple-choice' | 'true-false' | 'identification';
   options?: QuizOption[];
   points: number;
 }
